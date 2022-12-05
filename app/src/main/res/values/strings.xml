@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">KINODATA</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="popular">Popular</string>
+    <string name="see_all">See All  ></string>
+    <string name="top_rated">Top Rated</string>
+    <string name="language">en-US</string>
+    <string name="now_in_theaters">Now In Theaters</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="movies">Movies</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="january">January</string>
+    <string name="february">February</string>
+    <string name="march">March</string>
+    <string name="april">April</string>
+    <string name="may">May</string>
+    <string name="june">June</string>
+    <string name="july">July</string>
+    <string name="august">August</string>
+    <string name="september">September</string>
+    <string name="october">October</string>
+    <string name="november">November</string>
+    <string name="december">December</string>
+    <string name="topRated">Top Rated</string>
+    <string name="stars">Stars:</string>
+    <string name="and_others"> and others</string>
+    <string name="rate">Rate</string>
+    <string name="reviews">Reviews</string>
+    <string name="reviewExample">**Black Adam might not reinvent the wheel, but it doesn’t have to. It just wants to take you on a fun, entertaining, exciting superhero ride!**\r\n\r\nBlack Adam has its haters, and I can understand why. It doesn’t necessarily break new ground in the superhero genre, but that doesn’t stop it from being awesome! Action-packed from start to finish. The effects are incredible. I kept myself from saying Wow out loud on multiple occasions. Dwayne Johnson’s Black Adam is absolutely ruthless, ripping armies of henchmen with ease and speed. I was worried a PG-13 rating might soften his brutality, but it did not! The action sequences looked amazing and were well done. I really liked the Justice Society characters, although they all felt a little stereotypical with a SpiderMan jokester, a wise old Professor X, and a quipping leader in the vain of Wolverine or Deadshot. Pierce Brosnan was perfect at Dr. Fate, making me wish he hadn’t been relegated to special guest star status. The movie didn’t waste a ton of time giving background on each character which was wise with so many new heroes on screen. The film had its moments of cheese but didn’t overdo it. Definitely watch the mid-credit scene. It’s stupendous! Black Adam was a fine addition to the superhero genre, and I look forward to what comes next.**Black Adam might not reinvent the wheel, but it doesn’t have to. It just wants to take you on a fun, entertaining, exciting superhero ride!**\r\n\r\nBlack Adam has its haters, and I can understand why. It doesn’t necessarily break new ground in the superhero genre, but that doesn’t stop it from being awesome! Action-packed from start to finish. The effects are incredible. I kept myself from saying Wow out loud on multiple occasions. Dwayne Johnson’s Black Adam is absolutely ruthless, ripping armies of henchmen with ease and speed. I was worried a PG-13 rating might soften his brutality, but it did not! The action sequences looked amazing and were well done. I really liked the Justice Society characters, although they all felt a little stereotypical with a SpiderMan jokester, a wise old Professor X, and a quipping leader in the vain of Wolverine or Deadshot. Pierce Brosnan was perfect at Dr. Fate, making me wish he hadn’t been relegated to special guest star status. The movie didn’t waste a ton of time giving background on each character which was wise with so many new heroes on screen. The film had its moments of cheese but didn’t overdo it. Definitely watch the mid-credit scene. It’s stupendous! Black Adam was a fine addition to the superhero genre, and I look forward to what comes next.**Black Adam might not reinvent the wheel, but it doesn’t have to. It just wants to take you on a fun, entertaining, exciting superhero ride!**\r\n\r\nBlack Adam has its haters, and I can understand why. It doesn’t necessarily break new ground in the superhero genre, but that doesn’t stop it from being awesome! Action-packed from start to finish. The effects are incredible. I kept myself from saying Wow out loud on multiple occasions. Dwayne Johnson’s Black Adam is absolutely ruthless, ripping armies of henchmen with ease and speed. I was worried a PG-13 rating might soften his brutality, but it did not! The action sequences looked amazing and were well done. I really liked the Justice Society characters, although they all felt a little stereotypical with a SpiderMan jokester, a wise old Professor X, and a quipping leader in the vain of Wolverine or Deadshot. Pierce Brosnan was perfect at Dr. Fate, making me wish he hadn’t been relegated to special guest star status. The movie didn’t waste a ton of time giving background on each character which was wise with so many new heroes on screen. The film had its moments of cheese but didn’t overdo it. Definitely watch the mid-credit scene. It’s stupendous! Black Adam was a fine addition to the superhero genre, and I look forward to what comes next.</string>
+    <string name="tv_series">TV Series</string>
+    <string name="on_the_air">On The Air</string>
+    <string name="cast">Cast</string>
+    <string name="movies_and_tv_series">Movies and TV Series</string>
+    <string name="photos">Photos</string>
+    <string name="close">Close</string>
+</resources>

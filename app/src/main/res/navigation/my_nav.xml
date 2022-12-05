@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/moviesFragment">
+
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.example.kinodata.fragments.movies.MoviesFragment"
+        android:label="Movies"
+        tools:layout="@layout/fragment_movies" >
+        <action
+            android:id="@+id/action_moviesFragment_to_allPopularFragment"
+            app:destination="@id/allPopularFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_allTopFragment"
+            app:destination="@id/allTopFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_allNowFragment"
+            app:destination="@id/allNowFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_allUpcomingFragment"
+            app:destination="@id/allUpcomingFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.kinodata.fragments.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.kinodata.fragments.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/allNowFragment"
+        android:name="com.example.kinodata.fragments.movies.all.nowPlaying.AllNowFragment"
+        android:label="Now in theaters"
+        tools:layout="@layout/fragment_all_now">
+        <action
+            android:id="@+id/action_allNowFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_allNowFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allPopularFragment"
+        android:name="com.example.kinodata.fragments.movies.all.popular.AllPopularFragment"
+        android:label="Popular"
+        tools:layout="@layout/fragment_all_popular">
+        <action
+            android:id="@+id/action_allPopularFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_allPopularFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allTopFragment"
+        android:name="com.example.kinodata.fragments.movies.all.topRated.AllTopFragment"
+        android:label="Top Rated"
+        tools:layout="@layout/fragment_all_top">
+        <action
+            android:id="@+id/action_allTopFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_allTopFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allUpcomingFragment"
+        android:name="com.example.kinodata.fragments.movies.all.upcoming.AllUpcomingFragment"
+        android:label="Upcoming"
+        tools:layout="@layout/fragment_all_upcoming">
+        <action
+            android:id="@+id/action_allUpcomingFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_allUpcomingFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieDetailsFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.MovieDetailsFragment"
+        android:label="fragment_movie_details"
+        tools:layout="@layout/fragment_movie_details" >
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allPopularFragment"
+            app:destination="@id/allPopularFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allTopFragment"
+            app:destination="@id/allTopFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allNowFragment"
+            app:destination="@id/allNowFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allUpcomingFragment"
+            app:destination="@id/allUpcomingFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allTopFragment2"
+            app:destination="@id/allTopFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"
+            app:exitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allReviewsFragment"
+            app:destination="@id/allReviewsFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allCastFragment"
+            app:destination="@id/allCastFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_actorFragment"
+            app:destination="@id/actorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.review.ReviewFragment"
+        android:label="fragment_review"
+        tools:layout="@layout/fragment_review" >
+        <argument
+            android:name="review"
+            app:argType="com.example.kinodata.model.review.Review" />
+    </fragment>
+    <fragment
+        android:id="@+id/allReviewsFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.review.all.AllReviewsFragment"
+        android:label="fragment_all_reviews"
+        tools:layout="@layout/fragment_all_reviews" >
+        <action
+            android:id="@+id/action_allReviewsFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+        <argument
+            android:name="movieId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvSeriesFragment"
+        android:name="com.example.kinodata.fragments.tvSeries.TvSeriesFragment"
+        android:label="fragment_tv_series"
+        tools:layout="@layout/fragment_tv_series" />
+    <fragment
+        android:id="@+id/allCastFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.cast.AllCastFragment"
+        android:label="fragment_all_cast"
+        tools:layout="@layout/fragment_all_cast" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_allCastFragment_to_actorFragment"
+            app:destination="@id/actorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/actorFragment"
+        android:name="com.example.kinodata.fragments.people.PersonFragment"
+        android:label="fragment_actor"
+        tools:layout="@layout/fragment_person" >
+        <argument
+            android:name="personId"
+            app:argType="integer" />
+    </fragment>
+</navigation>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.movies.movieDetails.review.ReviewFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_review"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        app:menu="@menu/review_toolbar_menu"
+        app:title="Review"
+        app:titleCentered="true" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_reviewDetails"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/tb_review">
+
+        <TextView
+            android:id="@+id/txt_reviewAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="Xramovnik_Force"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/img_reviewAuthor"
+            app:layout_constraintTop_toTopOf="@+id/img_reviewAuthor" />
+
+        <View
+            android:id="@+id/line_review"
+            android:layout_width="4dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/light_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_reviewAuthor"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:src="@color/light_gray2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/line_review" />
+
+        <TextView
+            android:id="@+id/txt_reviewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="13 Nov 2022"
+            android:textColor="@color/light_gray"
+            app:layout_constraintStart_toStartOf="@+id/txt_reviewAuthor"
+            app:layout_constraintTop_toBottomOf="@+id/txt_reviewAuthor" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="12dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_reviewAuthor">
+
+            <RelativeLayout
+                android:id="@+id/layout_reviewRating"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray2">
+
+                <TextView
+                    android:id="@+id/txt_reviewRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_reviewDetails"
+        android:saveEnabled="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txt_reviewContent"
+                android:autoLink="all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="48dp"
+                android:text="@string/reviewExample" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

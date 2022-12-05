@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="324dp"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_marginHorizontal="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/super_light_gray">
+
+        <View
+            android:id="@+id/line_card_review"
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/light_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_card_reviewAuthor"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:src="@color/light_gray2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/line_card_review" />
+
+        <TextView
+            android:id="@+id/txt_card_reviewAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="Xramovnik_Force"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/img_card_reviewAuthor"
+            app:layout_constraintTop_toTopOf="@+id/line_card_review" />
+
+        <TextView
+            android:id="@+id/txt_card_reviewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="13 Nov 2022"
+            android:textColor="@color/light_gray"
+            app:layout_constraintStart_toStartOf="@+id/txt_card_reviewAuthor"
+            app:layout_constraintTop_toBottomOf="@+id/txt_card_reviewAuthor" />
+
+        <TextView
+            android:id="@+id/txt_card_reviewContent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="16dp"
+            android:text="With a horrid script, lackluster performances, and a waste of potentially awesome characters, _Black Adam_ is an explosive, $195 million, anti-heroic dud. The DCEU is about to get way more convoluted and underwhelming than ever before if this is the future of live action DC films."
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_card_reviewAuthor"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_card_reviewAuthor"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
+                android:id="@+id/card_layout_reviewRating"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray2">
+
+                <TextView
+                    android:id="@+id/txt_card_reviewRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="7.0"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
