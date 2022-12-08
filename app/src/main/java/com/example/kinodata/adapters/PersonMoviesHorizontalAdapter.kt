@@ -12,25 +12,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.tv.RTvSeries
+import com.example.kinodata.model.credit.person.personMovies.PersonMovies
 
-class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter.MyViewHolder>() {
+class PersonMoviesHorizontalAdapter
+    : RecyclerView.Adapter<PersonMoviesHorizontalAdapter.MyViewHolder>() {
 
-    private var tvSeries = emptyList<RTvSeries>()
-    var tvSeriesId: Int? = null
-    var onItemClick: ((RTvSeries?) -> Unit)? = null
+    private var movies = emptyList<PersonMovies>()
+
+    var onItemClick : ((PersonMovies?) -> Unit)? = null
+    var movieId: Int? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView
         val title: TextView
-        val date: TextView
+        val character: TextView
         val vote: TextView
         val rl_vote: RelativeLayout
         val card_vote: CardView
+
         init {
             img = itemView.findViewById(R.id.img_horizontalList)
             title = itemView.findViewById(R.id.txt_horizontalList_title)
-            date = itemView.findViewById(R.id.txt_horizontalList_info)
+            character = itemView.findViewById(R.id.txt_horizontalList_info)
             vote = itemView.findViewById(R.id.txt_horizontalList_vote)
             rl_vote = itemView.findViewById(R.id.rl_vote)
             card_vote = itemView.findViewById(R.id.card_vote)
@@ -45,40 +48,16 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var title = tvSeries[position].name
-        tvSeriesId = tvSeries[position].id
+        var title = movies[position].title
+        movieId = movies[position].id
         if (title.length > 19) {
             title = title.substring(0, 19) + "..."
         }
         holder.title.text = title
-        // Date
-        val date = tvSeries[position].first_air_date
-        if(date.length > 7) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day[0] == '0') day = day[1].toString()
 
-            month = when(month) {
-                "01" -> getStringResource(holder, R.string.january)
-                "02" -> getStringResource(holder, R.string.february)
-                "03" -> getStringResource(holder, R.string.march)
-                "04" -> getStringResource(holder, R.string.april)
-                "05" -> getStringResource(holder, R.string.may)
-                "06" -> getStringResource(holder, R.string.june)
-                "07" -> getStringResource(holder, R.string.july)
-                "08" -> getStringResource(holder, R.string.august)
-                "09" -> getStringResource(holder, R.string.september)
-                "10" -> getStringResource(holder, R.string.october)
-                "11" -> getStringResource(holder, R.string.november)
-                "12" -> getStringResource(holder, R.string.december)
-                else -> ""
-            }
-            holder.date.text = "$day $month, $year"
-        }
+        holder.character.text = movies[position].character
 
-
-        val vote = tvSeries[position].vote_average
+        val vote = movies[position].vote_average
         holder.vote.text = String.format("%.1f", vote)
 
         if (vote == .0) {
@@ -94,31 +73,33 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
             holder.rl_vote.setBackgroundColor(colorId)
         }
 
-        val img = tvSeries[position].poster_path
-        Glide.with(holder.itemView.context).load(MyConstants.IMG_BASE_URL + img)
-            .into(holder.img)
+
+        val img = movies[position].poster_path
+        Glide.with(holder.itemView.context)
+            .load(MyConstants.IMG_BASE_URL + img).into(holder.img)
 
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(tvSeries[position])
+            onItemClick?.invoke(movies[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return tvSeries.size
+        return movies.size
     }
 
-    fun updateData(newList: List<RTvSeries>) {
-        val oldList = tvSeries
-        val diffResult = DiffUtil.calculateDiff(
-            TvSeriesCallback(oldList, newList)
+    fun updateData(newList: List<PersonMovies>) {
+        val oldList = movies
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(
+            PersonMoviesDiffCallback(oldList, newList)
         )
-        tvSeries = newList
+        movies = newList
         diffResult.dispatchUpdatesTo(this)
     }
-    private class TvSeriesCallback(
-        private val oldList: List<RTvSeries>,
-        private val newList: List<RTvSeries>
-        ): DiffUtil.Callback() {
+
+    class PersonMoviesDiffCallback(
+        var oldList: List<PersonMovies>,
+        var newList: List<PersonMovies>
+    ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldList.size
         }
@@ -128,15 +109,11 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
-    }
-
-    private fun getStringResource(holder: MyViewHolder, resourceId: Int) : String {
-        return holder.itemView.resources.getString(resourceId)
     }
 }

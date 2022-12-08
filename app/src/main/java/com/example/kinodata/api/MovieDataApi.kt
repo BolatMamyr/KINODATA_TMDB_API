@@ -3,7 +3,9 @@ package com.example.kinodata.api
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.constants.MyConstants.Companion.API_KEY
 import com.example.kinodata.model.credit.Credit
-import com.example.kinodata.model.credit.Person
+import com.example.kinodata.model.credit.person.Person
+import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
+import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movieDetails.MovieDetails
 import com.example.kinodata.model.review.ReviewResult
@@ -92,6 +94,20 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = API_KEY,
         @Query("language") language: String
     ): Response<Person>
+
+    @GET(MyConstants.URL_PERSON + "{personId}" + MyConstants.URL_PERSON_MOVIE_CREDITS)
+    suspend fun getPersonMovieCredits(
+        @Path("personId") personId: String,
+        @Query("api_key") api_key: String = API_KEY,
+        @Query("language") language: String
+    ): Response<PersonMovieCredits>
+
+    @GET(MyConstants.URL_PERSON + "{personId}" + MyConstants.URL_PERSON_TV_CREDITS)
+    suspend fun getPersonTvSeriesCredits(
+        @Path("personId") personId: String,
+        @Query("api_key") api_key: String = API_KEY,
+        @Query("language") language: String
+    ): Response<PersonTvSeriesCredits>
 
     // https://api.themoviedb.org/3//person/18918?api_key=f2d6d5225e43110cc809522d5ae31922
 }

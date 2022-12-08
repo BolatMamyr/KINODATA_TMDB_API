@@ -31,7 +31,7 @@ class MoviesHorizontalAdapter : RecyclerView.Adapter<MoviesHorizontalAdapter.MyV
         init {
             img = itemView.findViewById(R.id.img_horizontalList)
             title = itemView.findViewById(R.id.txt_horizontalList_title)
-            date = itemView.findViewById(R.id.txt_horizontalList_date)
+            date = itemView.findViewById(R.id.txt_horizontalList_info)
             vote = itemView.findViewById(R.id.txt_horizontalList_vote)
             rl_vote = itemView.findViewById(R.id.rl_vote)
             card_vote = itemView.findViewById(R.id.card_vote)
@@ -78,7 +78,7 @@ class MoviesHorizontalAdapter : RecyclerView.Adapter<MoviesHorizontalAdapter.MyV
 
 
         val vote = movies[position].vote_average
-        holder.vote.text = vote.toString()
+        holder.vote.text = String.format("%.1f", vote)
 
         if (vote == .0) {
             holder.card_vote.visibility = View.GONE

@@ -12,25 +12,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
+import com.example.kinodata.model.credit.person.personMovies.PersonMovies
+import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeries
 import com.example.kinodata.model.tv.RTvSeries
 
-class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter.MyViewHolder>() {
+class PersonTvSeriesHorizontalAdapter
+    : RecyclerView.Adapter<PersonTvSeriesHorizontalAdapter.MyViewHolder>() {
 
-    private var tvSeries = emptyList<RTvSeries>()
+    private var tvSeries = emptyList<PersonTvSeries>()
     var tvSeriesId: Int? = null
-    var onItemClick: ((RTvSeries?) -> Unit)? = null
+    var onItemClick: ((PersonTvSeries?) -> Unit)? = null
+
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView
         val title: TextView
-        val date: TextView
+        val character: TextView
         val vote: TextView
         val rl_vote: RelativeLayout
         val card_vote: CardView
+
         init {
             img = itemView.findViewById(R.id.img_horizontalList)
             title = itemView.findViewById(R.id.txt_horizontalList_title)
-            date = itemView.findViewById(R.id.txt_horizontalList_info)
+            character = itemView.findViewById(R.id.txt_horizontalList_info)
             vote = itemView.findViewById(R.id.txt_horizontalList_vote)
             rl_vote = itemView.findViewById(R.id.rl_vote)
             card_vote = itemView.findViewById(R.id.card_vote)
@@ -51,32 +56,7 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
             title = title.substring(0, 19) + "..."
         }
         holder.title.text = title
-        // Date
-        val date = tvSeries[position].first_air_date
-        if(date.length > 7) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day[0] == '0') day = day[1].toString()
-
-            month = when(month) {
-                "01" -> getStringResource(holder, R.string.january)
-                "02" -> getStringResource(holder, R.string.february)
-                "03" -> getStringResource(holder, R.string.march)
-                "04" -> getStringResource(holder, R.string.april)
-                "05" -> getStringResource(holder, R.string.may)
-                "06" -> getStringResource(holder, R.string.june)
-                "07" -> getStringResource(holder, R.string.july)
-                "08" -> getStringResource(holder, R.string.august)
-                "09" -> getStringResource(holder, R.string.september)
-                "10" -> getStringResource(holder, R.string.october)
-                "11" -> getStringResource(holder, R.string.november)
-                "12" -> getStringResource(holder, R.string.december)
-                else -> ""
-            }
-            holder.date.text = "$day $month, $year"
-        }
-
+        holder.character.text = tvSeries[position].character
 
         val vote = tvSeries[position].vote_average
         holder.vote.text = String.format("%.1f", vote)
@@ -95,8 +75,8 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
         }
 
         val img = tvSeries[position].poster_path
-        Glide.with(holder.itemView.context).load(MyConstants.IMG_BASE_URL + img)
-            .into(holder.img)
+        Glide.with(holder.itemView.context)
+            .load(MyConstants.IMG_BASE_URL + img).into(holder.img)
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(tvSeries[position])
@@ -107,18 +87,19 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
         return tvSeries.size
     }
 
-    fun updateData(newList: List<RTvSeries>) {
+    fun updateData(newList: List<PersonTvSeries>) {
         val oldList = tvSeries
-        val diffResult = DiffUtil.calculateDiff(
-            TvSeriesCallback(oldList, newList)
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(
+            PersonTvSeriesDiffCallback(oldList, newList)
         )
         tvSeries = newList
         diffResult.dispatchUpdatesTo(this)
     }
-    private class TvSeriesCallback(
-        private val oldList: List<RTvSeries>,
-        private val newList: List<RTvSeries>
-        ): DiffUtil.Callback() {
+
+    class PersonTvSeriesDiffCallback(
+        var oldList: List<PersonTvSeries>,
+        var newList: List<PersonTvSeries>
+    ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldList.size
         }
@@ -128,15 +109,11 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
-    }
-
-    private fun getStringResource(holder: MyViewHolder, resourceId: Int) : String {
-        return holder.itemView.resources.getString(resourceId)
     }
 }

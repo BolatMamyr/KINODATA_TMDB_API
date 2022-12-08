@@ -1,4 +1,4 @@
-package com.example.kinodata.model.credit
+package com.example.kinodata.model.credit.person
 
 data class Person(
     val adult: Boolean,

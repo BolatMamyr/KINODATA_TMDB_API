@@ -94,7 +94,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- ******************Movies and TV Series************************** -->
+            <!-- ***************************Movies************************** -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:padding="8dp"
-                    android:text="@string/movies_and_tv_series"
+                    android:text="@string/movies"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -123,7 +123,39 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_person_movies"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="220dp"/>
+
+            <!-- ******************************TV Series************************** -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:padding="8dp"
+                    android:text="@string/tv_series"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_person_seeAllTvSeries"
+                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange"/>
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_person_tvSeries"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"/>
 
             <!-- ******************Photos************************** -->
             <RelativeLayout
@@ -157,6 +189,7 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

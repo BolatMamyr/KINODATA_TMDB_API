@@ -278,6 +278,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/see_all"
+                    android:textColor="@color/orange"
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
             </RelativeLayout>
 
@@ -285,7 +286,7 @@
                 android:id="@+id/rv_cast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -308,6 +309,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/see_all"
+                    android:textColor="@color/orange"
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
             </RelativeLayout>
 
@@ -317,8 +319,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:orientation="horizontal"/>
-
+                android:orientation="horizontal" />
 
 
         </LinearLayout>

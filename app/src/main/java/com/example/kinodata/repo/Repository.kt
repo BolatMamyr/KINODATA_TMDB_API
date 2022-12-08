@@ -2,7 +2,9 @@ package com.example.kinodata.repo
 
 import com.example.kinodata.api.RetrofitInstance
 import com.example.kinodata.model.credit.Credit
-import com.example.kinodata.model.credit.Person
+import com.example.kinodata.model.credit.person.Person
+import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
+import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movieDetails.MovieDetails
 import com.example.kinodata.model.review.ReviewResult
@@ -54,5 +56,15 @@ class Repository {
 
     suspend fun getPersonInfo(personId: String, language: String): Response<Person> {
         return RetrofitInstance.api.getPersonInfo(personId = personId, language = language)
+    }
+
+    suspend fun getPersonMovieCredits(
+        personId: String, language: String): Response<PersonMovieCredits> {
+        return RetrofitInstance.api.getPersonMovieCredits(personId = personId, language = language)
+    }
+
+    suspend fun getPersonTvSeriesCredits(
+        personId: String, language: String): Response<PersonTvSeriesCredits> {
+        return RetrofitInstance.api.getPersonTvSeriesCredits(personId = personId, language = language)
     }
 }

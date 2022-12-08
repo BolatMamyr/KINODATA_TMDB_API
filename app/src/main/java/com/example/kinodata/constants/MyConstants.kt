@@ -20,6 +20,8 @@ class MyConstants {
         const val URL_REVIEWS = "/reviews"
 
         const val URL_PERSON = "person/"
+        const val URL_PERSON_MOVIE_CREDITS = "/movie_credits"
+        const val URL_PERSON_TV_CREDITS = "/tv_credits"
 
         const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
         const val LANGUAGE = "en-US"

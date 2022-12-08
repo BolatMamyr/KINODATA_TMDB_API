@@ -31,7 +31,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
             <!--****************************Popular**********************************-->
@@ -54,14 +54,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/see_all" />
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange" />
 
             </RelativeLayout>
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="220dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_popular"
@@ -99,13 +100,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/see_all" />
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="220dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_top"
@@ -143,14 +145,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/see_all" />
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange" />
 
             </RelativeLayout>
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:layout_marginTop="8dp">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -189,14 +192,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/see_all" />
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange" />
 
             </RelativeLayout>
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="220dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_upcoming"
