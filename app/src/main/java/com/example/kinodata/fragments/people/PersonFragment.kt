@@ -44,6 +44,11 @@ class PersonFragment : Fragment() {
         getPersonMovies(view)
         getPersonTvSeries(view)
 
+        binding.btnPersonSeeAllMovies.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllMoviesFragment(args.personId)
+            findNavController().navigate(action)
+        }
     }
 
 

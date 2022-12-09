@@ -122,7 +122,7 @@
             android:id="@+id/action_movieDetailsFragment_to_allCastFragment"
             app:destination="@id/allCastFragment" />
         <action
-            android:id="@+id/action_movieDetailsFragment_to_actorFragment"
+            android:id="@+id/action_movieDetailsFragment_to_personFragment"
             app:destination="@id/personFragment" />
     </fragment>
     <fragment
@@ -160,7 +160,7 @@
             android:name="movieId"
             app:argType="integer" />
         <action
-            android:id="@+id/action_allCastFragment_to_actorFragment"
+            android:id="@+id/action_allCastFragment_to_personFragment"
             app:destination="@id/personFragment" />
     </fragment>
     <fragment
@@ -173,6 +173,21 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_personFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_personAllMoviesFragment"
+            app:destination="@id/personAllMoviesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personAllMoviesFragment"
+        android:name="com.example.kinodata.fragments.people.all.PersonAllMoviesFragment"
+        android:label="fragment_person_all_movies"
+        tools:layout="@layout/fragment_person_all_movies" >
+        <argument
+            android:name="personId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_personAllMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
     </fragment>
 </navigation>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
@@ -48,6 +49,14 @@ class AllCastFragment : Fragment() {
         viewModel.credit.observe(viewLifecycleOwner) {
             val cast = it.cast
             adapter.updateData(cast)
+        }
+
+        adapter.onItemClick = {
+            it?.id?.let { personId ->
+                val action = AllCastFragmentDirections
+                    .actionAllCastFragmentToPersonFragment(personId)
+                findNavController().navigate(action)
+            }
         }
     }
 

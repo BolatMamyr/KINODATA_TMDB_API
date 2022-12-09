@@ -53,11 +53,12 @@ class AllPopularFragment : Fragment() {
             }
         }
         adapter.onItemClick = {
-            val action = it?.id?.let { movieId ->
-                AllPopularFragmentDirections
+            it?.id?.let { movieId ->
+                val action = AllPopularFragmentDirections
                     .actionAllPopularFragmentToMovieDetailsFragment(movieId)
+                findNavController().navigate(action)
             }
-            action?.let { it1 -> findNavController().navigate(it1) }
+
         }
     }
 

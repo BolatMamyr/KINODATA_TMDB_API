@@ -102,7 +102,7 @@ class MovieDetailsFragment : Fragment() {
         castHorizontalAdapter.onItemClick = {
             it?.id?.let { id ->
                 val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToActorFragment(id)
+                    .actionMovieDetailsFragmentToPersonFragment(id)
                 findNavController().navigate(action)
             }
 

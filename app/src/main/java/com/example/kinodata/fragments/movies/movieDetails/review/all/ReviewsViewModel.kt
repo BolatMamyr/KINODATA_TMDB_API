@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 class ReviewsViewModel(private val repository: Repository, private val movieId: String)
     : ViewModel() {
 
+    // TODO: Now its only getting first page (first 12 elements) coz paging leads to infinite duplication. check https://medium.com/nerd-for-tech/pagination-in-android-with-paging-3-retrofit-and-kotlin-flow-2c2454ff776e
     private val _reviews: MutableLiveData<List<Review>> = MutableLiveData()
     val reviews: LiveData<List<Review>> = _reviews
 

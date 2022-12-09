@@ -9,6 +9,7 @@ import retrofit2.Response
 
 class MoviesPagingSource(private val context: String, private val repository: Repository)
     : PagingSource<Int, RMovie> () {
+
     override fun getRefreshKey(state: PagingState<Int, RMovie>): Int? {
         return state.anchorPosition?.let {
             val anchorPage = state.closestPageToPosition(it)

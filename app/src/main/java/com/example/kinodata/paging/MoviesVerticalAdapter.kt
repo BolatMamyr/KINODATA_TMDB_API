@@ -22,7 +22,7 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView
         val releaseDate: TextView
-        val genres: TextView
+//        val genres: TextView
         val voteAve: TextView
         val voteCount: TextView
         val runtime: TextView
@@ -32,7 +32,7 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
         init {
             title = itemView.findViewById(R.id.txt_title_vertical)
             releaseDate = itemView.findViewById(R.id.txt_releaseDate_vertical)
-            genres = itemView.findViewById(R.id.txt_genres_vertical)
+//            genres = itemView.findViewById(R.id.txt_character)
             voteAve = itemView.findViewById(R.id.txt_voteAve_vertical)
             voteCount = itemView.findViewById(R.id.txt_voteCount_vertical)
             runtime = itemView.findViewById(R.id.txt_runtime_vertical)
@@ -55,7 +55,7 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.title.text = getItem(position)?.title
-        holder.releaseDate.text = getItem(position)?.release_date
+//        holder.releaseDate.text = getItem(position)?.release_date
 
         // Date
         val date = getItem(position)?.release_date
