@@ -1,14 +1,15 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.RetrofitInstance
-import com.example.kinodata.model.credit.Credit
+import com.example.kinodata.model.credit.Credits
 import com.example.kinodata.model.credit.person.Person
 import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
 import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
-import com.example.kinodata.model.movieDetails.MovieDetails
+import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
+import com.example.kinodata.model.tv.tvDetails.TvDetails
 import retrofit2.Response
 
 class Repository {
@@ -32,14 +33,14 @@ class Repository {
         return RetrofitInstance.api.getMovieDetails(movieId = movieId, language = language)
     }
 
-    suspend fun getCredits(movieId: String, language: String): Response<Credit> {
-        return RetrofitInstance.api.getCredits(movieId = movieId, language = language)
+    suspend fun getMovieCredits(movieId: String, language: String): Response<Credits> {
+        return RetrofitInstance.api.getMovieCredits(movieId = movieId, language = language)
     }
 
     suspend fun getReviews(
         movieId: String, language: String, page: String = "1"
     ): Response<ReviewResult> {
-        return RetrofitInstance.api.getReviews(movieId = movieId, language = language)
+        return RetrofitInstance.api.getMovieReviews(movieId = movieId, language = language)
     }
 
     suspend fun getPopularTvSeries(language: String, page: String): Response<ResultForTvSeries> {
@@ -59,12 +60,30 @@ class Repository {
     }
 
     suspend fun getPersonMovieCredits(
-        personId: String, language: String): Response<PersonMovieCredits> {
+        personId: String, language: String
+    ): Response<PersonMovieCredits> {
         return RetrofitInstance.api.getPersonMovieCredits(personId = personId, language = language)
     }
 
     suspend fun getPersonTvSeriesCredits(
-        personId: String, language: String): Response<PersonTvSeriesCredits> {
-        return RetrofitInstance.api.getPersonTvSeriesCredits(personId = personId, language = language)
+        personId: String, language: String
+    ): Response<PersonTvSeriesCredits> {
+        return RetrofitInstance.api.getPersonTvSeriesCredits(
+            personId = personId,
+            language = language
+        )
     }
+
+    suspend fun getTvDetails(
+        tvId: String, language: String
+    ): Response<TvDetails> {
+        return RetrofitInstance.api.getTvDetails(tvId = tvId, language = language)
+    }
+
+    suspend fun getTvCredits(
+        tvId: String, language: String
+    ): Response<Credits> {
+        return RetrofitInstance.api.getTvCredits(tvId = tvId, language = language)
+    }
+
 }

@@ -35,4 +35,7 @@
     <string name="movies_and_tv_series">Movies and TV Series</string>
     <string name="photos">Photos</string>
     <string name="close">Close</string>
+    <string name="person">Person</string>
+    <string name="filmography_movies">Filmography: Movies</string>
+    <string name="rating">Rating</string>
 </resources>

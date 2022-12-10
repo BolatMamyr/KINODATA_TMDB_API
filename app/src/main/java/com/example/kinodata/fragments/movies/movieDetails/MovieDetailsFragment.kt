@@ -29,12 +29,10 @@ class MovieDetailsFragment : Fragment() {
         MovieDetailsViewModelFactory(Repository(), args.movieId.toString())
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentMovieDetailsBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -46,7 +44,7 @@ class MovieDetailsFragment : Fragment() {
         viewModel.getMovieDetails()
         val movie = viewModel.movie
         movie.observe(viewLifecycleOwner) {
-            binding.toolbarDetails.title = it.title
+            binding.tbMovieDetails.title = it.title
             binding.txtDetailsTitle.text = it.title
             binding.txtDetailsVoteAve.text = String.format("%.1f", it.vote_average)
             val voteCount = if(it.vote_count < 1000) {
@@ -65,20 +63,20 @@ class MovieDetailsFragment : Fragment() {
 
             Glide.with(view)
                 .load(MyConstants.IMG_BASE_URL + it.poster_path)
-                .into(binding.imgDetailsPoster)
+                .into(binding.imgMovieDetailsPoster)
         }
 
         // *************************Credits**********************************
         val castHorizontalAdapter = CastHorizontalAdapter()
 
-        binding.rvCast.apply {
+        binding.rvMovieDetailsCast.apply {
             adapter = castHorizontalAdapter
             val manager = GridLayoutManager(view.context, 4)
             manager.orientation = RecyclerView.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.getCredits()
-        viewModel.credit.observe(viewLifecycleOwner) {
+        viewModel.getMovieCredits()
+        viewModel.credits.observe(viewLifecycleOwner) {
             val cast = it.cast
             val firstFour = it.getFirstFourActors()
             binding.txtDetailsStars.text =
@@ -93,7 +91,7 @@ class MovieDetailsFragment : Fragment() {
         binding.btnDetailsSeeAllCast.setOnClickListener {
             movie.value?.id?.let {
                 val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllCastFragment(it)
+                    .actionMovieDetailsFragmentToAllMovieCastFragment(it)
                 findNavController().navigate(action)
             }
         }
@@ -119,7 +117,7 @@ class MovieDetailsFragment : Fragment() {
             }
         }
 
-        binding.rvReviews.apply {
+        binding.rvMovieDetailsReviews.apply {
             this.adapter = reviewHorizontalAdapter
             val linearLayoutManager = LinearLayoutManager(context)
             linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL

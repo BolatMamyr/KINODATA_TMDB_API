@@ -1,7 +1,5 @@
 package com.example.kinodata.model.tv
 
-import com.example.kinodata.model.movie.RMovie
-
 data class RTvSeries(
     val backdrop_path: String,
     val first_air_date: String,

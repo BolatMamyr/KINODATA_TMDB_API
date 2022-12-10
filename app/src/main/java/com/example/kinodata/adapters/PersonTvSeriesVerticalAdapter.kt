@@ -11,37 +11,38 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.person.personMovies.PersonMovies
+import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeries
 
-class PersonMoviesVerticalAdapter
-    : RecyclerView.Adapter<PersonMoviesVerticalAdapter.MyViewHolder>() {
+class PersonTvSeriesVerticalAdapter
+    : RecyclerView.Adapter<PersonTvSeriesVerticalAdapter.MyViewHolder>() {
 
-        var onItemClick: ((PersonMovies?) -> Unit)? = null
-        private var movies = emptyList<PersonMovies>()
+    var onItemClick: ((PersonTvSeries?) -> Unit)? = null
+    private var tvSeries = emptyList<PersonTvSeries>()
 
-        inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val title: TextView
-            val releaseDate: TextView
-            val character: TextView
-            val voteAve: TextView
-            val voteCount: TextView
+    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView
+        val releaseDate: TextView
+        val character: TextView
+        val voteAve: TextView
+        val voteCount: TextView
 
-            val img: ImageView
+        val img: ImageView
 
-            init {
-                title = itemView.findViewById(R.id.txt_title_vertical)
-                releaseDate = itemView.findViewById(R.id.txt_releaseDate_vertical)
-                character = itemView.findViewById(R.id.txt_character)
-                voteAve = itemView.findViewById(R.id.txt_voteAve_vertical)
-                voteCount = itemView.findViewById(R.id.txt_voteCount_vertical)
-                img = itemView.findViewById(R.id.img_vertical_list)
-            }
+        init {
+            title = itemView.findViewById(R.id.txt_title_vertical)
+            releaseDate = itemView.findViewById(R.id.txt_releaseDate_vertical)
+            character = itemView.findViewById(R.id.txt_character)
+            voteAve = itemView.findViewById(R.id.txt_voteAve_vertical)
+            voteCount = itemView.findViewById(R.id.txt_voteCount_vertical)
+            img = itemView.findViewById(R.id.img_vertical_list)
         }
+    }
+
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.title.text = movies[position].title
-        holder.releaseDate.text = movies[position].release_date
-        val character = movies[position].character
+        holder.title.text = tvSeries[position].name
+        holder.releaseDate.text = tvSeries[position].first_air_date
+        val character = tvSeries[position].character
         holder.character.text = character
 
         if (position == 0) {
@@ -49,7 +50,7 @@ class PersonMoviesVerticalAdapter
         }
 
         // Date
-        val date = movies[position].release_date
+        val date = tvSeries[position].first_air_date
         if (date.length > 8) {
             val year = date.substring(0, 4)
             var month = date.substring(5, 7)
@@ -74,16 +75,16 @@ class PersonMoviesVerticalAdapter
 
             holder.releaseDate.text = "$day $month, $year"
         }
-        val vote = movies[position].vote_average
+        val vote = tvSeries[position].vote_average
         holder.voteAve.text = String.format("%.1f", vote)
-        holder.voteCount.text = movies[position].vote_count.toString()
+        holder.voteCount.text = tvSeries[position].vote_count.toString()
 
-        val img = movies[position].poster_path
+        val img = tvSeries[position].poster_path
         Glide.with(holder.itemView.context)
             .load(MyConstants.IMG_BASE_URL + img).into(holder.img)
 
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(movies[position])
+            onItemClick?.invoke(tvSeries[position])
         }
     }
 
@@ -95,19 +96,19 @@ class PersonMoviesVerticalAdapter
     }
 
     override fun getItemCount(): Int {
-        return movies.size
+        return tvSeries.size
     }
 
-    fun updateData(newList: List<PersonMovies>) {
-        val oldList = movies
-        val diffResult = DiffUtil.calculateDiff(PersonMoviesDiffCallback(oldList, newList))
-        movies = newList
+    fun updateData(newList: List<PersonTvSeries>) {
+        val oldList = tvSeries
+        val diffResult = DiffUtil.calculateDiff(PersonTvSeriesDiffCallback(oldList, newList))
+        tvSeries = newList
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private class PersonMoviesDiffCallback(
-        private val oldList: List<PersonMovies>,
-        private val newList: List<PersonMovies>,
+    private class PersonTvSeriesDiffCallback(
+        private val oldList: List<PersonTvSeries>,
+        private val newList: List<PersonTvSeries>,
     ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldList.size

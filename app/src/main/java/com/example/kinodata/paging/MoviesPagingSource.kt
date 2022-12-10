@@ -7,7 +7,7 @@ import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.repo.Repository
 import retrofit2.Response
 
-class MoviesPagingSource(private val context: String, private val repository: Repository)
+class MoviesPagingSource(private val category: String, private val repository: Repository)
     : PagingSource<Int, RMovie> () {
 
     override fun getRefreshKey(state: PagingState<Int, RMovie>): Int? {
@@ -22,16 +22,16 @@ class MoviesPagingSource(private val context: String, private val repository: Re
 
         return try {
             var data: Response<ResultForMovies>? = null
-            if (context == "Popular") {
+            if (category == "Popular") {
                 data = repository.getPopularMovies(LANGUAGE, page.toString())
             }
-            if (context == "Top") {
+            if (category == "Top Rated") {
                 data = repository.getTopRatedMovies(LANGUAGE, page.toString())
             }
-            if (context == "Now") {
+            if (category == "Now In Theaters") {
                 data = repository.getNowPlayingMovies(LANGUAGE, page.toString())
             }
-            if (context == "Upcoming") {
+            if (category == "Upcoming") {
                 data = repository.getUpcomingMovies(LANGUAGE, page.toString())
             }
 

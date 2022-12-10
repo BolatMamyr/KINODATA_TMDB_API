@@ -6,10 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.Credit
-import com.example.kinodata.model.movieDetails.MovieDetails
+import com.example.kinodata.model.credit.Credits
+import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
-import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
 
@@ -19,8 +18,8 @@ class MovieDetailsViewModel(private val repository: Repository, private val movi
     private var _movie: MutableLiveData<MovieDetails> = MutableLiveData()
     val movie: LiveData<MovieDetails> = _movie
 
-    private var _credit: MutableLiveData<Credit> = MutableLiveData()
-    val credit: LiveData<Credit> = _credit
+    private var _Credits: MutableLiveData<Credits> = MutableLiveData()
+    val credits: LiveData<Credits> = _Credits
 
     private var _reviews: MutableLiveData<List<Review>> = MutableLiveData()
     val reviews: LiveData<List<Review>> = _reviews
@@ -39,15 +38,15 @@ class MovieDetailsViewModel(private val repository: Repository, private val movi
         }
     }
 
-    fun getCredits() {
+    fun getMovieCredits() {
         viewModelScope.launch {
             try {
-                val response = repository.getCredits(movieId, MyConstants.LANGUAGE)
+                val response = repository.getMovieCredits(movieId, MyConstants.LANGUAGE)
                 if(response.isSuccessful) {
-                    _credit.value = response.body()
+                    _Credits.value = response.body()
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "getCredits: ${e.message}")
+                Log.d("MyLog", "getMovieCredits: ${e.message}")
             }
         }
     }

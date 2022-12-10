@@ -10,10 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.paging.ReviewVerticalAdapter
+import com.example.kinodata.adapters.ReviewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllReviewsBinding
 import com.example.kinodata.repo.Repository
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class AllReviewsFragment : Fragment() {

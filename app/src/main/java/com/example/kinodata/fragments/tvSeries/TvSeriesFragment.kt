@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
 import com.example.kinodata.adapters.TvSeriesHorizontalAdapter
@@ -43,6 +44,7 @@ class TvSeriesFragment : Fragment() {
         getPopular()
         getTopRated()
         getAiring()
+        setClickListeners()
     }
 
     private fun setUpRVs() {
@@ -82,6 +84,7 @@ class TvSeriesFragment : Fragment() {
             popularAdapter.updateData(it)
             binding.pbTvPopular.visibility = View.GONE
         }
+
     }
 
     private fun getTopRated() {
@@ -91,6 +94,13 @@ class TvSeriesFragment : Fragment() {
             topAdapter.updateData(it)
             binding.pbTvTop.visibility = View.GONE
         }
+        topAdapter.onItemClick = {
+            it?.id?.let {
+                val action = TvSeriesFragmentDirections
+                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
+                findNavController().navigate(action)
+            }
+        }
     }
 
     private fun getAiring() {
@@ -99,6 +109,42 @@ class TvSeriesFragment : Fragment() {
         viewModel.airingTvSeries.observe(viewLifecycleOwner) {
             airingAdapter.updateData(it)
             binding.pbTvAiring.visibility = View.GONE
+        }
+        airingAdapter.onItemClick = {
+            it?.id?.let {
+                val action = TvSeriesFragmentDirections
+                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+    }
+
+    private fun setClickListeners() {
+        binding.btnTvSeeAllPopular
+
+        popularAdapter.onItemClick = {
+            it?.id?.let {
+                val action = TvSeriesFragmentDirections
+                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+        topAdapter.onItemClick = {
+            it?.id?.let {
+                val action = TvSeriesFragmentDirections
+                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+        airingAdapter.onItemClick = {
+            it?.id?.let {
+                val action = TvSeriesFragmentDirections
+                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
+                findNavController().navigate(action)
+            }
         }
     }
 

@@ -25,8 +25,6 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
 //        val genres: TextView
         val voteAve: TextView
         val voteCount: TextView
-        val runtime: TextView
-        val countries: TextView
         val img: ImageView
 
         init {
@@ -35,8 +33,6 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
 //            genres = itemView.findViewById(R.id.txt_character)
             voteAve = itemView.findViewById(R.id.txt_voteAve_vertical)
             voteCount = itemView.findViewById(R.id.txt_voteCount_vertical)
-            runtime = itemView.findViewById(R.id.txt_runtime_vertical)
-            countries = itemView.findViewById(R.id.txt_country_vertical)
             img = itemView.findViewById(R.id.img_vertical_list)
         }
     }

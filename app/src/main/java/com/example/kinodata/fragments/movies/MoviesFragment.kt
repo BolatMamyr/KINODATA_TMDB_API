@@ -8,15 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinodata.R
 import com.example.kinodata.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.databinding.FragmentMoviesBinding
-import com.example.kinodata.fragments.movies.utils.MoviesFragViewModel
-import com.example.kinodata.fragments.movies.utils.MoviesFragViewModelFactory
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.repo.Repository
 
@@ -78,37 +75,37 @@ class MoviesFragment : Fragment() {
     private fun getPopular() {
         viewModel.getPopularMovies(getString(R.string.language), "1")
         pb_popular.visibility = View.VISIBLE
-        viewModel.popularMovies.observe(viewLifecycleOwner, Observer {
+        viewModel.popularMovies.observe(viewLifecycleOwner)  {
             popularAdapter.updateData(it)
             pb_popular.visibility = View.GONE
-        })
+        }
     }
 
     private fun getTopRated() {
         viewModel.getTopRatedMovies(getString(R.string.language), "1")
         pb_top.visibility = View.VISIBLE
-        viewModel.topMovies.observe(viewLifecycleOwner, Observer {
+        viewModel.topMovies.observe(viewLifecycleOwner) {
             topAdapter.updateData(it)
             pb_top.visibility = View.GONE
-        })
+        }
     }
 
     private fun getNowPlaying() {
         viewModel.getNowPlayingMovies(getString(R.string.language), "1")
         pb_now.visibility = View.VISIBLE
-        viewModel.nowPlayingMovies.observe(viewLifecycleOwner, Observer {
+        viewModel.nowPlayingMovies.observe(viewLifecycleOwner) {
             nowAdapter.updateData(it)
             pb_now.visibility = View.GONE
-        })
+        }
     }
 
     private fun getUpcoming() {
         viewModel.getUpcomingMovies(getString(R.string.language), "1")
         pb_upcoming.visibility = View.VISIBLE
-        viewModel.upcomingMovies.observe(viewLifecycleOwner, Observer {
+        viewModel.upcomingMovies.observe(viewLifecycleOwner) {
             upcomingAdapter.updateData(it)
             pb_upcoming.visibility = View.GONE
-        })
+        }
     }
 
     // initializing all views, adapters and navController
@@ -149,16 +146,28 @@ class MoviesFragment : Fragment() {
     private fun setClickListeners() {
         // ******************Click Listeners for See All buttons************
         btn_seeAll_popular.setOnClickListener {
-            navController.navigate(R.id.action_moviesFragment_to_allPopularFragment)
+            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                category =  resources.getString(R.string.popular)
+            )
+            navController.navigate(action)
         }
         btn_seeAll_top.setOnClickListener {
-            navController.navigate(R.id.action_moviesFragment_to_allTopFragment)
+            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                category = resources.getString(R.string.topRated)
+            )
+            navController.navigate(action)
         }
         btn_seeAll_now.setOnClickListener {
-            navController.navigate(R.id.action_moviesFragment_to_allNowFragment)
+            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                category =  resources.getString(R.string.now_in_theaters)
+            )
+            navController.navigate(action)
         }
         btn_seeAll_upcoming.setOnClickListener {
-            navController.navigate(R.id.action_moviesFragment_to_allUpcomingFragment)
+            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                category = resources.getString(R.string.upcoming)
+            )
+            navController.navigate(action)
         }
 
         // *******************Click Listeners for RV Adapters*****************

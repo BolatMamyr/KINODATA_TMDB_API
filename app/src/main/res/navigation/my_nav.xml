@@ -11,17 +11,8 @@
         android:label="Movies"
         tools:layout="@layout/fragment_movies" >
         <action
-            android:id="@+id/action_moviesFragment_to_allPopularFragment"
-            app:destination="@id/allPopularFragment" />
-        <action
-            android:id="@+id/action_moviesFragment_to_allTopFragment"
-            app:destination="@id/allTopFragment" />
-        <action
-            android:id="@+id/action_moviesFragment_to_allNowFragment"
-            app:destination="@id/allNowFragment" />
-        <action
-            android:id="@+id/action_moviesFragment_to_allUpcomingFragment"
-            app:destination="@id/allUpcomingFragment" />
+            android:id="@+id/action_moviesFragment_to_verticalListFragment"
+            app:destination="@id/verticalListFragment" />
         <action
             android:id="@+id/action_moviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
@@ -37,79 +28,24 @@
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/allNowFragment"
-        android:name="com.example.kinodata.fragments.movies.all.nowPlaying.AllNowFragment"
-        android:label="Now in theaters"
-        tools:layout="@layout/fragment_all_now">
+        android:id="@+id/verticalListFragment"
+        android:name="com.example.kinodata.fragments.movies.all.verticalList.VerticalListFragment"
+        tools:layout="@layout/fragment_vertical_list">
         <action
-            android:id="@+id/action_allNowFragment_to_moviesFragment"
-            app:destination="@id/moviesFragment" />
-        <action
-            android:id="@+id/action_allNowFragment_to_movieDetailsFragment"
+            android:id="@+id/action_verticalListFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/allPopularFragment"
-        android:name="com.example.kinodata.fragments.movies.all.popular.AllPopularFragment"
-        android:label="Popular"
-        tools:layout="@layout/fragment_all_popular">
-        <action
-            android:id="@+id/action_allPopularFragment_to_moviesFragment"
-            app:destination="@id/moviesFragment" />
-        <action
-            android:id="@+id/action_allPopularFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/allTopFragment"
-        android:name="com.example.kinodata.fragments.movies.all.topRated.AllTopFragment"
-        android:label="Top Rated"
-        tools:layout="@layout/fragment_all_top">
-        <action
-            android:id="@+id/action_allTopFragment_to_moviesFragment"
-            app:destination="@id/moviesFragment" />
-        <action
-            android:id="@+id/action_allTopFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/allUpcomingFragment"
-        android:name="com.example.kinodata.fragments.movies.all.upcoming.AllUpcomingFragment"
-        android:label="Upcoming"
-        tools:layout="@layout/fragment_all_upcoming">
-        <action
-            android:id="@+id/action_allUpcomingFragment_to_moviesFragment"
-            app:destination="@id/moviesFragment" />
-        <action
-            android:id="@+id/action_allUpcomingFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment" />
+        <argument
+            android:name="category"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/movieDetailsFragment"
         android:name="com.example.kinodata.fragments.movies.movieDetails.MovieDetailsFragment"
         android:label="fragment_movie_details"
         tools:layout="@layout/fragment_movie_details" >
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_moviesFragment"
-            app:destination="@id/moviesFragment" />
         <argument
             android:name="movieId"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_allPopularFragment"
-            app:destination="@id/allPopularFragment" />
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_allTopFragment"
-            app:destination="@id/allTopFragment" />
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_allNowFragment"
-            app:destination="@id/allNowFragment" />
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_allUpcomingFragment"
-            app:destination="@id/allUpcomingFragment" />
-        <action
-            android:id="@+id/action_movieDetailsFragment_to_allTopFragment2"
-            app:destination="@id/allTopFragment" />
         <action
             android:id="@+id/action_movieDetailsFragment_to_reviewFragment"
             app:destination="@id/reviewFragment"
@@ -119,8 +55,8 @@
             android:id="@+id/action_movieDetailsFragment_to_allReviewsFragment"
             app:destination="@id/allReviewsFragment" />
         <action
-            android:id="@+id/action_movieDetailsFragment_to_allCastFragment"
-            app:destination="@id/allCastFragment" />
+            android:id="@+id/action_movieDetailsFragment_to_allMovieCastFragment"
+            app:destination="@id/allMovieCastFragment" />
         <action
             android:id="@+id/action_movieDetailsFragment_to_personFragment"
             app:destination="@id/personFragment" />
@@ -150,17 +86,24 @@
         android:id="@+id/tvSeriesFragment"
         android:name="com.example.kinodata.fragments.tvSeries.TvSeriesFragment"
         android:label="fragment_tv_series"
-        tools:layout="@layout/fragment_tv_series" />
+        tools:layout="@layout/fragment_tv_series" >
+        <action
+            android:id="@+id/action_tvSeriesFragment_to_allPopularFragment"
+            app:destination="@id/verticalListFragment" />
+        <action
+            android:id="@+id/action_tvSeriesFragment_to_tvSeriesDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/allCastFragment"
-        android:name="com.example.kinodata.fragments.movies.movieDetails.cast.AllCastFragment"
+        android:id="@+id/allMovieCastFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.cast.AllMovieCastFragment"
         android:label="fragment_all_cast"
-        tools:layout="@layout/fragment_all_cast" >
+        tools:layout="@layout/fragment_all_movie_cast" >
         <argument
             android:name="movieId"
             app:argType="integer" />
         <action
-            android:id="@+id/action_allCastFragment_to_personFragment"
+            android:id="@+id/action_allMovieCastFragment_to_personFragment"
             app:destination="@id/personFragment" />
     </fragment>
     <fragment
@@ -177,6 +120,12 @@
         <action
             android:id="@+id/action_personFragment_to_personAllMoviesFragment"
             app:destination="@id/personAllMoviesFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_personAllTvSeriesFragment"
+            app:destination="@id/personAllTvSeriesFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_verticalListFragment"
+            app:destination="@id/verticalListFragment" />
     </fragment>
     <fragment
         android:id="@+id/personAllMoviesFragment"
@@ -189,5 +138,44 @@
         <action
             android:id="@+id/action_personAllMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/personAllTvSeriesFragment"
+        android:name="com.example.kinodata.fragments.people.all.PersonAllTvSeriesFragment"
+        android:label="fragment_person_all_tv_series"
+        tools:layout="@layout/fragment_person_all_tv_series" >
+        <action
+            android:id="@+id/action_personAllTvSeriesFragment_to_tvSeriesDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvDetailsFragment"
+        android:name="com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsFragment"
+        android:label="fragment_tv_details"
+        tools:layout="@layout/fragment_tv_details">
+        <argument
+            android:name="tvSeriesId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_personFragment"
+            app:destination="@id/personFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_allTvCastFragment"
+            app:destination="@id/allTvCastFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allTvCastFragment"
+        android:name="com.example.kinodata.fragments.tvSeries.tvDetails.cast.AllTvCastFragment"
+        android:label="fragment_all_tv_cast"
+        tools:layout="@layout/fragment_all_tv_cast" >
+        <action
+            android:id="@+id/action_allTvCastFragment_to_personFragment"
+            app:destination="@id/personFragment" />
+        <argument
+            android:name="tvId"
+            app:argType="integer" />
     </fragment>
 </navigation>

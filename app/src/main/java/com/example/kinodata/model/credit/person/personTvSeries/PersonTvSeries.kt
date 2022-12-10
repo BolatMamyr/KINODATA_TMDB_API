@@ -1,6 +1,5 @@
 package com.example.kinodata.model.credit.person.personTvSeries
 
-import com.example.kinodata.model.credit.person.personMovies.PersonMovies
 
 data class PersonTvSeries(
     val adult: Boolean,

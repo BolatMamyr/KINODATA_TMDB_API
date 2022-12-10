@@ -4,37 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.movies.movieDetails.MovieDetailsFragment">
+    tools:context=".fragments.tvSeries.tvDetails.TvDetailsFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_tvDetails"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tb_movieDetails"
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/sv_movieDetails"
+        android:id="@+id/sv_tvDetails"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout_details">
+        app:layout_constraintTop_toBottomOf="@id/tb_tvDetails">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
@@ -44,7 +37,7 @@
                 app:cardCornerRadius="10dp">
 
                 <ImageView
-                    android:id="@+id/img_movieDetails_poster"
+                    android:id="@+id/img_tvDetails_poster"
                     android:layout_width="200dp"
                     android:layout_height="266dp"
                     android:background="@color/super_light_gray"
@@ -58,7 +51,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_details_title"
+                    android:id="@+id/txt_tvDetails_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -66,7 +59,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
+                    android:id="@+id/linearLayout2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -74,10 +67,10 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_details_title">
+                    app:layout_constraintTop_toBottomOf="@id/txt_tvDetails_title">
 
                     <TextView
-                        android:id="@+id/txt_details_voteAve"
+                        android:id="@+id/txt_tvDetails_voteAve"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -85,7 +78,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_details_voteCount"
+                        android:id="@+id/txt_tvDetails_voteCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -93,7 +86,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/txt_details_titleOriginal"
+                        android:id="@+id/txt_tvDetails_titleOriginal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
@@ -105,7 +98,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/txt_details_year"
+                        android:id="@+id/txt_tvDetails_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -113,7 +106,7 @@
                         android:textColor="@color/light_gray2" />
 
                     <TextView
-                        android:id="@+id/txt_details_genres"
+                        android:id="@+id/txt_tvDetails_genres"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -128,7 +121,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/txt_details_country"
+                        android:id="@+id/txt_tvDetails_country"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -136,13 +129,12 @@
                         android:textColor="@color/light_gray2" />
 
                     <TextView
-                        android:id="@+id/txt_details_runtime"
+                        android:id="@+id/txt_tvDetails_runtime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textColor="@color/light_gray2" />
                 </LinearLayout>
-
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,17 +145,15 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txt_details_stars"
+                    android:id="@+id/txt_tvDetails_stars"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/light_gray2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -175,21 +165,21 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/img_details_rate"
+                    android:id="@+id/img_tvDetails_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_star_gray" />
 
                 <ImageView
-                    android:id="@+id/img_details_watchLater"
+                    android:id="@+id/img_tvDetails_watchLater"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_watch_later_gray" />
 
                 <ImageView
-                    android:id="@+id/img_details_more"
+                    android:id="@+id/img_tvDetails_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -197,7 +187,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/txt_details_description"
+                android:id="@+id/txt_tvDetails_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -228,7 +218,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/txt_details_voteAveBig"
+                        android:id="@+id/txt_tvDetails_voteAveBig"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -237,14 +227,14 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_details_voteCountBig"
+                        android:id="@+id/txt_tvDetails_voteCountBig"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:textColor="@color/light_gray" />
 
                     <Button
-                        android:id="@+id/btn_details_rate"
+                        android:id="@+id/btn_tvDetails_rate"
                         android:layout_width="136dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_horizontal"
@@ -273,7 +263,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/btn_details_seeAllCast"
+                    android:id="@+id/btn_tvDetails_seeAllCast"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -283,7 +273,7 @@
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_movieDetails_cast"
+                android:id="@+id/rv_tvDetails_cast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp" />
@@ -304,7 +294,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/btn_details_seeAllReviews"
+                    android:id="@+id/btn_tvDetails_seeAllReviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -313,9 +303,8 @@
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
             </RelativeLayout>
 
-
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_movieDetails_reviews"
+                android:id="@+id/rv_tvDetails_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -324,6 +313,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

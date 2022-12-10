@@ -44,13 +44,28 @@ class PersonFragment : Fragment() {
         getPersonMovies(view)
         getPersonTvSeries(view)
 
+        setClickListeners()
+    }
+
+    private fun setClickListeners() {
         binding.btnPersonSeeAllMovies.setOnClickListener {
             val action = PersonFragmentDirections
-                .actionPersonFragmentToPersonAllMoviesFragment(args.personId)
+                .actionPersonFragmentToPersonAllMoviesFragment(
+                    personId = args.personId,
+                    category = resources.getString(R.string.movies)
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.btnPersonSeeAllTvSeries.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllMoviesFragment(
+                    personId = args.personId,
+                    category = resources.getString(R.string.tv_series)
+                )
             findNavController().navigate(action)
         }
     }
-
 
 
     private fun getPersonInfo() {
