@@ -105,6 +105,13 @@ interface MovieDataApi {
         @Query("language") language: String
     ): Response<Credits>
 
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_REVIEWS)
+    suspend fun getTvReviews(
+        @Path("tvId") tvId: String,
+        @Query("api_key") api_key: String = API_KEY,
+        @Query("language") language: String,
+        @Query("page") page: String = "1"
+    ): Response<ReviewResult>
     // *******************************Person**************************************
 
     @GET(MyConstants.URL_PERSON + "{personId}")

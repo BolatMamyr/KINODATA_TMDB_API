@@ -10,10 +10,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
 import com.example.kinodata.adapters.TvSeriesHorizontalAdapter
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvSeriesBinding
 import com.example.kinodata.repo.Repository
 
 class TvSeriesFragment : Fragment() {
+
+    // TODO: See All Reviews
 
     private var _binding: FragmentTvSeriesBinding? = null
     private val binding get() = _binding!!
@@ -121,7 +124,6 @@ class TvSeriesFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-        binding.btnTvSeeAllPopular
 
         popularAdapter.onItemClick = {
             it?.id?.let {
@@ -145,6 +147,24 @@ class TvSeriesFragment : Fragment() {
                     .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
                 findNavController().navigate(action)
             }
+        }
+
+        binding.btnTvSeeAllPopular.setOnClickListener {
+            val action = TvSeriesFragmentDirections
+                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.POPULAR)
+            findNavController().navigate(action)
+        }
+
+        binding.btnTvSeeAllTop.setOnClickListener {
+            val action = TvSeriesFragmentDirections
+                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.TOP_RATED)
+            findNavController().navigate(action)
+        }
+
+        binding.btnTvSeeAllAiring.setOnClickListener {
+            val action = TvSeriesFragmentDirections
+                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.NOW_PLAYING)
+            findNavController().navigate(action)
         }
     }
 

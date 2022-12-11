@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.credit.Credits
+import com.example.kinodata.model.review.Review
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
@@ -18,6 +19,9 @@ class TvDetailsViewModel(private val repository: Repository, private val tvId: S
 
     private var _credits: MutableLiveData<Credits> = MutableLiveData()
     val credits: LiveData<Credits> = _credits
+
+    private var _reviews: MutableLiveData<List<Review>> = MutableLiveData()
+    val reviews: LiveData<List<Review>> = _reviews
 
     fun getTvDetails() {
         viewModelScope.launch {
@@ -45,4 +49,22 @@ class TvDetailsViewModel(private val repository: Repository, private val tvId: S
             }
         }
     }
+
+    fun getTvReviews() {
+        viewModelScope.launch {
+            try {
+                val response = repository
+                    .getTvReviews(tvId = tvId, language = MyConstants.LANGUAGE)
+                if (response.isSuccessful) {
+                    val list = response.body()?.reviews
+                    list?.let {
+                        _reviews.value = it
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("MyLog", "Error: getTvReviews: ${e.message}")
+            }
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.kinodata.paging
 
 import androidx.paging.*
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.constants.MyConstants.Companion.LANGUAGE
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.model.movie.ResultForMovies
@@ -22,16 +23,16 @@ class MoviesPagingSource(private val category: String, private val repository: R
 
         return try {
             var data: Response<ResultForMovies>? = null
-            if (category == "Popular") {
+            if (category == MyConstants.POPULAR) {
                 data = repository.getPopularMovies(LANGUAGE, page.toString())
             }
-            if (category == "Top Rated") {
+            if (category == MyConstants.TOP_RATED) {
                 data = repository.getTopRatedMovies(LANGUAGE, page.toString())
             }
-            if (category == "Now In Theaters") {
+            if (category == MyConstants.NOW_PLAYING) {
                 data = repository.getNowPlayingMovies(LANGUAGE, page.toString())
             }
-            if (category == "Upcoming") {
+            if (category == MyConstants.UPCOMING) {
                 data = repository.getUpcomingMovies(LANGUAGE, page.toString())
             }
 

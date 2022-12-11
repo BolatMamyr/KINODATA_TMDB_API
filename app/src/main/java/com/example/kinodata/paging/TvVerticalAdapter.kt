@@ -11,13 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.movie.RMovie
+import com.example.kinodata.model.tv.RTvSeries
 
-class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.MyViewHolder>(
-    diffUtil
-) {
+class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewHolder>(diffUtil) {
 
-    var onItemClick: ((RMovie?) -> Unit)? = null
+    var onItemClick: ((RTvSeries?) -> Unit)? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView
@@ -36,22 +34,22 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<RMovie>() {
-            override fun areItemsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<RTvSeries>() {
+            override fun areItemsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
+            override fun areContentsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
                 return oldItem == newItem
             }
         }
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.title.text = getItem(position)?.title
+        holder.title.text = getItem(position)?.name
 
         // Date
-        val date = getItem(position)?.release_date
+        val date = getItem(position)?.first_air_date
         if (date?.length!! > 8) {
             val year = date.substring(0, 4)
             var month = date.substring(5, 7)
@@ -89,7 +87,6 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(getItem(position))
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -98,7 +95,4 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
                 .from(parent.context).inflate(R.layout.item_vertical_list, parent, false)
         )
     }
-
-
-
 }

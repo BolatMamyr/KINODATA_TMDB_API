@@ -9,6 +9,7 @@ class MyConstants {
         const val BASE_URL = "https://api.themoviedb.org/3/"
 
         const val URL_MOVIE = "movie/"
+
         const val URL_POPULAR = "movie/popular"
         const val URL_TOP_RATED = "movie/top_rated"
         const val URL_UPCOMING = "movie/upcoming"
@@ -29,5 +30,10 @@ class MyConstants {
 
         const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
         const val LANGUAGE = "en-US"
+
+        const val POPULAR = "Popular"
+        const val TOP_RATED = "Top Rated"
+        const val NOW_PLAYING = "Now Playing"
+        const val UPCOMING = "Upcoming"
     }
 }

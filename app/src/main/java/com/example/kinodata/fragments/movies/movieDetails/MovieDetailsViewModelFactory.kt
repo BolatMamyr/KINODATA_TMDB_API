@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.kinodata.repo.Repository
 
 @Suppress("UNCHECKED_CAST")
-class MovieDetailsViewModelFactory(private val repository: Repository, private val movieId: String)
-    : ViewModelProvider.Factory {
+class MovieDetailsViewModelFactory(
+    private val repository: Repository, private val id: String
+    ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MovieDetailsViewModel(repository, movieId) as T
+        return MovieDetailsViewModel(repository, id = id) as T
     }
 }

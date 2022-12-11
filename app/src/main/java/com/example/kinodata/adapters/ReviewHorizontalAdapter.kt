@@ -91,8 +91,6 @@ class ReviewHorizontalAdapter : RecyclerView.Adapter<ReviewHorizontalAdapter.MyV
             }
 
             holder.itemView.setOnClickListener { onItemClick?.invoke(reviews[position]) }
-
-
         }
 
     }

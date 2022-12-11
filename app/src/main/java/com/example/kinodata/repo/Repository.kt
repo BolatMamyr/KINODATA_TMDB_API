@@ -37,10 +37,10 @@ class Repository {
         return RetrofitInstance.api.getMovieCredits(movieId = movieId, language = language)
     }
 
-    suspend fun getReviews(
-        movieId: String, language: String, page: String = "1"
+    suspend fun getMovieReviews(
+        id: String, language: String, page: String = "1"
     ): Response<ReviewResult> {
-        return RetrofitInstance.api.getMovieReviews(movieId = movieId, language = language)
+        return RetrofitInstance.api.getMovieReviews(movieId = id, language = language)
     }
 
     suspend fun getPopularTvSeries(language: String, page: String): Response<ResultForTvSeries> {
@@ -84,6 +84,12 @@ class Repository {
         tvId: String, language: String
     ): Response<Credits> {
         return RetrofitInstance.api.getTvCredits(tvId = tvId, language = language)
+    }
+
+    suspend fun getTvReviews(
+        tvId: String, language: String, page: String = "1"
+    ): Response<ReviewResult> {
+        return RetrofitInstance.api.getTvReviews(tvId = tvId, language = language)
     }
 
 }

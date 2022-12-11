@@ -38,4 +38,5 @@
     <string name="person">Person</string>
     <string name="filmography_movies">Filmography: Movies</string>
     <string name="rating">Rating</string>
+    <string name="filmography_tvSeries">Filmography: TV Series</string>
 </resources>

@@ -119,11 +119,12 @@ class MovieDetailsFragment : Fragment() {
 
         binding.rvMovieDetailsReviews.apply {
             this.adapter = reviewHorizontalAdapter
-            val linearLayoutManager = LinearLayoutManager(context)
-            linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-            layoutManager = linearLayoutManager
+            val manager = LinearLayoutManager(context)
+            manager.orientation = LinearLayoutManager.HORIZONTAL
+            layoutManager = manager
+            isSaveEnabled = true
         }
-        viewModel.getReviews()
+        viewModel.getMovieReviews()
         viewModel.reviews.observe(viewLifecycleOwner) {
             it?.let { list -> reviewHorizontalAdapter.updateData(list) }
         }

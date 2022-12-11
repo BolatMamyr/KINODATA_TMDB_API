@@ -141,11 +141,10 @@ class PersonFragment : Fragment() {
             if (sortedList.isEmpty()) binding.rvPersonMovies.visibility = View.GONE
         }
         tvSeriesAdapter.onItemClick = {
-            it?.id?.let { movieId ->
-                // TODO: Add TV Series Details frag
-//                val action = PersonFragmentDirections
-//                    .actionPersonFragmentToMovieDetailsFragment(movieId)
-//                findNavController().navigate(action)
+            it?.id?.let { tvId ->
+                val action = PersonFragmentDirections
+                    .actionPersonFragmentToTvDetailsFragment(tvId)
+                findNavController().navigate(action)
             }
 
         }

@@ -4,19 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.people.all.PersonAllTvSeriesFragment">
+    tools:context=".fragments.people.all.PersonAllFilmographyFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/tb_person_allTvSeries"
+        android:id="@+id/tb_person_allMovies"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:title="Dwayne Johnson: TV Series"
         android:layout_alignParentTop="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_person_allTvSeries"
+        android:id="@+id/rv_person_allMovies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tb_person_allTvSeries"/>
+        android:layout_below="@id/tb_person_allMovies"/>
 
 </RelativeLayout>

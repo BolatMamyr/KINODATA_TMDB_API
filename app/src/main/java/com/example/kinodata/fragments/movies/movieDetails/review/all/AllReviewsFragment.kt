@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.ReviewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllReviewsBinding
+import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
+import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModelFactory
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
 
@@ -21,8 +23,8 @@ class AllReviewsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args: AllReviewsFragmentArgs by navArgs()
-    private val viewModel: ReviewsViewModel by viewModels {
-        ReviewsViewModelFactory(Repository(), args.movieId)
+    private val viewModel: MovieDetailsViewModel by viewModels {
+        MovieDetailsViewModelFactory(Repository(), args.movieId)
     }
 
     override fun onCreateView(
@@ -41,7 +43,7 @@ class AllReviewsFragment : Fragment() {
             layoutManager = LinearLayoutManager(view.context)
         }
 
-        viewModel.getReviews()
+        viewModel.getMovieReviews()
         lifecycleScope.launch {
             viewModel.reviews.observe(viewLifecycleOwner) {
                 adapter.updateData(it)

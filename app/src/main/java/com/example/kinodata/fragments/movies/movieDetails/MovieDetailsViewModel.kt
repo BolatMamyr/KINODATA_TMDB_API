@@ -12,14 +12,15 @@ import com.example.kinodata.model.review.Review
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
 
-class MovieDetailsViewModel(private val repository: Repository, private val movieId: String)
-    : ViewModel() {
+class MovieDetailsViewModel(
+    private val repository: Repository, private val id: String
+    ) : ViewModel() {
 
     private var _movie: MutableLiveData<MovieDetails> = MutableLiveData()
     val movie: LiveData<MovieDetails> = _movie
 
-    private var _Credits: MutableLiveData<Credits> = MutableLiveData()
-    val credits: LiveData<Credits> = _Credits
+    private var _credits: MutableLiveData<Credits> = MutableLiveData()
+    val credits: LiveData<Credits> = _credits
 
     private var _reviews: MutableLiveData<List<Review>> = MutableLiveData()
     val reviews: LiveData<List<Review>> = _reviews
@@ -27,7 +28,7 @@ class MovieDetailsViewModel(private val repository: Repository, private val movi
     fun getMovieDetails() {
         viewModelScope.launch {
             try {
-                val response = repository.getMovieDetails(movieId, MyConstants.LANGUAGE)
+                val response = repository.getMovieDetails(id, MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     _movie.value = response.body()
                 }
@@ -41,9 +42,9 @@ class MovieDetailsViewModel(private val repository: Repository, private val movi
     fun getMovieCredits() {
         viewModelScope.launch {
             try {
-                val response = repository.getMovieCredits(movieId, MyConstants.LANGUAGE)
+                val response = repository.getMovieCredits(id, MyConstants.LANGUAGE)
                 if(response.isSuccessful) {
-                    _Credits.value = response.body()
+                    _credits.value = response.body()
                 }
             } catch (e: Exception) {
                 Log.d("MyLog", "getMovieCredits: ${e.message}")
@@ -51,11 +52,11 @@ class MovieDetailsViewModel(private val repository: Repository, private val movi
         }
     }
 
-    fun getReviews() {
+    fun getMovieReviews() {
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getReviews(movieId = movieId, language = MyConstants.LANGUAGE)
+                    .getMovieReviews(id = id, language = MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     val list = response.body()?.reviews
                     list?.let { _reviews.value = it }

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinodata.R
 import com.example.kinodata.adapters.MoviesHorizontalAdapter
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMoviesBinding
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.repo.Repository
@@ -55,7 +56,6 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -147,25 +147,25 @@ class MoviesFragment : Fragment() {
         // ******************Click Listeners for See All buttons************
         btn_seeAll_popular.setOnClickListener {
             val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category =  resources.getString(R.string.popular)
+                category =  MyConstants.POPULAR
             )
             navController.navigate(action)
         }
         btn_seeAll_top.setOnClickListener {
             val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category = resources.getString(R.string.topRated)
+                category = MyConstants.TOP_RATED
             )
             navController.navigate(action)
         }
         btn_seeAll_now.setOnClickListener {
             val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category =  resources.getString(R.string.now_in_theaters)
+                category =  MyConstants.NOW_PLAYING
             )
             navController.navigate(action)
         }
         btn_seeAll_upcoming.setOnClickListener {
             val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category = resources.getString(R.string.upcoming)
+                category = MyConstants.UPCOMING
             )
             navController.navigate(action)
         }

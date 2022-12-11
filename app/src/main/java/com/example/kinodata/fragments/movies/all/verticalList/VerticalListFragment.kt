@@ -22,17 +22,12 @@ class VerticalListFragment : Fragment() {
 
     private val args: VerticalListFragmentArgs by navArgs()
 
-
     private var _binding: FragmentVerticalListBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: VerticalListViewModel by viewModels {
         VerticalListViewModelFactory(Repository(), args.category)
     }
-
-    private lateinit var recyclerView: RecyclerView
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,10 +41,9 @@ class VerticalListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tbVerticalList.title = args.category
-        recyclerView = binding.rvAllPopular
 
         val adapter = MoviesVerticalAdapter()
-        recyclerView.apply {
+        binding.rvVerticalList.apply {
             layoutManager = LinearLayoutManager(context)
             this.adapter = adapter
         }

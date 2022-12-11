@@ -88,11 +88,11 @@
         android:label="fragment_tv_series"
         tools:layout="@layout/fragment_tv_series" >
         <action
-            android:id="@+id/action_tvSeriesFragment_to_allPopularFragment"
-            app:destination="@id/verticalListFragment" />
-        <action
             android:id="@+id/action_tvSeriesFragment_to_tvSeriesDetailsFragment"
             app:destination="@id/tvDetailsFragment" />
+        <action
+            android:id="@+id/action_tvSeriesFragment_to_tvVerticalListFragment"
+            app:destination="@id/tvVerticalListFragment" />
     </fragment>
     <fragment
         android:id="@+id/allMovieCastFragment"
@@ -119,19 +119,19 @@
             app:destination="@id/movieDetailsFragment" />
         <action
             android:id="@+id/action_personFragment_to_personAllMoviesFragment"
-            app:destination="@id/personAllMoviesFragment" />
-        <action
-            android:id="@+id/action_personFragment_to_personAllTvSeriesFragment"
-            app:destination="@id/personAllTvSeriesFragment" />
+            app:destination="@id/personAllFilmographyFragment" />
         <action
             android:id="@+id/action_personFragment_to_verticalListFragment"
             app:destination="@id/verticalListFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/personAllMoviesFragment"
-        android:name="com.example.kinodata.fragments.people.all.PersonAllMoviesFragment"
+        android:id="@+id/personAllFilmographyFragment"
+        android:name="com.example.kinodata.fragments.people.all.PersonAllFilmographyFragment"
         android:label="fragment_person_all_movies"
-        tools:layout="@layout/fragment_person_all_movies" >
+        tools:layout="@layout/fragment_person_all_filmography" >
         <argument
             android:name="personId"
             app:argType="integer" />
@@ -141,14 +141,8 @@
         <argument
             android:name="category"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/personAllTvSeriesFragment"
-        android:name="com.example.kinodata.fragments.people.all.PersonAllTvSeriesFragment"
-        android:label="fragment_person_all_tv_series"
-        tools:layout="@layout/fragment_person_all_tv_series" >
         <action
-            android:id="@+id/action_personAllTvSeriesFragment_to_tvSeriesDetailsFragment"
+            android:id="@+id/action_personAllMoviesFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment" />
     </fragment>
     <fragment
@@ -165,6 +159,12 @@
         <action
             android:id="@+id/action_tvDetailsFragment_to_allTvCastFragment"
             app:destination="@id/allTvCastFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_allReviewsFragment"
+            app:destination="@id/allReviewsFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"
@@ -177,5 +177,17 @@
         <argument
             android:name="tvId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvVerticalListFragment"
+        android:name="com.example.kinodata.fragments.tvSeries.verticalList.TvVerticalListFragment"
+        android:label="fragment_tv_vertical_list"
+        tools:layout="@layout/fragment_tv_vertical_list" >
+        <argument
+            android:name="category"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_tvVerticalListFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
     </fragment>
 </navigation>
