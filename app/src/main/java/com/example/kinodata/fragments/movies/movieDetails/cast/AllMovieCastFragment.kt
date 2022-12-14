@@ -34,6 +34,9 @@ class AllMovieCastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbAllMovieCast.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         val adapter = CastVerticalAdapter()
         binding.rvAllMovieCast.apply {
             this.adapter = adapter

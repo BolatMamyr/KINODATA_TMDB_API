@@ -43,6 +43,10 @@ class TvDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbTvDetails.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.svTvDetails.isSaveEnabled = true
         getTvDetails(view)
         getCredits(view)
@@ -143,7 +147,10 @@ class TvDetailsFragment : Fragment() {
 
         binding.btnTvDetailsSeeAllReviews.setOnClickListener {
             val action = TvDetailsFragmentDirections
-                .actionTvDetailsFragmentToAllReviewsFragment(args.tvSeriesId.toString())
+                .actionTvDetailsFragmentToAllReviewsFragment(
+                    movieId = args.tvSeriesId.toString(), context = MyConstants.TV
+                )
+            findNavController().navigate(action)
         }
     }
 

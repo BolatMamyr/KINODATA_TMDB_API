@@ -17,7 +17,8 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_movieDetails"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            app:navigationIcon="@drawable/ic_arrow_left"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

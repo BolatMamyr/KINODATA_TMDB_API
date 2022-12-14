@@ -39,6 +39,9 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbMovieDetails.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.svMovieDetails.isSaveEnabled = true
         // *************************MovieDetails*************************
         viewModel.getMovieDetails()
@@ -130,9 +133,11 @@ class MovieDetailsFragment : Fragment() {
         }
         // Click Listener for See All Reviews button
         binding.btnDetailsSeeAllReviews.setOnClickListener {
-            movie.value?.id?.toString()?.let { it1 ->
+            movie.value?.id?.toString()?.let { id ->
                 val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllReviewsFragment(it1)
+                    .actionMovieDetailsFragmentToAllReviewsFragment(
+                        movieId = id, context = MyConstants.MOVIE
+                    )
                 findNavController().navigate(action)
             }
         }

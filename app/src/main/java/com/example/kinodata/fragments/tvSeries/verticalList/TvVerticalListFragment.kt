@@ -42,6 +42,10 @@ class TvVerticalListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbTvVerticalList.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.tbTvVerticalList.title = args.category
 
         val adapter = TvVerticalAdapter()

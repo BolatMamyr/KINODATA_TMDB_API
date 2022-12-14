@@ -40,6 +40,10 @@ class PersonAllFilmographyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbPersonAllMovies.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         recyclerView = binding.rvPersonAllMovies
         recyclerView.apply {
             val manager = LinearLayoutManager(view.context)

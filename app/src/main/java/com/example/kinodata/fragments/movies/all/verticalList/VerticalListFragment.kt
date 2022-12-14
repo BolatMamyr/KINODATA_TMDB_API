@@ -41,6 +41,9 @@ class VerticalListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tbVerticalList.title = args.category
+        binding.tbVerticalList.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         val adapter = MoviesVerticalAdapter()
         binding.rvVerticalList.apply {

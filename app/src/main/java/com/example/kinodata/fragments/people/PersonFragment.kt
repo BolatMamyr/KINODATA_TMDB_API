@@ -38,7 +38,9 @@ class PersonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.tbPerson.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         getPersonInfo()
         getPersonMovies(view)
@@ -48,6 +50,12 @@ class PersonFragment : Fragment() {
     }
 
     private fun setClickListeners() {
+        binding.btnPersonSeeDetails.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonMoreDetailsFragment(args.personId)
+            findNavController().navigate(action)
+        }
+
         binding.btnPersonSeeAllMovies.setOnClickListener {
             val action = PersonFragmentDirections
                 .actionPersonFragmentToPersonAllMoviesFragment(

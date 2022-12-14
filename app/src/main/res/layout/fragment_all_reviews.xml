@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        app:title="@string/reviews" />
+        app:title="@string/reviews"
+        app:navigationIcon="@drawable/ic_arrow_left"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_allReviews"

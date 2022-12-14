@@ -39,4 +39,6 @@
     <string name="filmography_movies">Filmography: Movies</string>
     <string name="rating">Rating</string>
     <string name="filmography_tvSeries">Filmography: TV Series</string>
+    <string name="known_for">Known for</string>
+    <string name="acting">Acting</string>
 </resources>

@@ -81,6 +81,9 @@
         <argument
             android:name="movieId"
             app:argType="string" />
+        <argument
+            android:name="context"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/tvSeriesFragment"
@@ -126,6 +129,9 @@
         <action
             android:id="@+id/action_personFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_personMoreDetailsFragment"
+            app:destination="@id/personMoreDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/personAllFilmographyFragment"
@@ -189,5 +195,14 @@
         <action
             android:id="@+id/action_tvVerticalListFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personMoreDetailsFragment"
+        android:name="com.example.kinodata.fragments.people.all.PersonMoreDetailsFragment"
+        android:label="fragment_person_more_details"
+        tools:layout="@layout/fragment_person_more_details" >
+        <argument
+            android:name="personId"
+            app:argType="integer" />
     </fragment>
 </navigation>

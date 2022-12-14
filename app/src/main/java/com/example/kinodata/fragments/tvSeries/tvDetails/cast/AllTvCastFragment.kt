@@ -35,6 +35,10 @@ class AllTvCastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tbAllTvCast.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val adapter = CastVerticalAdapter()
         binding.rvAllTvCast.apply {
             this.adapter = adapter

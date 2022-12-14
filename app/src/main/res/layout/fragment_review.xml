@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        app:menu="@menu/review_toolbar_menu"
         app:title="Review"
-        app:titleCentered="true" />
+        app:titleCentered="true"
+        app:navigationIcon="@drawable/ic_arrow_left"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_reviewDetails"

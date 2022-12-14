@@ -32,6 +32,11 @@ class ReviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.tbReview.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val review = args.review
         binding.txtReviewAuthor.text = review.author_details.username
         binding.txtReviewDate.text = review.getDate(view.context)
@@ -69,20 +74,7 @@ class ReviewFragment : Fragment() {
             binding.imgReviewAuthor.setImageResource(R.drawable.avatar)
         }
 
-        // Close Menu item Click Listener
-        binding.tbReview.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.menu_close -> {
-                    findNavController().navigateUp()
-                    return@setOnMenuItemClickListener true
-                }
 
-                else -> {
-                    return@setOnMenuItemClickListener false
-                }
-            }
-
-        }
     }
 
 }

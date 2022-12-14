@@ -31,6 +31,9 @@ class MyConstants {
         const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
         const val LANGUAGE = "en-US"
 
+        const val MOVIE = "Movie"
+        const val TV = "TV"
+
         const val POPULAR = "Popular"
         const val TOP_RATED = "Top Rated"
         const val NOW_PLAYING = "Now Playing"
