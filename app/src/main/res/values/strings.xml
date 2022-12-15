@@ -41,4 +41,8 @@
     <string name="filmography_tvSeries">Filmography: TV Series</string>
     <string name="known_for">Known for</string>
     <string name="acting">Acting</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="popular_tv_series">Popular TV Series</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="top_rated_tv_series">Top Rated TV Series</string>
 </resources>
