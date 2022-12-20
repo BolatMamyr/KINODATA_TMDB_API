@@ -7,6 +7,8 @@ import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
 import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
+import com.example.kinodata.model.multiSearch.MultiSearch
+import com.example.kinodata.model.multiSearch.SearchResult
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
@@ -90,6 +92,12 @@ class Repository {
         tvId: String, language: String, page: String = "1"
     ): Response<ReviewResult> {
         return RetrofitInstance.api.getTvReviews(tvId = tvId, language = language)
+    }
+
+    suspend fun getMultiSearchResults(
+        query: String?, language: String, page: String = "1"
+    ): Response<MultiSearch> {
+        return RetrofitInstance.api.getMultiSearchResults(query = query, language = language, page = page)
     }
 
 }

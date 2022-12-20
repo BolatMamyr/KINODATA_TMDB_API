@@ -21,7 +21,23 @@
         android:id="@+id/searchFragment"
         android:name="com.example.kinodata.fragments.search.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_verticalListFragment"
+            app:destination="@id/verticalListFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_tvVerticalListFragment"
+            app:destination="@id/tvVerticalListFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_personFragment"
+            app:destination="@id/personFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.kinodata.fragments.profile.ProfileFragment"

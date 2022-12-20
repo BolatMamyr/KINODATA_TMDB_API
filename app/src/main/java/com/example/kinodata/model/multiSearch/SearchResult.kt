@@ -1,5 +1,7 @@
 package com.example.kinodata.model.multiSearch
 
+import com.example.kinodata.constants.MyConstants
+
 data class SearchResult(
     val adult: Boolean,
     val backdrop_path: String,
@@ -24,4 +26,13 @@ data class SearchResult(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int
-)
+) {
+
+    override fun toString(): String {
+        return if (media_type == MyConstants.movie) {
+            title
+        } else {
+            name
+        }
+    }
+}

@@ -8,6 +8,7 @@ import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
 import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
+import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
@@ -135,5 +136,12 @@ interface MovieDataApi {
         @Query("language") language: String
     ): Response<PersonTvSeriesCredits>
 
-    // https://api.themoviedb.org/3//person/18918?api_key=f2d6d5225e43110cc809522d5ae31922
+    // ***********************Search********************************************
+    @GET(MyConstants.URL_SEARCH_MULTI)
+    suspend fun getMultiSearchResults(
+        @Query("api_key") api_key: String = API_KEY,
+        @Query("language") language: String,
+        @Query("query") query: String?,
+        @Query("page") page: String = "1"
+    ): Response<MultiSearch>
 }

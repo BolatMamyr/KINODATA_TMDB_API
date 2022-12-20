@@ -28,6 +28,8 @@ class MyConstants {
         const val URL_PERSON_MOVIE_CREDITS = "/movie_credits"
         const val URL_PERSON_TV_CREDITS = "/tv_credits"
 
+        const val URL_SEARCH_MULTI = "search/multi"
+
         const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
         const val LANGUAGE = "en-US"
 
@@ -38,5 +40,9 @@ class MyConstants {
         const val TOP_RATED = "Top Rated"
         const val NOW_PLAYING = "Now Playing"
         const val UPCOMING = "Upcoming"
+
+        const val movie = "movie"
+        const val tv = "tv"
+        const val person = "person"
     }
 }
