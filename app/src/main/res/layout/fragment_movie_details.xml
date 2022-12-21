@@ -204,6 +204,8 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp" />
 
+
+            <!-- ***********************Rating**************-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -258,6 +260,8 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ***********************Cast**************-->
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -289,6 +293,40 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp" />
 
+            <!-- ***********************Crew**************-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/crew"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_details_seeAllCrew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/see_all"
+                    android:textColor="@color/orange"
+                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_movieDetails_crew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal" />
+
+            <!-- ***********************Reviews**************-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

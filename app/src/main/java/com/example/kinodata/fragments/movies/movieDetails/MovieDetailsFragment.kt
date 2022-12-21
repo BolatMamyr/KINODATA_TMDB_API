@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.adapters.CastHorizontalAdapter
+import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
 import com.example.kinodata.repo.Repository
+import com.example.kinodata.utils.MyUtils
 
 class MovieDetailsFragment : Fragment() {
 
@@ -49,7 +51,13 @@ class MovieDetailsFragment : Fragment() {
         movie.observe(viewLifecycleOwner) {
             binding.tbMovieDetails.title = it.title
             binding.txtDetailsTitle.text = it.title
-            binding.txtDetailsVoteAve.text = String.format("%.1f", it.vote_average)
+
+            val rating = it.vote_average
+            binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
+
+            val colorId = MyUtils.getRatingColorId(rating, view)
+            binding.txtDetailsVoteAve.setTextColor(colorId)
+
             val voteCount = if(it.vote_count < 1000) {
                 it.vote_count.toString()
             } else {
@@ -61,7 +69,9 @@ class MovieDetailsFragment : Fragment() {
             binding.txtDetailsGenres.text = it.getGenres()
             binding.txtDetailsCountry.text = it.getCountries() + ","
             binding.txtDetailsDescription.text = it.overview
-            binding.txtDetailsVoteAveBig.text = String.format("%.1f", it.vote_average)
+            binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
+            binding.txtDetailsVoteAveBig.setTextColor(colorId)
+
             binding.txtDetailsVoteCountBig.text = it.vote_count.toString()
 
             Glide.with(view)
@@ -70,7 +80,12 @@ class MovieDetailsFragment : Fragment() {
         }
 
         // *************************Credits**********************************
+
+        viewModel.getMovieCredits()
+
+        // ***********Cast************
         val castHorizontalAdapter = CastHorizontalAdapter()
+        val crewHorizontalAdapter = CrewHorizontalAdapter()
 
         binding.rvMovieDetailsCast.apply {
             adapter = castHorizontalAdapter
@@ -78,17 +93,28 @@ class MovieDetailsFragment : Fragment() {
             manager.orientation = RecyclerView.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.getMovieCredits()
+        binding.rvMovieDetailsCrew.apply {
+            adapter = crewHorizontalAdapter
+            layoutManager = LinearLayoutManager(
+                view.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+
         viewModel.credits.observe(viewLifecycleOwner) {
             val cast = it.cast
             val firstFour = it.getFirstFourActors()
-            binding.txtDetailsStars.text =
-                "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
-            if(cast.size > 12) {
-                castHorizontalAdapter.updateData(cast.take(12))
+            if (cast.isEmpty()) {
+
+            } else if (cast.size < 4) {
+                binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
             } else {
-                castHorizontalAdapter.updateData(cast)
+                binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
             }
+
+            castHorizontalAdapter.updateData(cast.take(12))
+            crewHorizontalAdapter.updateData(it.crew.take(7))
         }
         // Click Listener for See All Cast button
         binding.btnDetailsSeeAllCast.setOnClickListener {
@@ -106,9 +132,25 @@ class MovieDetailsFragment : Fragment() {
                     .actionMovieDetailsFragmentToPersonFragment(id)
                 findNavController().navigate(action)
             }
-
         }
 
+        // Click Listener for See All Crew button
+        binding.btnDetailsSeeAllCrew.setOnClickListener {
+            movie.value?.id?.let {
+                val action = MovieDetailsFragmentDirections
+                    .actionMovieDetailsFragmentToAllMovieCrewFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+        // Click Listener for crew RV item
+        crewHorizontalAdapter.onItemClick = {
+            it?.id?.let { id ->
+                val action = MovieDetailsFragmentDirections
+                    .actionMovieDetailsFragmentToPersonFragment(id)
+                findNavController().navigate(action)
+            }
+        }
 
         // **************************Reviews***********************************
         val reviewHorizontalAdapter = ReviewHorizontalAdapter()
@@ -141,7 +183,6 @@ class MovieDetailsFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-        // TODO: get Reviews(or Firebase to make own review system), similar movies
 
     }
 

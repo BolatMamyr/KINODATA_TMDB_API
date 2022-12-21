@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.movie.RMovie
+import com.example.kinodata.utils.MyUtils
 
 class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.MyViewHolder>(
     diffUtil
@@ -52,32 +53,16 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
 
         // Date
         val date = getItem(position)?.release_date
-        if (date?.length!! > 8) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day.get(0) == '0') day = day[1].toString()
+        holder.releaseDate.text = date?.let { MyUtils.getFormattedDate(it, holder.itemView) }
 
-            month = when (month) {
-                "01" -> holder.itemView.resources.getString(R.string.january)
-                "02" -> holder.itemView.resources.getString(R.string.february)
-                "03" -> holder.itemView.resources.getString(R.string.march)
-                "04" -> holder.itemView.resources.getString(R.string.april)
-                "05" -> holder.itemView.resources.getString(R.string.may)
-                "06" -> holder.itemView.resources.getString(R.string.june)
-                "07" -> holder.itemView.resources.getString(R.string.july)
-                "08" -> holder.itemView.resources.getString(R.string.august)
-                "09" -> holder.itemView.resources.getString(R.string.september)
-                "10" -> holder.itemView.resources.getString(R.string.october)
-                "11" -> holder.itemView.resources.getString(R.string.november)
-                "12" -> holder.itemView.resources.getString(R.string.december)
-                else -> ""
-            }
+        // Rating
+        val rating = getItem(position)?.vote_average
 
-            holder.releaseDate.text = "$day $month, $year"
-        }
-        holder.voteAve.text = getItem(position)?.vote_average.toString()
+        holder.voteAve.text = String.format("%.1f", rating)
         holder.voteCount.text = getItem(position)?.vote_count.toString()
+
+        val colorId = rating?.let { MyUtils.getRatingColorId(it, holder.itemView) }
+        colorId?.let { holder.voteAve.setTextColor(it) }
 
         // TODO: get genres, countries and runtime OR change layout item: Vote Ave to right top
 

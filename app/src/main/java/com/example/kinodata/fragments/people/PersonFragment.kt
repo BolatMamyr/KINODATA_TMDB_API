@@ -18,7 +18,7 @@ import com.example.kinodata.databinding.FragmentPersonBinding
 import com.example.kinodata.repo.Repository
 
 class PersonFragment : Fragment() {
-
+    // TODO: Crew
     private val args: PersonFragmentArgs by navArgs()
 
     private val viewModel: PersonViewModel by viewModels {
@@ -86,7 +86,7 @@ class PersonFragment : Fragment() {
             }
 
             val department = if (it.known_for_department == "Acting") {
-                "Actor"
+                getString(R.string.Actor)
             } else {
                 // TODO: Add other departments
                 ""
@@ -102,9 +102,17 @@ class PersonFragment : Fragment() {
                 birthday
             }
             binding.txtPersonDate.text = date
-            Glide.with(requireContext())
-                .load(MyConstants.IMG_BASE_URL + it.profile_path)
-                .into(binding.imgPerson)
+
+            val profilePath = it.profile_path
+
+            if (profilePath == null) {
+                binding.imgPerson.setImageResource(R.drawable.profileblankpic)
+            } else {
+                Glide.with(requireContext())
+                    .load(MyConstants.IMG_BASE_URL + profilePath)
+                    .into(binding.imgPerson)
+            }
+
         }
     }
 

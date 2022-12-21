@@ -21,6 +21,7 @@ import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import com.example.kinodata.repo.Repository
+import com.example.kinodata.utils.MyUtils
 
 class TvDetailsFragment : Fragment() {
 
@@ -101,7 +102,13 @@ class TvDetailsFragment : Fragment() {
         viewModel.tvSeries.observe(viewLifecycleOwner) {
             binding.tbTvDetails.title = it.name
             binding.txtTvDetailsTitle.text = it.name
-            binding.txtTvDetailsVoteAve.text = String.format("%.1f", it.vote_average)
+
+            val rating = it.vote_average
+            val colorId = MyUtils.getRatingColorId(rating, view)
+
+            binding.txtTvDetailsVoteAve.text = String.format("%.1f", rating)
+            binding.txtTvDetailsVoteAve.setTextColor(colorId)
+
             val voteCount = if (it.vote_count < 1000) {
                 it.vote_count.toString()
             } else {
@@ -113,7 +120,10 @@ class TvDetailsFragment : Fragment() {
             binding.txtTvDetailsGenres.text = it.getGenres()
             binding.txtTvDetailsCountry.text = it.getCountries() + ","
             binding.txtTvDetailsDescription.text = it.overview
-            binding.txtTvDetailsVoteAveBig.text = String.format("%.1f", it.vote_average)
+
+            binding.txtTvDetailsVoteAveBig.text = String.format("%.1f", rating)
+            binding.txtTvDetailsVoteAveBig.setTextColor(colorId)
+
             binding.txtTvDetailsVoteCountBig.text = it.vote_count.toString()
 
             Glide.with(view)

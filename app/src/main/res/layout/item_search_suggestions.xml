@@ -14,16 +14,15 @@
         android:scaleType="fitStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/cast" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_searchSuggestion_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="TextView"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/img_searchSuggestion"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,5 +33,44 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/txt_searchSuggestion_title"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/txt_searchSuggestion_releaseDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_searchSuggestion_title"
+        app:layout_constraintTop_toBottomOf="@+id/txt_searchSuggestion_title" />
+
+    <TextView
+        android:id="@+id/txt_searchSuggestion_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textSize="12sp"
+        android:textColor="@color/light_gray"
+        app:layout_constraintStart_toStartOf="@+id/txt_searchSuggestion_releaseDate"
+        app:layout_constraintTop_toBottomOf="@+id/txt_searchSuggestion_releaseDate" />
+
+    <TextView
+        android:id="@+id/txt_searchSuggestion_mediaType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/light_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_searchSuggestion_voteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/light_gray"
+        android:textSize="10sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_searchSuggestion_rating"
+        app:layout_constraintStart_toEndOf="@+id/txt_searchSuggestion_rating" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

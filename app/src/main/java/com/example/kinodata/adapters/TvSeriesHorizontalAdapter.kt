@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.tv.RTvSeries
+import com.example.kinodata.utils.MyUtils
 
 class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter.MyViewHolder>() {
 
@@ -45,38 +46,13 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var title = tvSeries[position].name
+        val title = tvSeries[position].name
         tvSeriesId = tvSeries[position].id
-        if (title.length > 19) {
-            title = title.substring(0, 19) + "..."
-        }
-        holder.title.text = title
+
+        holder.title.text = MyUtils.getShortenedString(title)
         // Date
         val date = tvSeries[position].first_air_date
-        if(date.length > 7) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day[0] == '0') day = day[1].toString()
-
-            month = when(month) {
-                "01" -> getStringResource(holder, R.string.january)
-                "02" -> getStringResource(holder, R.string.february)
-                "03" -> getStringResource(holder, R.string.march)
-                "04" -> getStringResource(holder, R.string.april)
-                "05" -> getStringResource(holder, R.string.may)
-                "06" -> getStringResource(holder, R.string.june)
-                "07" -> getStringResource(holder, R.string.july)
-                "08" -> getStringResource(holder, R.string.august)
-                "09" -> getStringResource(holder, R.string.september)
-                "10" -> getStringResource(holder, R.string.october)
-                "11" -> getStringResource(holder, R.string.november)
-                "12" -> getStringResource(holder, R.string.december)
-                else -> ""
-            }
-            holder.date.text = "$day $month, $year"
-        }
-
+        holder.date.text = MyUtils.getFormattedDate(date, holder.itemView)
 
         val vote = tvSeries[position].vote_average
         holder.vote.text = String.format("%.1f", vote)
@@ -84,13 +60,7 @@ class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter
         if (vote == .0) {
             holder.card_vote.visibility = View.GONE
         } else {
-            val colorId = if (vote < 5.0) {
-                holder.itemView.resources.getColor(R.color.red, null)
-            } else if (vote < 7.0) {
-                holder.itemView.resources.getColor(R.color.gray, null)
-            } else  {
-                holder.itemView.resources.getColor(R.color.green, null)
-            }
+            val colorId = MyUtils.getRatingColorId(vote, holder.itemView)
             holder.rl_vote.setBackgroundColor(colorId)
         }
 

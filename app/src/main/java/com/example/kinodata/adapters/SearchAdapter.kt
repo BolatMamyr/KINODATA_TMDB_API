@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.multiSearch.SearchResult
+import com.example.kinodata.utils.MyUtils
 
 class SearchAdapter(
     private val mContext: Context,
@@ -27,7 +28,11 @@ class SearchAdapter(
             view = mInflater.inflate(R.layout.item_search_suggestions, parent, false)
             holder = MyViewHolder()
             holder.img = view.findViewById(R.id.img_searchSuggestion)
-            holder.txt = view.findViewById(R.id.txt_searchSuggestion_title)
+            holder.txt_title = view.findViewById(R.id.txt_searchSuggestion_title)
+            holder.txt_date = view.findViewById(R.id.txt_searchSuggestion_releaseDate)
+            holder.txt_rating = view.findViewById(R.id.txt_searchSuggestion_rating)
+            holder.txt_voteCount = view.findViewById(R.id.txt_searchSuggestion_voteCount)
+            holder.txt_mediaType = view.findViewById(R.id.txt_searchSuggestion_mediaType)
             view.tag = holder
         } else {
             view = convertView
@@ -36,8 +41,10 @@ class SearchAdapter(
 
         val item = getItem(position)
 
-        if (item?.media_type == "person") {
-            holder.txt.text = item.name
+        if (item?.media_type == MyConstants.person) {
+            holder.txt_title.text = item.name
+            holder.txt_mediaType.text = view.resources.getString(R.string.person)
+
             Glide.with(mContext)
                 .load(MyConstants.IMG_BASE_URL + item.profile_path)
                 .into(holder.img)
@@ -45,12 +52,30 @@ class SearchAdapter(
             Glide.with(mContext)
                 .load(MyConstants.IMG_BASE_URL + item?.poster_path)
                 .into(holder.img)
-            if (item?.media_type == "movie") {
-                holder.txt.text = item.title
+
+            // Rating
+            val rating = item?.vote_average
+            holder.txt_rating.text = String.format("%.1f", rating)
+            holder.txt_voteCount.text = item?.vote_count?.toString()
+
+            if (rating != null) {
+                val colorId = MyUtils.getRatingColorId(rating, view)
+                holder.txt_rating.setTextColor(colorId)
+            }
+
+            val date: String?
+            if (item?.media_type == MyConstants.movie) {
+                holder.txt_title.text = MyUtils.getShortenedString(item.title)
+                holder.txt_mediaType.text = view.resources.getString(R.string.movie)
+                date = item.release_date
             } else {
                 // else TV
-                holder.txt.text = item?.name
+                holder.txt_mediaType.text = view.resources.getString(R.string.tv)
+                holder.txt_title.text = item?.name?.let { MyUtils.getShortenedString(it) }
+                date = item?.first_air_date
             }
+
+            holder.txt_date.text = date?.let { MyUtils.getFormattedDate(it, view) }
         }
 
         return view
@@ -93,9 +118,10 @@ class SearchAdapter(
     private fun getSuggestions(text: String): List<SearchResult> {
         return mList.filter {
             if (it.media_type == "movie") {
-                it.title.lowercase().contains(text.lowercase())
+                it.title.lowercase().contains(text.lowercase().trim())
             } else {
-                it.name.lowercase().contains(text.lowercase())
+                // else tv or person
+                it.name.lowercase().contains(text.lowercase().trim())
             }
         }
     }
@@ -106,7 +132,11 @@ class SearchAdapter(
     }
 
     private class MyViewHolder {
-        lateinit var txt: TextView
+        lateinit var txt_title: TextView
         lateinit var img: ImageView
+        lateinit var txt_date: TextView
+        lateinit var txt_rating: TextView
+        lateinit var txt_voteCount: TextView
+        lateinit var txt_mediaType: TextView
     }
 }

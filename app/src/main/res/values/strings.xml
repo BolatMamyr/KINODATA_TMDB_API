@@ -46,4 +46,8 @@
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="top_rated_tv_series">Top Rated TV Series</string>
     <string name="search_movies_tv_series_persons">Search Movies, TV Series, Persons</string>
+    <string name="movie">Movie</string>
+    <string name="tv">TV</string>
+    <string name="crew">Crew</string>
+    <string name="Actor">Actor</string>
 </resources>

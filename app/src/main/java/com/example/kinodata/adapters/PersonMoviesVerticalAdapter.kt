@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.credit.person.personMovies.PersonMovies
+import com.example.kinodata.utils.MyUtils
 
 class PersonMoviesVerticalAdapter
     : RecyclerView.Adapter<PersonMoviesVerticalAdapter.MyViewHolder>() {
@@ -44,39 +45,16 @@ class PersonMoviesVerticalAdapter
         val character = movies[position].character
         holder.character.text = character
 
-        if (position == 0) {
-            Log.d("MyLog", character)
-        }
-
         // Date
         val date = movies[position].release_date
-        if (date.length > 8) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day.get(0) == '0') day = day[1].toString()
+        holder.releaseDate.text = MyUtils.getFormattedDate(date, holder.itemView)
 
-            month = when (month) {
-                "01" -> holder.itemView.resources.getString(R.string.january)
-                "02" -> holder.itemView.resources.getString(R.string.february)
-                "03" -> holder.itemView.resources.getString(R.string.march)
-                "04" -> holder.itemView.resources.getString(R.string.april)
-                "05" -> holder.itemView.resources.getString(R.string.may)
-                "06" -> holder.itemView.resources.getString(R.string.june)
-                "07" -> holder.itemView.resources.getString(R.string.july)
-                "08" -> holder.itemView.resources.getString(R.string.august)
-                "09" -> holder.itemView.resources.getString(R.string.september)
-                "10" -> holder.itemView.resources.getString(R.string.october)
-                "11" -> holder.itemView.resources.getString(R.string.november)
-                "12" -> holder.itemView.resources.getString(R.string.december)
-                else -> ""
-            }
-
-            holder.releaseDate.text = "$day $month, $year"
-        }
         val vote = movies[position].vote_average
         holder.voteAve.text = String.format("%.1f", vote)
         holder.voteCount.text = movies[position].vote_count.toString()
+
+        val colorId = MyUtils.getRatingColorId(vote, holder.itemView)
+        holder.voteAve.setTextColor(colorId)
 
         val img = movies[position].poster_path
         Glide.with(holder.itemView.context)

@@ -76,6 +76,9 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_personFragment"
             app:destination="@id/personFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allMovieCrewFragment"
+            app:destination="@id/allMovieCrewFragment" />
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -220,5 +223,17 @@
         <argument
             android:name="personId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/allMovieCrewFragment"
+        android:name="com.example.kinodata.fragments.movies.movieDetails.crew.AllMovieCrewFragment"
+        android:label="fragment_all_movie_crew"
+        tools:layout="@layout/fragment_all_movie_crew" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_allMovieCrewFragment_to_personFragment"
+            app:destination="@id/personFragment" />
     </fragment>
 </navigation>

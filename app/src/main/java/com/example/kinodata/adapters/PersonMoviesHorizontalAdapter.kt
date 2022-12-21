@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.credit.person.personMovies.PersonMovies
+import com.example.kinodata.utils.MyUtils
 
 class PersonMoviesHorizontalAdapter
     : RecyclerView.Adapter<PersonMoviesHorizontalAdapter.MyViewHolder>() {
@@ -63,13 +64,7 @@ class PersonMoviesHorizontalAdapter
         if (vote == .0) {
             holder.card_vote.visibility = View.GONE
         } else {
-            val colorId = if (vote < 5.0) {
-                holder.itemView.resources.getColor(R.color.red, null)
-            } else if (vote < 7.0) {
-                holder.itemView.resources.getColor(R.color.gray, null)
-            } else  {
-                holder.itemView.resources.getColor(R.color.green, null)
-            }
+            val colorId = MyUtils.getRatingColorId(vote, holder.itemView)
             holder.rl_vote.setBackgroundColor(colorId)
         }
 

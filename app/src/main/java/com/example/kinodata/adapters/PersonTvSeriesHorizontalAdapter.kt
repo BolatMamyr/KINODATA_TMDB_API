@@ -15,6 +15,7 @@ import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.credit.person.personMovies.PersonMovies
 import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeries
 import com.example.kinodata.model.tv.RTvSeries
+import com.example.kinodata.utils.MyUtils
 
 class PersonTvSeriesHorizontalAdapter
     : RecyclerView.Adapter<PersonTvSeriesHorizontalAdapter.MyViewHolder>() {
@@ -52,10 +53,8 @@ class PersonTvSeriesHorizontalAdapter
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var title = tvSeries[position].name
         tvSeriesId = tvSeries[position].id
-        if (title.length > 19) {
-            title = title.substring(0, 19) + "..."
-        }
-        holder.title.text = title
+
+        holder.title.text = MyUtils.getShortenedString(title)
         holder.character.text = tvSeries[position].character
 
         val vote = tvSeries[position].vote_average
@@ -64,13 +63,7 @@ class PersonTvSeriesHorizontalAdapter
         if (vote == .0) {
             holder.card_vote.visibility = View.GONE
         } else {
-            val colorId = if (vote < 5.0) {
-                holder.itemView.resources.getColor(R.color.red, null)
-            } else if (vote < 7.0) {
-                holder.itemView.resources.getColor(R.color.gray, null)
-            } else  {
-                holder.itemView.resources.getColor(R.color.green, null)
-            }
+            val colorId = MyUtils.getRatingColorId(vote, holder.itemView)
             holder.rl_vote.setBackgroundColor(colorId)
         }
 

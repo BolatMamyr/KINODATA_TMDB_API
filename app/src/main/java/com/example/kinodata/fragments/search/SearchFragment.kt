@@ -31,7 +31,6 @@ import com.example.kinodata.repo.Repository
 
 class SearchFragment : Fragment() {
 
-    // TODO: make dropdown items fancier: with media type, rating overview, birthday(age) etc.
     // TODO: AutoCompleteTextView NEXT btn on keyboard which navigates to new search results fragment
     // TODO: Hide keyboard when AutoCompleteTextView dropdown list is touched or scrolled
     // TODO: images for recommendation boxes
@@ -89,7 +88,7 @@ class SearchFragment : Fragment() {
         })
 
         viewModel.searchResults.observe(viewLifecycleOwner) {
-            adapter.updateData(it)
+            adapter.updateData(it.take(5))
         }
 
         binding.autoTxtSearch.onItemClickListener = OnItemClickListener { p0, p1, p2, p3 ->
