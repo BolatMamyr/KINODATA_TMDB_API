@@ -2,13 +2,14 @@ package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.constants.MyConstants.Companion.API_KEY
-import com.example.kinodata.model.credit.Credits
-import com.example.kinodata.model.credit.person.Person
-import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
-import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
+import com.example.kinodata.model.persons.media_credits.Credits
+import com.example.kinodata.model.persons.person.Person
+import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
+import com.example.kinodata.model.persons.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.multiSearch.MultiSearch
+import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
@@ -135,6 +136,13 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = API_KEY,
         @Query("language") language: String
     ): Response<PersonTvSeriesCredits>
+
+    @GET(MyConstants.URL_PERSON_POPULAR)
+    suspend fun  getPopularPersons(
+        @Query("api_key") api_key: String = API_KEY,
+        @Query("language") language: String,
+        @Query("page") page: String
+    ): Response<ResultForPopularPersons>
 
     // ***********************Search********************************************
     @GET(MyConstants.URL_SEARCH_MULTI)

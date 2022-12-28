@@ -1,15 +1,23 @@
 package com.example.kinodata.fragments.movies
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.model.movie.RMovie
+import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.repo.Repository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 
+
+
 class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
-    private val _popularMovies: MutableLiveData<List<RMovie>> = MutableLiveData()
+    private val _popularMovies: MediatorLiveData<List<RMovie>> = MediatorLiveData()
     val popularMovies: LiveData<List<RMovie>> = _popularMovies
 
     private val _topMovies: MutableLiveData<List<RMovie>> = MutableLiveData()
@@ -36,6 +44,29 @@ class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+// TODO: Change all to flow. Also in PagingSource needs to be changed to collect flows
+
+//    fun getPopularMovies(language: String, page: String) {
+//        viewModelScope.launch {
+//            repository.getPopularMovies(language, page).retryWhen { cause, attempt ->
+//                if (attempt > 3) {
+//                    // Maximum number of retries reached, propagate the error
+//                    throw cause
+//                } else {
+//                    // Delay before retrying
+//                    delay(1000L)
+//                    // Retry the network call
+//                    true
+//                }
+//            }.collect { response ->
+//                if (response.isSuccessful) {
+//                    val list = response.body()?.results
+//                    list?.let { _popularMovies.value = it }
+//                }
+//            }
+//        }
+//    }
+
     fun getTopRatedMovies(language: String, page: String) {
         viewModelScope.launch {
             try {
@@ -46,8 +77,9 @@ class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
                     list?.let { _topMovies.value = it }
                 }
             } catch (_: Exception) {
-
             }
+
+
         }
     }
 

@@ -1,20 +1,41 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.RetrofitInstance
-import com.example.kinodata.model.credit.Credits
-import com.example.kinodata.model.credit.person.Person
-import com.example.kinodata.model.credit.person.personMovies.PersonMovieCredits
-import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeriesCredits
+import com.example.kinodata.model.persons.media_credits.Credits
+import com.example.kinodata.model.persons.person.Person
+import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
+import com.example.kinodata.model.persons.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.multiSearch.MultiSearch
-import com.example.kinodata.model.multiSearch.SearchResult
+import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import retrofit2.Response
 
+
 class Repository {
+
+//    suspend fun getPopularMovies(language: String, page: String): Flow<Response<ResultForMovies>> {
+//        return flow {
+//            var retryCount = 0
+//            while (true) {
+//                try {
+//                    emit(RetrofitInstance.api.getPopularMovies(language = language, page = page))
+//                    break
+//                } catch (e: Exception) {
+//                    retryCount++
+//                    if (retryCount >= 3) {
+//                        throw e
+//                    } else {
+//                        delay(1000L)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
     suspend fun getPopularMovies(language: String, page: String): Response<ResultForMovies> {
         return RetrofitInstance.api.getPopularMovies(language = language, page = page)
     }
@@ -74,6 +95,12 @@ class Repository {
             personId = personId,
             language = language
         )
+    }
+
+    suspend fun getPopularPersons(
+        language: String, page: String
+    ): Response<ResultForPopularPersons> {
+        return RetrofitInstance.api.getPopularPersons(language = language, page = page)
     }
 
     suspend fun getTvDetails(

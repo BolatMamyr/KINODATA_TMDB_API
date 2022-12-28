@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.adapters.CastHorizontalAdapter
+import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
@@ -57,7 +58,10 @@ class TvDetailsFragment : Fragment() {
     }
 
     private fun getCredits(view: View) {
+        viewModel.getTvCredits()
+
         val castHorizontalAdapter = CastHorizontalAdapter()
+        val crewHorizontalAdapter = CrewHorizontalAdapter()
 
         binding.rvTvDetailsCast.apply {
             adapter = castHorizontalAdapter
@@ -65,23 +69,45 @@ class TvDetailsFragment : Fragment() {
             manager.orientation = RecyclerView.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.getTvCredits()
+        binding.rvTvDetailsCrew.apply {
+            adapter = crewHorizontalAdapter
+            val manager = LinearLayoutManager(view.context)
+            manager.orientation = RecyclerView.HORIZONTAL
+            layoutManager = manager
+        }
         viewModel.credits.observe(viewLifecycleOwner) {
-            val cast = it.cast
             val firstFour = it.getFirstFourActors()
             binding.txtTvDetailsStars.text =
                 "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
-            if (cast.size > 12) {
-                castHorizontalAdapter.updateData(cast.take(12))
-            } else {
-                castHorizontalAdapter.updateData(cast)
+
+            if (it.cast.isNotEmpty()) {
+                if (it.cast.size < 4) {
+                    binding.txtTvDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
+                } else {
+                    binding.txtTvDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+                }
             }
+
+            castHorizontalAdapter.updateData(it.cast.take(12))
+
+            // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
+            val sortedList = it.crew.sortedByDescending { it.popularity }
+            crewHorizontalAdapter.updateData(sortedList.take(7))
         }
         // Click Listener for See All Cast button
         binding.btnTvDetailsSeeAllCast.setOnClickListener {
             viewModel.credits.value?.id?.let {
                 val action = TvDetailsFragmentDirections
                     .actionTvDetailsFragmentToAllTvCastFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+        // Click Listener for See All Crew button
+        binding.btnTvDetailsSeeAllCrew.setOnClickListener {
+            viewModel.credits.value?.id?.let {
+                val action = TvDetailsFragmentDirections
+                    .actionTvDetailsFragmentToAllTvCrewFragment(it)
                 findNavController().navigate(action)
             }
         }
@@ -93,7 +119,15 @@ class TvDetailsFragment : Fragment() {
                     .actionTvDetailsFragmentToPersonFragment(castId)
                 findNavController().navigate(action)
             }
+        }
 
+        // Click Listener for crew RV item
+        crewHorizontalAdapter.onItemClick = {
+            it?.id?.let { castId ->
+                val action = TvDetailsFragmentDirections
+                    .actionTvDetailsFragmentToPersonFragment(castId)
+                findNavController().navigate(action)
+            }
         }
     }
 

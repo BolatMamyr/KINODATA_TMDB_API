@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.movies.movieDetails.crew.AllMovieCrewFragment">
+    tools:context=".fragments.movies.movieDetails.credits.AllMovieCrewFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tb_allMovieCrew"

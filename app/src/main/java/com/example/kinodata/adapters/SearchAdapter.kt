@@ -41,7 +41,7 @@ class SearchAdapter(
 
         val item = getItem(position)
 
-        if (item?.media_type == MyConstants.person) {
+        if (item?.media_type == MyConstants.MEDIA_TYPE_PERSON) {
             holder.txt_title.text = item.name
             holder.txt_mediaType.text = view.resources.getString(R.string.person)
 
@@ -64,7 +64,7 @@ class SearchAdapter(
             }
 
             val date: String?
-            if (item?.media_type == MyConstants.movie) {
+            if (item?.media_type == MyConstants.MEDIA_TYPE_MOVIE) {
                 holder.txt_title.text = MyUtils.getShortenedString(item.title)
                 holder.txt_mediaType.text = view.resources.getString(R.string.movie)
                 date = item.release_date

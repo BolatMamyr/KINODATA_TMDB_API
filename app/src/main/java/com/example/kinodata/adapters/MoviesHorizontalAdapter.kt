@@ -32,7 +32,7 @@ class MoviesHorizontalAdapter : RecyclerView.Adapter<MoviesHorizontalAdapter.MyV
         init {
             img = itemView.findViewById(R.id.img_horizontalList)
             title = itemView.findViewById(R.id.txt_horizontalList_title)
-            date = itemView.findViewById(R.id.txt_horizontalList_info)
+            date = itemView.findViewById(R.id.txt_horizontalList_date)
             vote = itemView.findViewById(R.id.txt_horizontalList_vote)
             rl_vote = itemView.findViewById(R.id.rl_vote)
             card_vote = itemView.findViewById(R.id.card_vote)

@@ -37,7 +37,7 @@
             <!--****************************Popular**********************************-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
             <!--****************************Top Rated**********************************-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp">
 
                 <TextView
@@ -127,7 +127,7 @@
             <!--****************************Now Playing**********************************-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp">
 
                 <TextView
@@ -174,7 +174,7 @@
             <!--****************************Upcoming**********************************-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp">
 
                 <TextView

@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/card_img" />
 
     <TextView
-        android:id="@+id/txt_horizontalList_info"
+        android:id="@+id/txt_horizontalList_date"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -51,6 +51,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_horizontalList_title" />
+
+    <TextView
+        android:id="@+id/txt_horizontalList_info"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAlignment="center"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_horizontalList_date" />
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_vote"

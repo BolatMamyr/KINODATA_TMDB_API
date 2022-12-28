@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.Credits
+import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import com.example.kinodata.repo.Repository

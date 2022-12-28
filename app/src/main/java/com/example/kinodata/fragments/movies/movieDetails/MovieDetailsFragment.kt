@@ -104,17 +104,23 @@ class MovieDetailsFragment : Fragment() {
 
         viewModel.credits.observe(viewLifecycleOwner) {
             val cast = it.cast
-            val firstFour = it.getFirstFourActors()
-            if (cast.isEmpty()) {
+            val crew = it.crew
 
-            } else if (cast.size < 4) {
-                binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
-            } else {
-                binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+            val firstFour = it.getFirstFourActors()
+
+            if (it.cast.isNotEmpty()) {
+                if (it.cast.size < 4) {
+                    binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
+                } else {
+                    binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+                }
             }
 
             castHorizontalAdapter.updateData(cast.take(12))
-            crewHorizontalAdapter.updateData(it.crew.take(7))
+
+            // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
+            val sortedList = crew.sortedByDescending { it.popularity }
+            crewHorizontalAdapter.updateData(sortedList.take(7))
         }
         // Click Listener for See All Cast button
         binding.btnDetailsSeeAllCast.setOnClickListener {
@@ -148,6 +154,7 @@ class MovieDetailsFragment : Fragment() {
             it?.id?.let { id ->
                 val action = MovieDetailsFragmentDirections
                     .actionMovieDetailsFragmentToPersonFragment(id)
+                // isCastMember variable is needed to get filmography in PersonFragment.kt
                 findNavController().navigate(action)
             }
         }

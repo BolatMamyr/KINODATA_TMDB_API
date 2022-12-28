@@ -28,6 +28,8 @@ class MyConstants {
         const val URL_PERSON_MOVIE_CREDITS = "/movie_credits"
         const val URL_PERSON_TV_CREDITS = "/tv_credits"
 
+        const val URL_PERSON_POPULAR = "person/popular"
+
         const val URL_SEARCH_MULTI = "search/multi"
 
         const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
@@ -41,8 +43,16 @@ class MyConstants {
         const val NOW_PLAYING = "Now Playing"
         const val UPCOMING = "Upcoming"
 
-        const val movie = "movie"
-        const val tv = "tv"
-        const val person = "person"
+        const val MEDIA_TYPE_MOVIE = "movie"
+        const val MEDIA_TYPE_TV = "tv"
+        const val MEDIA_TYPE_PERSON = "person"
+
+        const val DEPARTMENT_ACTING = "Acting"
+        const val DEPARTMENT_DIRECTING = "Directing"
+
+        const val CATEGORY_ACTING_MOVIES = "Acting Movies"
+        const val CATEGORY_ACTING_TV = "Acting TV"
+        const val CATEGORY_MOVIES_AS_CREW = "Movies As Crew"
+        const val CATEGORY_TV_AS_CREW = "TV As Crew"
     }
 }

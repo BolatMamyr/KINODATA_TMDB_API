@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.Crew
+import com.example.kinodata.model.persons.media_credits.Crew
 
 class CrewVerticalAdapter : RecyclerView.Adapter<CrewVerticalAdapter.MyViewHolder>() {
 

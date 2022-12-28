@@ -1,34 +1,40 @@
 package com.example.kinodata.fragments.people
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.person.Person
-import com.example.kinodata.model.credit.person.personMovies.PersonMovies
-import com.example.kinodata.model.credit.person.personTvSeries.PersonTvSeries
+import com.example.kinodata.model.persons.person.Person
+import com.example.kinodata.model.persons.person.personMovies.PersonActingMovies
+import com.example.kinodata.model.persons.person.personMovies.PersonMoviesAsCrew
+import com.example.kinodata.model.persons.person.personTvSeries.PersonActingTv
+import com.example.kinodata.model.persons.person.personTvSeries.PersonTvAsCrew
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
 
-class PersonViewModel(private val repository: Repository, private val personId: String) : ViewModel(){
+class PersonViewModel(private val repository: Repository, private val personId: String) : ViewModel() {
 
     private val _person: MutableLiveData<Person> = MutableLiveData()
     val person: LiveData<Person> = _person
 
-    private val _movies: MutableLiveData<List<PersonMovies>> = MutableLiveData()
-    val movies: LiveData<List<PersonMovies>> = _movies
+    private val _actingMovies: MutableLiveData<List<PersonActingMovies>> = MutableLiveData()
+    val actingMovies: LiveData<List<PersonActingMovies>> = _actingMovies
 
-    private val _tvSeries: MutableLiveData<List<PersonTvSeries>> = MutableLiveData()
-    val tvSeries: LiveData<List<PersonTvSeries>> = _tvSeries
+    private val _moviesAsCrew: MutableLiveData<List<PersonMoviesAsCrew>> = MutableLiveData()
+    val moviesAsCrew: LiveData<List<PersonMoviesAsCrew>> = _moviesAsCrew
+
+    private val _actingTv: MutableLiveData<List<PersonActingTv>> = MutableLiveData()
+    val actingTv: LiveData<List<PersonActingTv>> = _actingTv
+
+    private val _tvAsCrew: MutableLiveData<List<PersonTvAsCrew>> = MutableLiveData()
+    val tvAsCrew: LiveData<List<PersonTvAsCrew>> = _tvAsCrew
 
     fun getPersonInfo() {
         viewModelScope.launch {
             try {
                 val response = repository
                     .getPersonInfo(personId = personId, language = MyConstants.LANGUAGE)
-                Log.d("MyLog", "getPersonInfo: ${response.message()}  ${response.code()}")
                 if (response.isSuccessful) {
                     _person.value = response.body()
                 }
@@ -44,7 +50,8 @@ class PersonViewModel(private val repository: Repository, private val personId: 
                 val response = repository
                     .getPersonMovieCredits(personId, MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
-                    _movies.value = response.body()?.cast
+                    _actingMovies.value = response.body()?.cast
+                    _moviesAsCrew.value = response.body()?.crew
                 }
             } catch (_: Exception) {
 
@@ -58,11 +65,13 @@ class PersonViewModel(private val repository: Repository, private val personId: 
                 val response = repository
                     .getPersonTvSeriesCredits(personId, MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
-                    _tvSeries.value = response.body()?.cast
+                    _actingTv.value = response.body()?.cast
+                    _tvAsCrew.value = response.body()?.crew
                 }
             } catch (_: Exception) {
 
             }
         }
     }
+
 }

@@ -11,14 +11,17 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
-import com.example.kinodata.adapters.PersonMoviesHorizontalAdapter
-import com.example.kinodata.adapters.PersonTvSeriesHorizontalAdapter
+import com.example.kinodata.adapters.PersonActingMoviesHorizontalAdapter
+import com.example.kinodata.adapters.PersonActingTvHorizontalAdapter
+import com.example.kinodata.adapters.PersonMoviesAsCrewHorizontalAdapter
+import com.example.kinodata.adapters.PersonTvAsCrewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonBinding
 import com.example.kinodata.repo.Repository
 
 class PersonFragment : Fragment() {
-    // TODO: Crew
+    // TODO: After navigating back to PersonFragment crew member Lists Not Showing anything!!!!!!!!!!!!!!
+    // TODO: Crew Members are being repeated if director and producer at the same time.
     private val args: PersonFragmentArgs by navArgs()
 
     private val viewModel: PersonViewModel by viewModels {
@@ -38,6 +41,7 @@ class PersonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.svPerson.isSaveEnabled = true
         binding.tbPerson.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -56,21 +60,51 @@ class PersonFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.btnPersonSeeAllMovies.setOnClickListener {
+        binding.btnPersonSeeAllActingMovies.setOnClickListener {
             val action = PersonFragmentDirections
                 .actionPersonFragmentToPersonAllMoviesFragment(
                     personId = args.personId,
-                    category = resources.getString(R.string.movies)
+                    category = MyConstants.CATEGORY_ACTING_MOVIES
                 )
             findNavController().navigate(action)
         }
 
-        binding.btnPersonSeeAllTvSeries.setOnClickListener {
+        binding.btnPersonSeeAllActingTv.setOnClickListener {
             val action = PersonFragmentDirections
                 .actionPersonFragmentToPersonAllMoviesFragment(
                     personId = args.personId,
-                    category = resources.getString(R.string.tv_series)
+                    category = MyConstants.CATEGORY_ACTING_TV
                 )
+            findNavController().navigate(action)
+        }
+
+        binding.btnPersonSeeAllMoviesAsCrew.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllMoviesFragment(
+                    personId = args.personId,
+                    category = MyConstants.CATEGORY_MOVIES_AS_CREW
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.btnPersonSeeAllTvAsCrew.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllMoviesFragment(
+                    personId = args.personId,
+                    category = MyConstants.CATEGORY_TV_AS_CREW
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.btnPersonSeeAllMoviesAsCrew.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllMoviesAsCrewFragment(args.personId)
+            findNavController().navigate(action)
+        }
+
+        binding.btnPersonSeeAllTvAsCrew.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToPersonAllTvAsCrewFragment(args.personId)
             findNavController().navigate(action)
         }
     }
@@ -81,15 +115,15 @@ class PersonFragment : Fragment() {
         viewModel.person.observe(viewLifecycleOwner) {
             binding.tbPerson.title = it.name
             binding.txtPersonName.text = it.name
-            if (it.also_known_as.isNotEmpty()) {
-                binding.txtPersonAlsoKnownAs.text = it.also_known_as[0]
-            }
 
-            val department = if (it.known_for_department == "Acting") {
-                getString(R.string.Actor)
+            val department = if (it.known_for_department == MyConstants.DEPARTMENT_ACTING) {
+                if (it.gender == 1) {
+                    getString(R.string.Actress)
+                } else {
+                    getString(R.string.Actor)
+                }
             } else {
-                // TODO: Add other departments
-                ""
+                getString(R.string.department) + it.known_for_department
             }
             binding.txtPersonKnownFor.text = department
 
@@ -106,6 +140,7 @@ class PersonFragment : Fragment() {
             val profilePath = it.profile_path
 
             if (profilePath == null) {
+                // TODO: Not showing ProfileBlankPic
                 binding.imgPerson.setImageResource(R.drawable.profileblankpic)
             } else {
                 Glide.with(requireContext())
@@ -117,52 +152,130 @@ class PersonFragment : Fragment() {
     }
 
     private fun getPersonMovies(view: View) {
-        val moviesAdapter = PersonMoviesHorizontalAdapter()
-        binding.rvPersonMovies.apply {
-            adapter = moviesAdapter
+        viewModel.getPersonMovieCredits()
+
+        val actingMoviesAdapter = PersonActingMoviesHorizontalAdapter()
+        val moviesAsCrewAdapter = PersonMoviesAsCrewHorizontalAdapter()
+
+        binding.rvPersonActingMovies.apply {
+            adapter = actingMoviesAdapter
             val manager = LinearLayoutManager(view.context)
             manager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.getPersonMovieCredits()
-        viewModel.movies.observe(viewLifecycleOwner) {
-            val sortedList = it.sortedByDescending { it.popularity }.take(20)
-            moviesAdapter.updateData(sortedList)
-            // if no movies hide rv
-            if (sortedList.isEmpty()) binding.rvPersonMovies.visibility = View.GONE
+
+        binding.rvPersonMoviesAsCrew.apply {
+            adapter = moviesAsCrewAdapter
+            val manager = LinearLayoutManager(view.context)
+            manager.orientation = LinearLayoutManager.HORIZONTAL
+            layoutManager = manager
         }
-        moviesAdapter.onItemClick = {
+
+        viewModel.actingMovies.observe(viewLifecycleOwner) {
+            // *********************Acting Movies***************************
+            // if no movies hide layout
+            if (it.isEmpty()) {
+                binding.layoutActingMovies.visibility = View.GONE
+            } else {
+                binding.layoutActingMovies.visibility = View.VISIBLE
+            }
+
+            val sortedList = it.sortedByDescending { it.popularity }.take(20)
+            actingMoviesAdapter.updateData(sortedList)
+        }
+
+        viewModel.moviesAsCrew.observe(viewLifecycleOwner) {
+            // *********************Movies As Crew***************************
+            if (it.isEmpty()) {
+                binding.layoutMoviesAsCrew.visibility = View.GONE
+            } else {
+                binding.layoutMoviesAsCrew.visibility = View.VISIBLE
+            }
+            val crewSortedList = it.sortedByDescending { it.popularity }.take(20)
+            moviesAsCrewAdapter.updateData(crewSortedList)
+        }
+
+        // Acting Movies RV OnItemClickListener
+        actingMoviesAdapter.onItemClick = {
             it?.id?.let { movieId ->
                 val action = PersonFragmentDirections
                     .actionPersonFragmentToMovieDetailsFragment(movieId)
                 findNavController().navigate(action)
             }
-
         }
+
+        // Movies As Crew RV OnItemClickListener
+        moviesAsCrewAdapter.onItemClick = {
+            it?.id?.let { movieId ->
+                val action = PersonFragmentDirections
+                    .actionPersonFragmentToMovieDetailsFragment(movieId)
+                findNavController().navigate(action)
+            }
+        }
+
     }
 
     private fun getPersonTvSeries(view: View) {
-        val tvSeriesAdapter = PersonTvSeriesHorizontalAdapter()
-        binding.rvPersonTvSeries.apply {
-            adapter = tvSeriesAdapter
+        viewModel.getPersonTvSeriesCredits()
+
+        val actingTvAdapter = PersonActingTvHorizontalAdapter()
+        val tvAsCrewAdapter = PersonTvAsCrewHorizontalAdapter()
+
+        binding.rvPersonActingTv.apply {
+            adapter = actingTvAdapter
             val manager = LinearLayoutManager(view.context)
             manager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.getPersonTvSeriesCredits()
-        viewModel.tvSeries.observe(viewLifecycleOwner) {
-            val sortedList = it.sortedByDescending { it.popularity }.take(20)
-            tvSeriesAdapter.updateData(sortedList)
-            // if no movies hide rv
-            if (sortedList.isEmpty()) binding.rvPersonMovies.visibility = View.GONE
+
+        binding.rvPersonTvAsCrew.apply {
+            adapter = tvAsCrewAdapter
+            val manager = LinearLayoutManager(view.context)
+            manager.orientation = LinearLayoutManager.HORIZONTAL
+            layoutManager = manager
         }
-        tvSeriesAdapter.onItemClick = {
+
+        viewModel.actingTv.observe(viewLifecycleOwner) {
+            // *****************Acting TV Series*****************************
+            if (it.isEmpty()) {
+                binding.layoutActingTv.visibility = View.GONE
+            } else {
+                binding.layoutActingTv.visibility = View.VISIBLE
+            }
+
+            val sortedList = it.sortedByDescending { it.popularity }.take(20)
+            actingTvAdapter.updateData(sortedList)
+
+        }
+
+        viewModel.tvAsCrew.observe(viewLifecycleOwner) {
+            // *****************TV Series As Crew*****************************
+            if (it.isEmpty()) {
+                binding.layoutTvAsCrew.visibility = View.GONE
+            } else {
+                binding.layoutTvAsCrew.visibility = View.VISIBLE
+            }
+
+            val crewSortedList = it.sortedByDescending { it.popularity }.take(20)
+            tvAsCrewAdapter.updateData(crewSortedList)
+
+        }
+
+        // Acting Tv RV OnItemClickListener
+        actingTvAdapter.onItemClick = {
             it?.id?.let { tvId ->
                 val action = PersonFragmentDirections
                     .actionPersonFragmentToTvDetailsFragment(tvId)
                 findNavController().navigate(action)
             }
-
+        }
+        // TV As Crew RV OnItemClickListener
+        tvAsCrewAdapter.onItemClick = {
+            it?.id?.let { tvId ->
+                val action = PersonFragmentDirections
+                    .actionPersonFragmentToTvDetailsFragment(tvId)
+                findNavController().navigate(action)
+            }
         }
     }
 

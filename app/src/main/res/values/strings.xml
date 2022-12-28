@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">KINODATA</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="popular">Popular</string>
     <string name="see_all">See All  ></string>
@@ -50,4 +49,11 @@
     <string name="tv">TV</string>
     <string name="crew">Crew</string>
     <string name="Actor">Actor</string>
+    <string name="Actress">Actress</string>
+    <string name="department">Department:\u0020</string>
+    <string name="see_more_details"><![CDATA[See More Details >]]></string>
+    <string name="crew_member">Crew Member</string>
+    <string name="popular_persons">Popular persons</string>
+    <string name="filmography_movies_as_crew">Filmography: Movies as crew</string>
+    <string name="filmography_tv_as_crew">Filmography: TV Series as crew</string>
 </resources>

@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        app:navigationIcon="@drawable/ic_arrow_left"/>
+        app:navigationIcon="@drawable/ic_arrow_left" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/sv_person"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tb_person">
@@ -21,7 +22,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -57,29 +59,22 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/txt_person_alsoKnownAs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/txt_person_name"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_person_name" />
-
-                <TextView
                     android:id="@+id/txt_person_knownFor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/light_gray2"
-                    app:layout_constraintStart_toStartOf="@+id/txt_person_alsoKnownAs"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_person_alsoKnownAs" />
+                    app:layout_constraintStart_toStartOf="@+id/txt_person_name"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_person_name" />
 
                 <TextView
                     android:id="@+id/txt_person_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:textColor="@color/light_gray2"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/txt_person_knownFor"
                     app:layout_constraintTop_toBottomOf="@+id/txt_person_knownFor" />
 
@@ -87,79 +82,17 @@
                     android:id="@+id/btn_person_seeDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See More Details  >"
-                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                    android:text="@string/see_more_details"
                     android:textColor="@color/orange"
+                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/txt_person_date" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- ***************************Movies************************** -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:padding="8dp"
-                    android:text="@string/movies"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_person_seeAllMovies"
-                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/see_all"
-                    android:textColor="@color/orange"/>
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_person_movies"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"/>
-
-            <!-- ******************************TV Series************************** -->
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:padding="8dp"
-                    android:text="@string/tv_series"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_person_seeAllTvSeries"
-                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/see_all"
-                    android:textColor="@color/orange"/>
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_person_tvSeries"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"/>
-
             <!-- ******************Photos************************** -->
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_person_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
@@ -171,23 +104,253 @@
                     android:padding="8dp"
                     android:text="@string/photos"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
                     android:id="@+id/btn_person_seeAllPhotos"
-                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/see_all"
-                    android:textColor="@color/orange"/>
+                    android:textColor="@color/orange"
+                    android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </RelativeLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_person_photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_person_seeAllPhotos" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_person_photos"
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <!-- ***************************Acting************************** -->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_filmography_acting"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/txt_person_actingLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:padding="8dp"
+                    android:text="@string/acting"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- ***************************Acting Movies************************** -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_actingMovies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_person_actingLabel">
+
+                    <TextView
+                        android:id="@+id/txt_person_moviesActing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="8dp"
+                        android:text="@string/movies"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <Button
+                        android:id="@+id/btn_person_seeAll_actingMovies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/see_all"
+                        android:textColor="@color/orange"
+                        android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_person_actingMovies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_person_seeAll_actingMovies" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- ******************************Acting TV Series************************** -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_actingTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_actingMovies">
+
+                    <TextView
+                        android:id="@+id/txt_person_tvActing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="@string/tv_series"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btn_person_seeAll_actingTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textColor="@color/orange"
+                        android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_person_actingTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_person_seeAll_actingTv" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- **************************Crew Member************************** -->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_filmography_crewMember"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/txt_person_crewLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:padding="8dp"
+                    android:textAlignment="center"
+                    android:text="@string/crew_member"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <!-- ***************************Movies as Crew member************************** -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_moviesAsCrew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/txt_person_crewLabel">
+
+                    <TextView
+                        android:id="@+id/txt_person_moviesAsCrew"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="8dp"
+                        android:text="@string/movies"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btn_person_seeAll_moviesAsCrew"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/see_all"
+                        android:textColor="@color/orange"
+                        android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_person_moviesAsCrew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_person_seeAll_moviesAsCrew" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- ******************************TV Series As Crew Member************************** -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_tvAsCrew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_moviesAsCrew">
+
+                    <TextView
+                        android:id="@+id/txt_person_tvAsCrew"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="@string/tv_series"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btn_person_seeAll_tvAsCrew"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textColor="@color/orange"
+                        android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_person_tvAsCrew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_person_seeAll_tvAsCrew" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         </LinearLayout>
 

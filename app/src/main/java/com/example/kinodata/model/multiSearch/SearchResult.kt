@@ -29,7 +29,7 @@ data class SearchResult(
 ) {
 
     override fun toString(): String {
-        return if (media_type == MyConstants.movie) {
+        return if (media_type == MyConstants.MEDIA_TYPE_MOVIE) {
             title
         } else {
             name

@@ -1,28 +1,21 @@
 package com.example.kinodata.fragments.search
 
-import android.content.Context
+import android.graphics.drawable.GradientDrawable.Orientation
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
 import android.widget.AdapterView.*
-import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
+import com.example.kinodata.adapters.PopularPersonHorizontalAdapter
 import com.example.kinodata.adapters.SearchAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentSearchBinding
@@ -30,11 +23,10 @@ import com.example.kinodata.model.multiSearch.SearchResult
 import com.example.kinodata.repo.Repository
 
 class SearchFragment : Fragment() {
-
+    private val TAG = "SearchFragment"
     // TODO: AutoCompleteTextView NEXT btn on keyboard which navigates to new search results fragment
     // TODO: Hide keyboard when AutoCompleteTextView dropdown list is touched or scrolled
     // TODO: images for recommendation boxes
-    // TODO: Popular people RV
 
     private val viewModel: SearchViewModel by viewModels {
         SearchViewModelFactory(Repository())
@@ -57,7 +49,37 @@ class SearchFragment : Fragment() {
         binding.autoTxtSearch.maxLines = 1
 
         setRecommendedClickListeners()
+        setSearching(view)
+        getPopularPersons(view)
 
+    }
+
+    private fun getPopularPersons(view: View) {
+        val mAdapter = PopularPersonHorizontalAdapter()
+        binding.rvPopularPersons.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                view.context, LinearLayoutManager.HORIZONTAL, false
+            )
+        }
+        viewModel.getPopularPersons()
+        viewModel.popularPersons.observe(viewLifecycleOwner) {
+            mAdapter.updateData(it)
+        }
+
+        mAdapter.onItemClick = {
+            it?.id?.let {
+                val action = SearchFragmentDirections.actionSearchFragmentToPersonFragment(it)
+                findNavController().navigate(action)
+            }
+        }
+
+        binding.btnSeeAllPopularPersons.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_allPopularPersonsFragment)
+        }
+    }
+
+    private fun setSearching(view: View) {
         binding.imgClearIcon.setOnClickListener {
             binding.autoTxtSearch.text = SpannableStringBuilder("")
         }
@@ -75,11 +97,11 @@ class SearchFragment : Fragment() {
                 if (length != null) {
                     if (length > 0) {
                         binding.autoTxtSearch.textAlignment = TEXT_ALIGNMENT_TEXT_START
-                        binding.imgClearIcon.visibility = View.VISIBLE
+                        binding.imgClearIcon.visibility = VISIBLE
                     } else {
                         // if text is empty
                         binding.autoTxtSearch.textAlignment = TEXT_ALIGNMENT_CENTER
-                        binding.imgClearIcon.visibility = View.GONE
+                        binding.imgClearIcon.visibility = GONE
                     }
                 }
             }
@@ -95,25 +117,23 @@ class SearchFragment : Fragment() {
 
             val item = p0?.getItemAtPosition(p2) as SearchResult
 
-            if (item.media_type == MyConstants.movie) {
+            if (item.media_type == MyConstants.MEDIA_TYPE_MOVIE) {
                 val action = SearchFragmentDirections
                     .actionSearchFragmentToMovieDetailsFragment(item.id)
                 findNavController().navigate(action)
             }
-            if (item.media_type == MyConstants.tv) {
+            if (item.media_type == MyConstants.MEDIA_TYPE_TV) {
                 val action = SearchFragmentDirections
                     .actionSearchFragmentToTvDetailsFragment(item.id)
                 findNavController().navigate(action)
             }
-            if (item.media_type == MyConstants.person) {
+            if (item.media_type == MyConstants.MEDIA_TYPE_PERSON) {
                 val action = SearchFragmentDirections
                     .actionSearchFragmentToPersonFragment(item.id)
                 findNavController().navigate(action)
             }
 
         }
-
-
     }
 
     private fun setRecommendedClickListeners() {

@@ -11,8 +11,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinodata.R
-import com.example.kinodata.adapters.PersonMoviesVerticalAdapter
-import com.example.kinodata.adapters.PersonTvSeriesVerticalAdapter
+import com.example.kinodata.adapters.PersonActingMoviesVerticalAdapter
+import com.example.kinodata.adapters.PersonActingTvVerticalAdapter
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonAllFilmographyBinding
 import com.example.kinodata.fragments.people.PersonViewModel
 import com.example.kinodata.fragments.people.PersonViewModelFactory
@@ -52,12 +53,12 @@ class PersonAllFilmographyFragment : Fragment() {
             layoutManager = manager
             setHasFixedSize(true)
         }
-        if (args.category == getString(R.string.movies)) {
+        if (args.category == MyConstants.CATEGORY_ACTING_MOVIES) {
             binding.tbPersonAllMovies.title = getString(R.string.filmography_movies)
-            val adapter = PersonMoviesVerticalAdapter()
+            val adapter = PersonActingMoviesVerticalAdapter()
             recyclerView.adapter = adapter
             viewModel.getPersonMovieCredits()
-            viewModel.movies.observe(viewLifecycleOwner) {
+            viewModel.actingMovies.observe(viewLifecycleOwner) {
                 val sortedList = it.sortedByDescending { it.release_date }
                 adapter.updateData(sortedList)
             }
@@ -69,12 +70,12 @@ class PersonAllFilmographyFragment : Fragment() {
                     findNavController().navigate(action)
                 }
             }
-        } else if (args.category == getString(R.string.tv_series)) {
+        } else if (args.category == MyConstants.CATEGORY_ACTING_TV) {
             binding.tbPersonAllMovies.title = getString(R.string.filmography_tvSeries)
-            val adapter = PersonTvSeriesVerticalAdapter()
+            val adapter = PersonActingTvVerticalAdapter()
             recyclerView.adapter = adapter
             viewModel.getPersonTvSeriesCredits()
-            viewModel.tvSeries.observe(viewLifecycleOwner) {
+            viewModel.actingTv.observe(viewLifecycleOwner) {
                 val sortedList = it.sortedByDescending { it.first_air_date }
                 adapter.updateData(sortedList)
             }
@@ -85,6 +86,10 @@ class PersonAllFilmographyFragment : Fragment() {
                     findNavController().navigate(action)
                 }
             }
+        } else if (args.category == MyConstants.CATEGORY_MOVIES_AS_CREW) {
+
+        } else {
+
         }
 
 

@@ -1,6 +1,5 @@
 package com.example.kinodata.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.credit.Crew
+import com.example.kinodata.model.persons.media_credits.Crew
 
 class CrewHorizontalAdapter : RecyclerView.Adapter<CrewHorizontalAdapter.MyViewHolder>() {
 

@@ -15,6 +15,7 @@ import com.example.kinodata.fragments.search.SearchFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    // TODO: SearchFrag navigate to another frag when clicking on EditText
     // TODO: toolbars with animation
     // TODO: clickable photos
     // TODO: videos

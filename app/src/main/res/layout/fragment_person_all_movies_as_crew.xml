@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.people.all.PersonAllMoviesAsCrewFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_allMoviesAsCrew"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        app:title="@string/filmography_movies_as_crew"
+        app:navigationIcon="@drawable/ic_arrow_left"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_allMoviesAsCrew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tb_allMoviesAsCrew"/>
+
+</RelativeLayout>

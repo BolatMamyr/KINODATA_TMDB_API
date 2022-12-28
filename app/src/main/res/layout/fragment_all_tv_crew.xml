@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.tvSeries.tvDetails.credits.AllTvCrewFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_allTvCrew"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:title="@string/crew"
+        android:layout_alignParentTop="true"
+        app:navigationIcon="@drawable/ic_arrow_left"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_allTvCrew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tb_allTvCrew"
+        android:orientation="vertical"/>
+</RelativeLayout>

@@ -44,9 +44,8 @@ class PersonMoreDetailsFragment : Fragment() {
             binding.tbPersonMoreDetails.title = it.name
             binding.txtPersonMoreInfoKnownFor.text = it.known_for_department
             binding.txtPersonMoreInfoDateOfBirth.text = getDate(it.birthday)
-            if (it.deathday == "null" || it.deathday == null) {
-                binding.layoutDateOfDeath.visibility = View.GONE
-            } else {
+            if (!(it.deathday == "null" || it.deathday == null)) {
+                binding.layoutDateOfDeath.visibility = View.VISIBLE
                 binding.txtPersonMoreInfoDateOfDeath.text = getDate(it.deathday)
             }
             binding.txtPersonMoreInfoPlaceOfBirth.text = if (it.place_of_birth == "null") {
