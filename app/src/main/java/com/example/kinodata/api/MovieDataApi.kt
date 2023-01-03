@@ -2,6 +2,9 @@ package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.constants.MyConstants.Companion.API_KEY
+import com.example.kinodata.fragments.profile.ProfileViewModel
+import com.example.kinodata.model.auth.RequestToken
+import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -14,7 +17,9 @@ import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -152,4 +157,22 @@ interface MovieDataApi {
         @Query("query") query: String?,
         @Query("page") page: String = "1"
     ): Response<MultiSearch>
+
+    @GET(MyConstants.URL_REQUEST_TOKEN)
+    suspend fun createRequestToken(
+        @Query("api_key") api_key: String = API_KEY
+    ):Response<RequestToken>
+
+    @POST(MyConstants.URL_VALIDATE_TOKEN)
+    suspend fun validateToken(
+        @Query("api_key") api_key: String = API_KEY,
+        @Body requestBody: HashMap<String, String>
+        ): Response<RequestToken>
+
+    @POST(MyConstants.URL_CREATE_SESSION_ID)
+    suspend fun createSessionId(
+        @Query("api_key") api_key: String = API_KEY,
+        @Body requestBody: ProfileViewModel.SessionIdRequestBody
+    ): Response<SessionIdResult>
+
 }

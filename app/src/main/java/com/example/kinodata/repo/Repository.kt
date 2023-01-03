@@ -1,6 +1,9 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.RetrofitInstance
+import com.example.kinodata.fragments.profile.ProfileViewModel
+import com.example.kinodata.model.auth.RequestToken
+import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -125,6 +128,22 @@ class Repository {
         query: String?, language: String, page: String = "1"
     ): Response<MultiSearch> {
         return RetrofitInstance.api.getMultiSearchResults(query = query, language = language, page = page)
+    }
+
+    suspend fun createRequestToken(): Response<RequestToken> {
+        return RetrofitInstance.api.createRequestToken()
+    }
+
+    suspend fun validateToken(
+        requestBody: HashMap<String, String>
+    ): Response<RequestToken> {
+        return RetrofitInstance.api.validateToken(
+            requestBody = requestBody
+        )
+    }
+
+    suspend fun createSessionId(requestBody: ProfileViewModel.SessionIdRequestBody): Response<SessionIdResult> {
+        return RetrofitInstance.api.createSessionId(requestBody = requestBody)
     }
 
 }

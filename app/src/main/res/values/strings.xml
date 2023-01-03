@@ -56,4 +56,10 @@
     <string name="popular_persons">Popular persons</string>
     <string name="filmography_movies_as_crew">Filmography: Movies as crew</string>
     <string name="filmography_tv_as_crew">Filmography: TV Series as crew</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="new_user">New User?</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in_to_your_tmdb_account">Sign In to your TMDB account</string>
 </resources>

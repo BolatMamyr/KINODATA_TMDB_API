@@ -8,6 +8,13 @@ class MyConstants {
 
         const val BASE_URL = "https://api.themoviedb.org/3/"
 
+        // on TextView "Sign Up" open browser with this link
+        const val URL_SIGN_UP = "https://www.themoviedb.org/signup"
+
+        const val URL_REQUEST_TOKEN = "authentication/token/new?"
+        const val URL_VALIDATE_TOKEN = "authentication/token/validate_with_login?"
+        const val URL_CREATE_SESSION_ID = "authentication/session/new?"
+
         const val URL_MOVIE = "movie/"
 
         const val URL_POPULAR = "movie/popular"
@@ -48,11 +55,12 @@ class MyConstants {
         const val MEDIA_TYPE_PERSON = "person"
 
         const val DEPARTMENT_ACTING = "Acting"
-        const val DEPARTMENT_DIRECTING = "Directing"
 
         const val CATEGORY_ACTING_MOVIES = "Acting Movies"
         const val CATEGORY_ACTING_TV = "Acting TV"
         const val CATEGORY_MOVIES_AS_CREW = "Movies As Crew"
         const val CATEGORY_TV_AS_CREW = "TV As Crew"
+
+
     }
 }
