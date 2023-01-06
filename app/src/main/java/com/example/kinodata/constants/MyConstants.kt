@@ -61,6 +61,7 @@ class MyConstants {
         const val CATEGORY_MOVIES_AS_CREW = "Movies As Crew"
         const val CATEGORY_TV_AS_CREW = "TV As Crew"
 
-
+        const val PREFERENCES_DATA_STORE_NAME = "account_info"
+        const val SESSION_ID_PREFERENCE = "sessionId"
     }
 }

@@ -6,15 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.model.movie.RMovie
-import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.repo.Repository
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
-
-
 
 class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
     private val _popularMovies: MediatorLiveData<List<RMovie>> = MediatorLiveData()
@@ -30,6 +23,7 @@ class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
     val upcomingMovies: LiveData<List<RMovie>> = _upcomingMovies
 
     fun getPopularMovies(language: String, page: String) {
+
         viewModelScope.launch {
             try {
                 val response = repository.getPopularMovies(language, page)

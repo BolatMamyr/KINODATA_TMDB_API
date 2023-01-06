@@ -1,12 +1,20 @@
 package com.example.kinodata.fragments.profile
 
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.viewModels
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentProfileBinding
@@ -18,7 +26,7 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: ProfileViewModel by viewModels {
-        ProfileViewModelFactory(Repository())
+        ProfileViewModelFactory(requireContext().applicationContext as Application, Repository())
     }
 
     override fun onCreateView(
@@ -32,7 +40,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setOnClickSignUp()
-
         binding.btnSignIn.setOnClickListener {
             signIn()
         }
@@ -61,8 +68,14 @@ class ProfileFragment : Fragment() {
                 viewModel.signIn(username, password)
                 viewModel.sessionIdResult.observe(viewLifecycleOwner) {
                     if (it.success) {
-                        // TODO: navigate to profile and save sessionId and sign in status in SharedPreference or singleton class
+                        Toast.makeText(context, "Signed In", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Couldn't Sign In", Toast.LENGTH_SHORT).show()
                     }
+                }
+
+                viewModel.sessionId.observe(viewLifecycleOwner) { sessionId ->
+                    Log.d(TAG, "sessionId: $sessionId")
                 }
             }
 

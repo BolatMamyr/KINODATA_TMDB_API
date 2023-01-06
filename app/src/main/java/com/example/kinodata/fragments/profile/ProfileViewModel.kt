@@ -1,21 +1,28 @@
 package com.example.kinodata.fragments.profile
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.*
 import com.example.kinodata.model.auth.SessionIdResult
+import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val repository: Repository) : ViewModel() {
+class ProfileViewModel(application: Application, private val repository: Repository)
+    : AndroidViewModel(application) {
 
     // TODO: some LiveData with Boolean value to store any failure to report user with Toast message
+
     private val TAG = "ProfileViewModel"
+
+    private val dataStoreRepository = DataStoreRepository(application)
 
     private val _sessionIdResult: MutableLiveData<SessionIdResult> = MutableLiveData()
     val sessionIdResult: LiveData<SessionIdResult> = _sessionIdResult
+
+    val sessionId: LiveData<String> = dataStoreRepository.readFromDataStore.asLiveData()
 
     fun signIn(username: String, password: String) {
         viewModelScope.launch {
@@ -23,6 +30,7 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
                 val requestToken = getRequestToken()
                 Log.d(TAG, "signIn: requestToken = $requestToken")
                 requestToken?.let {
+                    // TODO: create data class not hashmap
                     val requestBody = HashMap<String, String>()
                     requestBody["username"] = username
                     requestBody["password"] = password
@@ -76,9 +84,11 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
         try {
             val requestBody = SessionIdRequestBody(request_token)
             val response = repository.createSessionId(requestBody)
-            Log.d(TAG, "createSessionId: ${response.code()}")
             if (response.isSuccessful) {
                 _sessionIdResult.value = response.body()
+                response.body()?.session_id?.let { sessionId ->
+                    dataStoreRepository.saveSessionId(sessionId)
+                }
             }
         } catch (e: Exception) {
             Log.d(TAG, "createSessionId: ${e.message}")

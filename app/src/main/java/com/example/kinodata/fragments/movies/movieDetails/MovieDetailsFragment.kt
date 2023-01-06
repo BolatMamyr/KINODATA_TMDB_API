@@ -1,11 +1,13 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,10 +20,15 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
+import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.MyUtils
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MovieDetailsFragment : Fragment() {
+
+    private val TAG = "MovieDetailsFragment"
 
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
@@ -41,6 +48,14 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        val dataStoreRepository = DataStoreRepository(view.context)
+//        lifecycleScope.launch {
+//            dataStoreRepository.readFromDataStore.collect {
+//                Log.d(TAG, "onViewCreated: sessionId = $it")
+//            }
+//        }
+
         binding.tbMovieDetails.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
