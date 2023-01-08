@@ -7,21 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.setupWithNavController
 import com.example.kinodata.R
 import com.example.kinodata.databinding.FragmentPersonMoreDetailsBinding
 import com.example.kinodata.fragments.people.PersonViewModel
-import com.example.kinodata.fragments.people.PersonViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PersonMoreDetailsFragment : Fragment() {
 
-    private val args: PersonMoreDetailsFragmentArgs by navArgs()
-
-    private val viewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory(Repository(), args.personId.toString())
-    }
+    private val viewModel: PersonViewModel by viewModels()
 
     private var _binding: FragmentPersonMoreDetailsBinding? = null
     private val binding get() = _binding!!

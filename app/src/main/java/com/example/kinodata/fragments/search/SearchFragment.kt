@@ -1,11 +1,9 @@
 package com.example.kinodata.fragments.search
 
-import android.graphics.drawable.GradientDrawable.Orientation
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,17 +18,15 @@ import com.example.kinodata.adapters.SearchAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentSearchBinding
 import com.example.kinodata.model.multiSearch.SearchResult
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
-    private val TAG = "SearchFragment"
     // TODO: AutoCompleteTextView NEXT btn on keyboard which navigates to new search results fragment
     // TODO: Hide keyboard when AutoCompleteTextView dropdown list is touched or scrolled
     // TODO: images for recommendation boxes
 
-    private val viewModel: SearchViewModel by viewModels {
-        SearchViewModelFactory(Repository())
-    }
+    private val viewModel: SearchViewModel by viewModels()
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 

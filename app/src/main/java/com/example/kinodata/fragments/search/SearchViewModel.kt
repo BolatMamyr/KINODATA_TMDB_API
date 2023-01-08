@@ -13,9 +13,12 @@ import com.example.kinodata.model.multiSearch.SearchResult
 import com.example.kinodata.model.persons.popular.PopularPerson
 import com.example.kinodata.paging.PopularPersonsPagingSource
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel(private val repository: Repository) : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
     private val _searchResults: MutableLiveData<List<SearchResult>> = MutableLiveData()
     val searchResults: LiveData<List<SearchResult>> = _searchResults

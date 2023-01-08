@@ -7,9 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MoviesFragViewModel(private val repository: Repository) : ViewModel() {
+@HiltViewModel
+class MoviesFragViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+
     private val _popularMovies: MediatorLiveData<List<RMovie>> = MediatorLiveData()
     val popularMovies: LiveData<List<RMovie>> = _popularMovies
 

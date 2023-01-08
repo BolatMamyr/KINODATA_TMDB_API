@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TvSeriesViewModel(private val repository: Repository) : ViewModel() {
+@HiltViewModel
+class TvSeriesViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     private val _popularTvSeries: MutableLiveData<List<RTvSeries>> = MutableLiveData()
     val popularTvSeries: LiveData<List<RTvSeries>> get() = _popularTvSeries

@@ -13,20 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.ReviewVerticalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentAllReviewsBinding
-import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
-import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class AllReviewsFragment : Fragment() {
 
     private var _binding: FragmentAllReviewsBinding? = null
     private val binding get() = _binding!!
 
     private val args: AllReviewsFragmentArgs by navArgs()
-    private val viewModel: AllReviewsViewModel by viewModels {
-        AllReviewsViewModelFactory(Repository(), id = args.movieId, context = args.context)
-    }
+    private val viewModel: AllReviewsViewModel by viewModels()
+//    {
+//        AllReviewsViewModelFactory(id = args.movieId, context = args.context)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -16,9 +16,9 @@ import com.example.kinodata.adapters.PersonActingTvVerticalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonAllFilmographyBinding
 import com.example.kinodata.fragments.people.PersonViewModel
-import com.example.kinodata.fragments.people.PersonViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PersonAllFilmographyFragment : Fragment() {
 
     private var _binding: FragmentPersonAllFilmographyBinding? = null
@@ -27,9 +27,7 @@ class PersonAllFilmographyFragment : Fragment() {
     private val args: PersonAllFilmographyFragmentArgs by navArgs()
     private lateinit var recyclerView: RecyclerView
 
-    private val viewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory(Repository(), args.personId.toString())
-    }
+    private val viewModel: PersonViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,7 +85,7 @@ class PersonAllFilmographyFragment : Fragment() {
                 }
             }
         } else if (args.category == MyConstants.CATEGORY_MOVIES_AS_CREW) {
-
+            // TODO: FINISH THIS BLOCK
         } else {
 
         }

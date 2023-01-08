@@ -17,16 +17,15 @@ import com.example.kinodata.adapters.PersonMoviesAsCrewHorizontalAdapter
 import com.example.kinodata.adapters.PersonTvAsCrewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonBinding
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PersonFragment : Fragment() {
     // TODO: After navigating back to PersonFragment crew member Lists Not Showing anything!!!!!!!!!!!!!!
     // TODO: Crew Members are being repeated if director and producer at the same time.
     private val args: PersonFragmentArgs by navArgs()
 
-    private val viewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory(Repository(), args.personId.toString())
-    }
+    private val viewModel: PersonViewModel by viewModels()
 
     private var _binding: FragmentPersonBinding? = null
     private val binding get() = _binding!!

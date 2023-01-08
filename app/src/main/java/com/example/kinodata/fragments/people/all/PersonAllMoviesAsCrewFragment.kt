@@ -9,24 +9,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.R
-import com.example.kinodata.adapters.PersonActingMoviesVerticalAdapter
 import com.example.kinodata.adapters.PersonMoviesAsCrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentPersonAllMoviesAsCrewBinding
-import com.example.kinodata.databinding.FragmentSearchBinding
 import com.example.kinodata.fragments.people.PersonViewModel
-import com.example.kinodata.fragments.people.PersonViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PersonAllMoviesAsCrewFragment : Fragment() {
     private var _binding: FragmentPersonAllMoviesAsCrewBinding? = null
     private val binding get() = _binding!!
 
-    private val args: PersonAllMoviesAsCrewFragmentArgs by navArgs()
-
-    private val viewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory(Repository(), args.personId.toString())
-    }
+    private val viewModel: PersonViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -5,8 +5,12 @@ import androidx.paging.PagingState
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.persons.popular.PopularPerson
 import com.example.kinodata.repo.Repository
+import javax.inject.Inject
 
-class PopularPersonsPagingSource(private val repository: Repository) : PagingSource<Int, PopularPerson>() {
+class PopularPersonsPagingSource @Inject constructor(
+    private val repository: Repository
+): PagingSource<Int, PopularPerson>() {
+
 
     override fun getRefreshKey(state: PagingState<Int, PopularPerson>): Int? {
         return state.anchorPosition?.let {

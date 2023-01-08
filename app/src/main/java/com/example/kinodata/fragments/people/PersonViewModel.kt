@@ -1,9 +1,6 @@
 package com.example.kinodata.fragments.people
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonActingMovies
@@ -11,9 +8,18 @@ import com.example.kinodata.model.persons.person.personMovies.PersonMoviesAsCrew
 import com.example.kinodata.model.persons.person.personTvSeries.PersonActingTv
 import com.example.kinodata.model.persons.person.personTvSeries.PersonTvAsCrew
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PersonViewModel(private val repository: Repository, private val personId: String) : ViewModel() {
+@HiltViewModel
+class PersonViewModel @Inject constructor(
+    private val state: SavedStateHandle,
+    private val repository: Repository
+    ) : ViewModel() {
+
+    private val personId = state.get<Int>("personId")?.toString() ?: "null"
+
 
     private val _person: MutableLiveData<Person> = MutableLiveData()
     val person: LiveData<Person> = _person
@@ -34,7 +40,8 @@ class PersonViewModel(private val repository: Repository, private val personId: 
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getPersonInfo(personId = personId, language = MyConstants.LANGUAGE)
+                        .getPersonInfo(personId = personId, language = MyConstants.LANGUAGE)
+
                 if (response.isSuccessful) {
                     _person.value = response.body()
                 }
@@ -48,7 +55,8 @@ class PersonViewModel(private val repository: Repository, private val personId: 
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getPersonMovieCredits(personId, MyConstants.LANGUAGE)
+                        .getPersonMovieCredits(personId, MyConstants.LANGUAGE)
+
                 if (response.isSuccessful) {
                     _actingMovies.value = response.body()?.cast
                     _moviesAsCrew.value = response.body()?.crew
@@ -63,7 +71,8 @@ class PersonViewModel(private val repository: Repository, private val personId: 
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getPersonTvSeriesCredits(personId, MyConstants.LANGUAGE)
+                        .getPersonTvSeriesCredits(personId, MyConstants.LANGUAGE)
+
                 if (response.isSuccessful) {
                     _actingTv.value = response.body()?.cast
                     _tvAsCrew.value = response.body()?.crew

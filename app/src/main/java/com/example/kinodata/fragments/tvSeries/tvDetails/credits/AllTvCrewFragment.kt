@@ -7,27 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.R
 import com.example.kinodata.adapters.CrewVerticalAdapter
-import com.example.kinodata.databinding.FragmentAllMovieCrewBinding
 import com.example.kinodata.databinding.FragmentAllTvCrewBinding
-import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
-import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModelFactory
-import com.example.kinodata.fragments.movies.movieDetails.credits.AllMovieCrewFragmentArgs
-import com.example.kinodata.fragments.movies.movieDetails.credits.AllMovieCrewFragmentDirections
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
-import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AllTvCrewFragment : Fragment() {
 
-    private val args: AllTvCrewFragmentArgs by navArgs()
 
-    val viewModel: TvDetailsViewModel by viewModels {
-        TvDetailsViewModelFactory(Repository(), args.tvId.toString())
-    }
+    val viewModel: TvDetailsViewModel by viewModels()
 
     private var _binding: FragmentAllTvCrewBinding? = null
     private val binding get() = _binding!!

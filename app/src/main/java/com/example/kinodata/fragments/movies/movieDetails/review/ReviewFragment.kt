@@ -1,20 +1,19 @@
 package com.example.kinodata.fragments.movies.movieDetails.review
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentReviewBinding
-import com.example.kinodata.model.review.Review
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReviewFragment : Fragment() {
 
     private val args: ReviewFragmentArgs by navArgs()

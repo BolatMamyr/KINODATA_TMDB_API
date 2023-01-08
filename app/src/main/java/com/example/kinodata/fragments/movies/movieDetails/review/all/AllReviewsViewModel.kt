@@ -1,18 +1,21 @@
 package com.example.kinodata.fragments.movies.movieDetails.review.all
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AllReviewsViewModel(
-    private val repository: Repository, private val context: String, private val id: String
+@HiltViewModel
+class AllReviewsViewModel @Inject constructor(
+    private val state: SavedStateHandle,
+    private val repository: Repository
     ): ViewModel() {
+
+    private val id = state.get<String>("movieId") ?: "null"
 
     private val _movieReviews: MutableLiveData<List<Review>> = MutableLiveData()
     val movieReviews: LiveData<List<Review>> = _movieReviews
@@ -24,7 +27,8 @@ class AllReviewsViewModel(
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getMovieReviews(id = id, language = MyConstants.LANGUAGE)
+                        .getMovieReviews(id = id, language = MyConstants.LANGUAGE)
+
                 if (response.isSuccessful) {
                     val list = response.body()?.reviews
                     list?.let { _movieReviews.value = it }
@@ -39,7 +43,8 @@ class AllReviewsViewModel(
         viewModelScope.launch {
             try {
                 val response = repository
-                    .getTvReviews(tvId = id, language = MyConstants.LANGUAGE)
+                        .getTvReviews(tvId = id, language = MyConstants.LANGUAGE)
+
                 if (response.isSuccessful) {
                     val list = response.body()?.reviews
                     list?.let { _tvReviews.value = it }

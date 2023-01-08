@@ -9,19 +9,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.R
 import com.example.kinodata.databinding.FragmentAllPopularPersonsBinding
 import com.example.kinodata.fragments.search.SearchViewModel
-import com.example.kinodata.fragments.search.SearchViewModelFactory
 import com.example.kinodata.paging.PopularPersonsPagingAdapter
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class AllPopularPersonsFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by viewModels {
-        SearchViewModelFactory(Repository())
-    }
+    private val viewModel: SearchViewModel by viewModels()
     private var _binding: FragmentAllPopularPersonsBinding? = null
     private val binding get() = _binding!!
 

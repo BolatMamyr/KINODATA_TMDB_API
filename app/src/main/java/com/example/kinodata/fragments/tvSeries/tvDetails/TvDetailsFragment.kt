@@ -1,13 +1,11 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,10 +18,10 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
-import com.example.kinodata.model.tv.tvDetails.TvDetails
-import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.MyUtils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TvDetailsFragment : Fragment() {
 
     private var _binding: FragmentTvDetailsBinding? = null
@@ -31,9 +29,7 @@ class TvDetailsFragment : Fragment() {
 
     private val args: TvDetailsFragmentArgs by navArgs()
 
-    private val viewModel: TvDetailsViewModel by viewModels {
-        TvDetailsViewModelFactory(Repository(), args.tvSeriesId.toString())
-    }
+    private val viewModel: TvDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

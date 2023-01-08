@@ -16,8 +16,9 @@ import com.example.kinodata.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMoviesBinding
 import com.example.kinodata.model.movie.RMovie
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MoviesFragment : Fragment() {
 
     private var _binding: FragmentMoviesBinding? = null
@@ -47,9 +48,7 @@ class MoviesFragment : Fragment() {
     private lateinit var btn_seeAll_now: Button
     private lateinit var btn_seeAll_upcoming: Button
 
-    private val viewModel: MoviesFragViewModel by viewModels {
-        MoviesFragViewModelFactory(Repository())
-    }
+    private val viewModel: MoviesFragViewModel by viewModels()
 
 
     override fun onCreateView(

@@ -1,15 +1,12 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,23 +17,16 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
-import com.example.kinodata.repo.DataStoreRepository
-import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.MyUtils
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
-
-    private val TAG = "MovieDetailsFragment"
 
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private val args: MovieDetailsFragmentArgs by navArgs()
-    private val viewModel: MovieDetailsViewModel by viewModels {
-        MovieDetailsViewModelFactory(Repository(), args.movieId.toString())
-    }
+    private val viewModel: MovieDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

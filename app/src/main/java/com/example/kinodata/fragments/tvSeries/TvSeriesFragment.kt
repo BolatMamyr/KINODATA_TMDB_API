@@ -12,8 +12,9 @@ import com.example.kinodata.R
 import com.example.kinodata.adapters.TvSeriesHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvSeriesBinding
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TvSeriesFragment : Fragment() {
 
     // TODO: See All Reviews
@@ -21,9 +22,7 @@ class TvSeriesFragment : Fragment() {
     private var _binding: FragmentTvSeriesBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: TvSeriesViewModel by viewModels {
-        TvSeriesViewModelFactory(Repository())
-    }
+    private val viewModel: TvSeriesViewModel by viewModels()
 
     private lateinit var popularAdapter: TvSeriesHorizontalAdapter
     private lateinit var topAdapter: TvSeriesHorizontalAdapter

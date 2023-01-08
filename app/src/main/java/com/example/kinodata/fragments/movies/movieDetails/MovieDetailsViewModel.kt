@@ -1,21 +1,23 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieDetailsViewModel(
-    private val repository: Repository, private val id: String
+@HiltViewModel
+class MovieDetailsViewModel @Inject constructor(
+    private val state: SavedStateHandle,
+    private val repository: Repository
     ) : ViewModel() {
 
+    private val id = state.get<Int>("movieId")?.toString() ?: "null"
     private var _movie: MutableLiveData<MovieDetails> = MutableLiveData()
     val movie: LiveData<MovieDetails> = _movie
 

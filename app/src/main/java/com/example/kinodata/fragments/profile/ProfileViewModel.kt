@@ -2,15 +2,19 @@ package com.example.kinodata.fragments.profile
 
 import android.app.Application
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.*
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel(application: Application, private val repository: Repository)
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    application: Application,
+    private val repository: Repository
+    )
     : AndroidViewModel(application) {
 
     // TODO: some LiveData with Boolean value to store any failure to report user with Toast message

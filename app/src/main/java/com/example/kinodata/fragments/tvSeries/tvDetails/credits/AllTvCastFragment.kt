@@ -7,20 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.CastVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllTvCastBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
-import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AllTvCastFragment : Fragment() {
-    private val args: AllTvCastFragmentArgs by navArgs()
 
-    val viewModel: TvDetailsViewModel by viewModels {
-        TvDetailsViewModelFactory(Repository(), args.tvId.toString())
-    }
+    val viewModel: TvDetailsViewModel by viewModels()
 
     private var _binding: FragmentAllTvCastBinding? = null
     private val binding get() = _binding!!

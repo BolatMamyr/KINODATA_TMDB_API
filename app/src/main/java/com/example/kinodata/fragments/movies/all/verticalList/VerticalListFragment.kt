@@ -10,12 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kinodata.paging.MoviesVerticalAdapter
 import com.example.kinodata.databinding.FragmentVerticalListBinding
 import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class VerticalListFragment : Fragment() {
 
     // TODO: add progress bar at the end
@@ -25,9 +27,10 @@ class VerticalListFragment : Fragment() {
     private var _binding: FragmentVerticalListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: VerticalListViewModel by viewModels {
-        VerticalListViewModelFactory(Repository(), args.category)
-    }
+    @Inject
+    lateinit var repository: Repository
+
+    private val viewModel: VerticalListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +54,7 @@ class VerticalListFragment : Fragment() {
             this.adapter = adapter
         }
         lifecycleScope.launch {
-            viewModel.movies.collect{
+            viewModel.movies.collect {
                 adapter.submitData(it)
             }
         }

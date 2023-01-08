@@ -7,8 +7,12 @@ import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.repo.Repository
 import retrofit2.Response
+import javax.inject.Inject
 
-class TvPagingSource(private val repository: Repository, private val category: String)
+class TvPagingSource @Inject constructor(
+    private val category: String,
+    private val repository: Repository
+    )
     : PagingSource<Int, RTvSeries>() {
 
     override fun getRefreshKey(state: PagingState<Int, RTvSeries>): Int? {

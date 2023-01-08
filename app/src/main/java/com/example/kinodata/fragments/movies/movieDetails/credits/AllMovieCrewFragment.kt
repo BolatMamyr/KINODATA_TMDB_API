@@ -7,21 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllMovieCrewBinding
 import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
-import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModelFactory
-import com.example.kinodata.repo.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AllMovieCrewFragment : Fragment() {
 
-    private val args: AllMovieCrewFragmentArgs by navArgs()
-
-    val viewModel: MovieDetailsViewModel by viewModels {
-        MovieDetailsViewModelFactory(Repository(), args.movieId.toString())
-    }
+    val viewModel: MovieDetailsViewModel by viewModels()
 
     private var _binding: FragmentAllMovieCrewBinding? = null
     private val binding get() = _binding!!
