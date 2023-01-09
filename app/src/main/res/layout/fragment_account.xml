@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.profile.AccountFragment">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_profile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/profileblankpic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="BolatM"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_profile" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/super_light_gray"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintTop_toBottomOf="@id/txt_username">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:drawableEnd="@drawable/ic_right_arrow"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/favourite"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                app:shapeAppearanceOverlay="@style/SquareButton" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginHorizontal="20dp"
+                android:background="@color/light_gray" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:drawableEnd="@drawable/ic_right_arrow"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/watchlist"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                app:shapeAppearanceOverlay="@style/SquareButton" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginHorizontal="20dp"
+                android:background="@color/light_gray" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:drawableEnd="@drawable/ic_right_arrow"
+                android:text="@string/rated"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                app:shapeAppearanceOverlay="@style/SquareButton" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginHorizontal="20dp"
+                android:background="@color/light_gray" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:drawableEnd="@drawable/ic_right_arrow"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/created_lists"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
+                app:shapeAppearanceOverlay="@style/SquareButton" />
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/red"
+        android:text="@string/sign_out"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_profile" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

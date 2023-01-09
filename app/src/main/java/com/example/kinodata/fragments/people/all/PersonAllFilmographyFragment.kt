@@ -51,43 +51,45 @@ class PersonAllFilmographyFragment : Fragment() {
             layoutManager = manager
             setHasFixedSize(true)
         }
-        if (args.category == MyConstants.CATEGORY_ACTING_MOVIES) {
-            binding.tbPersonAllMovies.title = getString(R.string.filmography_movies)
-            val adapter = PersonActingMoviesVerticalAdapter()
-            recyclerView.adapter = adapter
-            viewModel.getPersonMovieCredits()
-            viewModel.actingMovies.observe(viewLifecycleOwner) {
-                val sortedList = it.sortedByDescending { it.release_date }
-                adapter.updateData(sortedList)
-            }
+        when (args.category) {
+            MyConstants.CATEGORY_ACTING_MOVIES -> {
+                binding.tbPersonAllMovies.title = getString(R.string.filmography_movies)
+                val adapter = PersonActingMoviesVerticalAdapter()
+                recyclerView.adapter = adapter
+                viewModel.getPersonMovieCredits()
+                viewModel.actingMovies.observe(viewLifecycleOwner) {
+                    val sortedList = it.sortedByDescending { it.release_date }
+                    adapter.updateData(sortedList)
+                }
 
-            adapter.onItemClick = {
-                it?.id?.let { movieId ->
-                    val action = PersonAllFilmographyFragmentDirections
-                        .actionPersonAllMoviesFragmentToMovieDetailsFragment(movieId)
-                    findNavController().navigate(action)
+                adapter.onItemClick = {
+                    it?.id?.let { movieId ->
+                        val action = PersonAllFilmographyFragmentDirections
+                            .actionPersonAllMoviesFragmentToMovieDetailsFragment(movieId)
+                        findNavController().navigate(action)
+                    }
                 }
             }
-        } else if (args.category == MyConstants.CATEGORY_ACTING_TV) {
-            binding.tbPersonAllMovies.title = getString(R.string.filmography_tvSeries)
-            val adapter = PersonActingTvVerticalAdapter()
-            recyclerView.adapter = adapter
-            viewModel.getPersonTvSeriesCredits()
-            viewModel.actingTv.observe(viewLifecycleOwner) {
-                val sortedList = it.sortedByDescending { it.first_air_date }
-                adapter.updateData(sortedList)
-            }
-            adapter.onItemClick = {
-                it?.id?.let { tvId ->
-                    val action = PersonAllFilmographyFragmentDirections
-                        .actionPersonAllMoviesFragmentToTvDetailsFragment(tvId)
-                    findNavController().navigate(action)
+            MyConstants.CATEGORY_ACTING_TV -> {
+                binding.tbPersonAllMovies.title = getString(R.string.filmography_tvSeries)
+                val adapter = PersonActingTvVerticalAdapter()
+                recyclerView.adapter = adapter
+                viewModel.getPersonTvSeriesCredits()
+                viewModel.actingTv.observe(viewLifecycleOwner) {
+                    val sortedList = it.sortedByDescending { it.first_air_date }
+                    adapter.updateData(sortedList)
+                }
+                adapter.onItemClick = {
+                    it?.id?.let { tvId ->
+                        val action = PersonAllFilmographyFragmentDirections
+                            .actionPersonAllMoviesFragmentToTvDetailsFragment(tvId)
+                        findNavController().navigate(action)
+                    }
                 }
             }
-        } else if (args.category == MyConstants.CATEGORY_MOVIES_AS_CREW) {
-            // TODO: FINISH THIS BLOCK
-        } else {
+            else -> {
 
+            }
         }
 
 

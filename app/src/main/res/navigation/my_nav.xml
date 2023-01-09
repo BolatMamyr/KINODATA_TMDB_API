@@ -45,7 +45,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.kinodata.fragments.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/verticalListFragment"
         android:name="com.example.kinodata.fragments.movies.all.verticalList.VerticalListFragment"
@@ -291,4 +295,9 @@
         <argument android:name="personId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.example.kinodata.fragments.profile.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" />
 </navigation>

@@ -10,13 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentProfileBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "ProfileFragment"
+
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
-    private val TAG = "ProfileFragment"
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -32,6 +35,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        findNavController().navigate(R.id.action_profileFragment_to_accountFragment)
         setOnClickSignUp()
         binding.btnSignIn.setOnClickListener {
             signIn()
@@ -60,8 +64,10 @@ class ProfileFragment : Fragment() {
             if (username.isNotEmpty() && password.isNotEmpty()) {
                 viewModel.signIn(username, password)
                 viewModel.sessionIdResult.observe(viewLifecycleOwner) {
+                    Log.d(TAG, "signIn: ${it.success}\nSession id = ${it.session_id}")
                     if (it.success) {
                         Toast.makeText(context, "Signed In", Toast.LENGTH_SHORT).show()
+//                        findNavController().navigate(R.id.action_profileFragment_to_accountFragment)
                     } else {
                         Toast.makeText(context, "Couldn't Sign In", Toast.LENGTH_SHORT).show()
                     }
@@ -70,6 +76,7 @@ class ProfileFragment : Fragment() {
                 viewModel.sessionId.observe(viewLifecycleOwner) { sessionId ->
                     Log.d(TAG, "sessionId: $sessionId")
                 }
+
             }
 
         }

@@ -2,6 +2,7 @@ package com.example.kinodata.fragments.profile
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.repo.DataStoreRepository
@@ -10,18 +11,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "ProfileViewModel"
+
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    application: Application,
-    private val repository: Repository
+    private val app: Application,
+    private val repository: Repository,
+    private val dataStoreRepository: DataStoreRepository
     )
-    : AndroidViewModel(application) {
+    : AndroidViewModel(app) {
 
     // TODO: some LiveData with Boolean value to store any failure to report user with Toast message
-
-    private val TAG = "ProfileViewModel"
-
-    private val dataStoreRepository = DataStoreRepository(application)
 
     private val _sessionIdResult: MutableLiveData<SessionIdResult> = MutableLiveData()
     val sessionIdResult: LiveData<SessionIdResult> = _sessionIdResult
@@ -42,12 +42,23 @@ class ProfileViewModel @Inject constructor(
 
                     if (validateToken(requestBody)) {
                         createSessionId(it)
+                    } else {
+                        makeToast()
                     }
                 }
 
             } catch (e: Exception) {
                 Log.d(TAG, "signIn: ${e.message}")
+                makeToast()
             }
+        }
+    }
+
+    private fun makeToast() {
+        app.apply {
+            Toast.makeText(
+                this, "Couldn't sign in", Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -62,9 +73,11 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }
+            makeToast()
             null
         } catch (e: Exception) {
             Log.d(TAG, "createRequestToken: ${e.message}")
+            makeToast()
             null
         }
     }
@@ -77,9 +90,11 @@ class ProfileViewModel @Inject constructor(
             if (response.isSuccessful) {
                 return response.body()?.success == true
             }
+            makeToast()
             false
         } catch (e: Exception) {
             Log.d(TAG, "validateToken: ${e.message}")
+            makeToast()
             false
         }
     }
@@ -88,14 +103,16 @@ class ProfileViewModel @Inject constructor(
         try {
             val requestBody = SessionIdRequestBody(request_token)
             val response = repository.createSessionId(requestBody)
+            Log.d(TAG, "createSessionId: ${response.code()}")
             if (response.isSuccessful) {
                 _sessionIdResult.value = response.body()
                 response.body()?.session_id?.let { sessionId ->
                     dataStoreRepository.saveSessionId(sessionId)
                 }
-            }
+            } else makeToast()
         } catch (e: Exception) {
             Log.d(TAG, "createSessionId: ${e.message}")
+            makeToast()
         }
     }
 
