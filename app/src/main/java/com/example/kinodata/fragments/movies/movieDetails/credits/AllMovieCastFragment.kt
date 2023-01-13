@@ -19,6 +19,7 @@ class AllMovieCastFragment : Fragment() {
 
     private var _binding: FragmentAllMovieCastBinding? = null
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +43,7 @@ class AllMovieCastFragment : Fragment() {
         }
         viewModel.getMovieCredits()
         viewModel.credits.observe(viewLifecycleOwner) {
-            val sortedList = it.cast.sortedByDescending { it.popularity }
+            val sortedList = it.cast
             adapter.updateData(sortedList)
         }
 

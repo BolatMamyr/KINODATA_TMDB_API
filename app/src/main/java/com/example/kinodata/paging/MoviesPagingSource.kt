@@ -2,7 +2,6 @@ package com.example.kinodata.paging
 
 import androidx.paging.*
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.constants.MyConstants.Companion.LANGUAGE
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.repo.Repository
@@ -28,16 +27,16 @@ class MoviesPagingSource @Inject constructor(
         return try {
             var data: Response<ResultForMovies>? = null
             if (category == MyConstants.POPULAR) {
-                data = repository.getPopularMovies(LANGUAGE, page.toString())
+                data = repository.getPopularMovies(MyConstants.LANGUAGE, page.toString())
             }
             if (category == MyConstants.TOP_RATED) {
-                data = repository.getTopRatedMovies(LANGUAGE, page.toString())
+                data = repository.getTopRatedMovies(MyConstants.LANGUAGE, page.toString())
             }
             if (category == MyConstants.NOW_PLAYING) {
-                data = repository.getNowPlayingMovies(LANGUAGE, page.toString())
+                data = repository.getNowPlayingMovies(MyConstants.LANGUAGE, page.toString())
             }
             if (category == MyConstants.UPCOMING) {
-                data = repository.getUpcomingMovies(LANGUAGE, page.toString())
+                data = repository.getUpcomingMovies(MyConstants.LANGUAGE, page.toString())
             }
 
             LoadResult.Page(

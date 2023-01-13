@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
-import com.example.kinodata.constants.MyConstants.Companion.IMG_BASE_URL
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.utils.MyUtils
 
@@ -65,7 +65,7 @@ class MoviesHorizontalAdapter : RecyclerView.Adapter<MoviesHorizontalAdapter.MyV
 
 
         val img = movies[position].poster_path
-        Glide.with(holder.itemView.context).load(IMG_BASE_URL + img).into(holder.img)
+        Glide.with(holder.itemView.context).load(MyConstants.IMG_BASE_URL + img).into(holder.img)
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(movies[position])

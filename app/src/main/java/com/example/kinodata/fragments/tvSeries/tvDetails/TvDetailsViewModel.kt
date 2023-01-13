@@ -11,12 +11,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+private const val TAG = "TvDetailsViewModel"
+
 @HiltViewModel
 class TvDetailsViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val repository: Repository
     ) : ViewModel() {
 
+    init {
+        Log.d(TAG, "initialized: ")
+    }
     private val tvId = state.get<Int>("tvSeriesId").toString()
 
     private var _tvSeries: MutableLiveData<TvDetails> = MutableLiveData()
@@ -36,7 +42,7 @@ class TvDetailsViewModel @Inject constructor(
                     _tvSeries.value = response.body()
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "getTvDetails: ${e.message}")
+                Log.d(TAG, "getTvDetails: ${e.message}")
             }
 
         }
@@ -48,9 +54,10 @@ class TvDetailsViewModel @Inject constructor(
                 val response = repository.getTvCredits(tvId, MyConstants.LANGUAGE)
                 if(response.isSuccessful) {
                     _credits.value = response.body()
+                    Log.d(TAG, "Cast and Crew sizes: ${response.body()?.cast?.size} - ${response.body()?.crew?.size}" )
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "getTvCredits: ${e.message}")
+                Log.d(TAG, "getTvCredits: ${e.message}")
             }
         }
     }
@@ -67,7 +74,7 @@ class TvDetailsViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "Error: getTvReviews: ${e.message}")
+                Log.d(TAG, "Error: getTvReviews: ${e.message}")
             }
         }
     }

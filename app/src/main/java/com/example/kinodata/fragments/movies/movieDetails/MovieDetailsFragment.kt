@@ -20,6 +20,7 @@ import com.example.kinodata.databinding.FragmentMovieDetailsBinding
 import com.example.kinodata.utils.MyUtils
 import dagger.hilt.android.AndroidEntryPoint
 
+//private val Context.datastore: DataStore<Preferences> by dataStore()
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
 
@@ -38,13 +39,6 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val dataStoreRepository = DataStoreRepository(view.context)
-//        lifecycleScope.launch {
-//            dataStoreRepository.readFromDataStore.collect {
-//                Log.d(TAG, "onViewCreated: sessionId = $it")
-//            }
-//        }
 
         binding.tbMovieDetails.setNavigationOnClickListener {
             findNavController().navigateUp()

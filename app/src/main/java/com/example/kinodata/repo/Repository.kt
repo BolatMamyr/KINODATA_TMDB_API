@@ -1,9 +1,11 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
-import com.example.kinodata.fragments.profile.ProfileViewModel
+import com.example.kinodata.model.auth.DeleteSessionResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.SessionIdResult
+import com.example.kinodata.model.auth.requestBodies.DeleteSessionRequestBody
+import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -146,8 +148,14 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         )
     }
 
-    suspend fun createSessionId(requestBody: ProfileViewModel.SessionIdRequestBody): Response<SessionIdResult> {
+    suspend fun createSessionId(requestBody: SessionIdRequestBody): Response<SessionIdResult> {
         return api.createSessionId(requestBody = requestBody)
+    }
+
+    suspend fun deleteSession(
+        requestBody: DeleteSessionRequestBody
+    ): Response<DeleteSessionResponse> {
+        return api.deleteSession(requestBody = requestBody)
     }
 
 }

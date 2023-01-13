@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails.credits
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,12 @@ import com.example.kinodata.databinding.FragmentAllTvCrewBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "AllTvCrewFragment"
+
 @AndroidEntryPoint
 class AllTvCrewFragment : Fragment() {
 
-
-    val viewModel: TvDetailsViewModel by viewModels()
+    private val viewModel: TvDetailsViewModel by viewModels()
 
     private var _binding: FragmentAllTvCrewBinding? = null
     private val binding get() = _binding!!
@@ -48,6 +50,7 @@ class AllTvCrewFragment : Fragment() {
         viewModel.credits.observe(viewLifecycleOwner) {
             val sortedList = it.crew.sortedByDescending { it.popularity }
             adapter.updateData(sortedList)
+            Log.d(TAG, "Crew size: ${it.crew.size}")
         }
         adapter.onItemClick = {
             it?.id?.let { personId ->

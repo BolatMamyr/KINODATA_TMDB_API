@@ -1,7 +1,7 @@
 package com.example.kinodata.di
 
 import com.example.kinodata.api.MovieDataApi
-import com.example.kinodata.constants.MyConstants.Companion.BASE_URL
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.repo.Repository
 import dagger.Module
 import dagger.Provides
@@ -26,7 +26,7 @@ object AppModule {
     @Singleton
     fun provideApi(): MovieDataApi {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(MyConstants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MovieDataApi::class.java)

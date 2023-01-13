@@ -1,9 +1,10 @@
-package com.example.kinodata.fragments.profile
+package com.example.kinodata.fragments.profile.signIn
 
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
+import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
@@ -14,7 +15,7 @@ import javax.inject.Inject
 private const val TAG = "ProfileViewModel"
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class SignInViewModel @Inject constructor(
     private val app: Application,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
@@ -26,7 +27,7 @@ class ProfileViewModel @Inject constructor(
     private val _sessionIdResult: MutableLiveData<SessionIdResult> = MutableLiveData()
     val sessionIdResult: LiveData<SessionIdResult> = _sessionIdResult
 
-    val sessionId: LiveData<String> = dataStoreRepository.readFromDataStore.asLiveData()
+    val sessionId: LiveData<String> = dataStoreRepository.sessionId.asLiveData()
 
     fun signIn(username: String, password: String) {
         viewModelScope.launch {
@@ -107,6 +108,7 @@ class ProfileViewModel @Inject constructor(
             if (response.isSuccessful) {
                 _sessionIdResult.value = response.body()
                 response.body()?.session_id?.let { sessionId ->
+                    // save current sessionId to DataStore
                     dataStoreRepository.saveSessionId(sessionId)
                 }
             } else makeToast()
@@ -116,6 +118,5 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    data class SessionIdRequestBody(val request_token: String)
 
 }
