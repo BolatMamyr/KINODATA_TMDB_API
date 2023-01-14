@@ -62,9 +62,10 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="sign_in_to_your_tmdb_account">Sign In to your TMDB account</string>
-    <string name="favourite">Favourite</string>
+    <string name="favorite">Favorite</string>
     <string name="watchlist">WatchList</string>
     <string name="rated">Rated</string>
     <string name="created_lists">Created Lists</string>
     <string name="sign_out">Sign Out</string>
+    <string name="signed_out">Signed Out</string>
 </resources>

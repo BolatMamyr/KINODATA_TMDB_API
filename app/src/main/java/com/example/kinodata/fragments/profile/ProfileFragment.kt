@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// TODO: Not showing anything
-
 private const val TAG = "ProfileFragment"
 
 @AndroidEntryPoint
@@ -40,14 +38,14 @@ class ProfileFragment : Fragment() {
         val signInFrag = SignInFragment()
         val accountFrag = AccountFragment()
 
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
                 if (isSignedIn) {
-                    fragmentTransaction.replace(R.id.viewpager_profile, accountFrag)
+                    val fragmentTransaction = childFragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.profileFragmentContainer, accountFrag).commit()
                 } else {
-                    fragmentTransaction.replace(R.id.viewpager_profile, signInFrag)
+                    val fragmentTransaction = childFragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.profileFragmentContainer, signInFrag).commit()
                 }
             }
         }

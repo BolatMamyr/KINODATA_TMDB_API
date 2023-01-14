@@ -14,14 +14,18 @@ import androidx.navigation.fragment.findNavController
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentSignInBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "SignInFragment"
+
+@AndroidEntryPoint
 class SignInFragment : Fragment() {
 
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SignInViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,12 +46,6 @@ class SignInFragment : Fragment() {
 
     private fun setOnClickSignUp() {
         binding.txtSignUp.setOnClickListener {
-//            val webpage: Uri = Uri.parse(MyConstants.URL_SIGN_UP)
-//            val intent = Intent(Intent.ACTION_VIEW, webpage)
-//            if (intent.resolveActivity(requireActivity().packageManager) != null) {
-//                startActivity(intent)
-//            }
-
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(MyConstants.URL_SIGN_UP)
             startActivity(intent)
@@ -64,7 +62,6 @@ class SignInFragment : Fragment() {
                     Log.d(TAG, "signIn: ${it.success}\nSession id = ${it.session_id}")
                     if (it.success) {
                         Toast.makeText(context, "Signed In", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(R.id.action_profileFragment_to_accountFragment)
                     } else {
                         Toast.makeText(context, "Couldn't Sign In", Toast.LENGTH_SHORT).show()
                     }
@@ -74,6 +71,8 @@ class SignInFragment : Fragment() {
                     Log.d(TAG, "sessionId: $sessionId")
                 }
 
+            } else {
+                // TODO: Show an error Toast if not filled
             }
 
         }

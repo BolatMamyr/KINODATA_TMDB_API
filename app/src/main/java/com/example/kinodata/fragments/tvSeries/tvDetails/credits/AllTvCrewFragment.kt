@@ -14,6 +14,8 @@ import com.example.kinodata.databinding.FragmentAllTvCrewBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+// TODO: NOT SHOWING All cast and crew
+
 private const val TAG = "AllTvCrewFragment"
 
 @AndroidEntryPoint

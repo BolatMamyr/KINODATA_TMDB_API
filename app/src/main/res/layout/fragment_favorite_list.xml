@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.profile.account.list.FavoriteListFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        app:title="Favorite" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tb_favorite"
+        app:tabTextColor="@color/light_gray"
+        app:tabSelectedTextColor="@color/orange"
+        app:tabIndicatorColor="@color/orange">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/movies" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_series" />
+    </com.google.android.material.tabs.TabLayout>
+</RelativeLayout>

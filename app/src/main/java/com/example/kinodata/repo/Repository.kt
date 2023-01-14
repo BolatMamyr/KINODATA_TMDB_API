@@ -1,6 +1,7 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
+import com.example.kinodata.model.account.AccountDetails
 import com.example.kinodata.model.auth.DeleteSessionResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.SessionIdResult
@@ -152,10 +153,21 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.createSessionId(requestBody = requestBody)
     }
 
-    suspend fun deleteSession(
-        requestBody: DeleteSessionRequestBody
-    ): Response<DeleteSessionResponse> {
-        return api.deleteSession(requestBody = requestBody)
+//    suspend fun deleteSession(
+//        requestBody: DeleteSessionRequestBody
+//    ): Response<DeleteSessionResponse> {
+//        return api.deleteSession(requestBody = requestBody)
+//    }
+suspend fun deleteSession(
+    session_id: String
+): Response<DeleteSessionResponse> {
+    return api.deleteSession(session_id = session_id)
+}
+
+    suspend fun getAccountDetails(
+        session_id: String
+    ): Response<AccountDetails> {
+        return api.getAccountDetails(session_id = session_id)
     }
 
 }

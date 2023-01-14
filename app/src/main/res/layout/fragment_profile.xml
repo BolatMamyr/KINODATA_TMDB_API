@@ -7,8 +7,8 @@
     tools:context=".fragments.profile.ProfileFragment">
 
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager_profile"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/profileFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>

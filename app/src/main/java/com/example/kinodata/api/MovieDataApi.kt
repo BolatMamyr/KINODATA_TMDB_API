@@ -1,6 +1,7 @@
 package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
+import com.example.kinodata.model.account.AccountDetails
 import com.example.kinodata.model.auth.DeleteSessionResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
@@ -177,9 +178,21 @@ interface MovieDataApi {
         @Body requestBody: SessionIdRequestBody
     ): Response<SessionIdResult>
 
+//    @DELETE(MyConstants.URL_DELETE_SESSION)
+//    suspend fun deleteSession(
+//        @Query("api_key") api_key: String = MyConstants.API_KEY,
+//        @Body requestBody: DeleteSessionRequestBody
+//    ): Response<DeleteSessionResponse>
+
     @DELETE(MyConstants.URL_DELETE_SESSION)
     suspend fun deleteSession(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
-        @Body requestBody: DeleteSessionRequestBody
+        @Query ("session_id") session_id: String
     ): Response<DeleteSessionResponse>
+
+    @GET(MyConstants.URL_ACCOUNT_DETAILS)
+    suspend fun getAccountDetails(
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query ("session_id") session_id: String
+    ): Response<AccountDetails>
 }

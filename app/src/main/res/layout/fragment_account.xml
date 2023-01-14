@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="BolatM"
+        tools:text="BolatM"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,24 +45,26 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/btn_favorite"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:drawableEnd="@drawable/ic_right_arrow"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="@string/favourite"
+                android:text="@string/favorite"
                 android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
                 app:shapeAppearanceOverlay="@style/SquareButton" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1px"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:background="@color/light_gray" />
 
             <Button
+                android:id="@+id/btn_watchList"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:drawableEnd="@drawable/ic_right_arrow"
@@ -74,13 +76,14 @@
                 android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
                 app:shapeAppearanceOverlay="@style/SquareButton" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1px"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:background="@color/light_gray" />
 
             <Button
+                android:id="@+id/btn_rated"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:insetTop="0dp"
@@ -92,9 +95,9 @@
                 android:theme="@style/ThemeOverlay.Material3.Button.TextButton"
                 app:shapeAppearanceOverlay="@style/SquareButton" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1px"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:background="@color/light_gray" />
 
