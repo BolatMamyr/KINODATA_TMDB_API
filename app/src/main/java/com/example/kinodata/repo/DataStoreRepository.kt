@@ -13,17 +13,26 @@ import javax.inject.Inject
 //private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 //    MyConstants.PREFERENCES_DATA_STORE_NAME
 //)
+
+private const val TAG = "DataStoreRepository"
 class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>
     ) {
 
     private val sessionIdKey = stringPreferencesKey(MyConstants.SESSION_ID_PREFERENCE)
     private val isSignedInKey = booleanPreferencesKey(MyConstants.IS_SIGNED_IN_PREFERENCE)
-
+    private val accountIdKey = intPreferencesKey(MyConstants.ACCOUNT_ID_PREFERENCE)
     suspend fun saveSessionId(sessionId: String) {
         dataStore.edit { preference ->
             preference[sessionIdKey] = sessionId
             preference[isSignedInKey] = true
+        }
+
+    }
+
+    suspend fun saveAccountId(accountId: Int) {
+        dataStore.edit { preference ->
+            preference[accountIdKey] = accountId
         }
     }
 
@@ -40,11 +49,20 @@ class DataStoreRepository @Inject constructor(
 
     val isSignedIn: Flow<Boolean> = dataStore.data
         .catch { exception ->
-            Log.d("DataStore", exception.message.toString())
+            Log.d(TAG, exception.message.toString())
             emit(emptyPreferences())
         }.map {  preferences ->
             val isSignedIn = preferences[isSignedInKey] ?: false
             isSignedIn
+        }
+
+    val accountId: Flow<Int> = dataStore.data
+        .catch { exception ->
+            Log.d(TAG, exception.message.toString())
+            emit(emptyPreferences())
+        }.map { pref ->
+            val accountId = pref[accountIdKey] ?: -1
+            accountId
         }
 
     suspend fun deleteSessionId() {
@@ -54,4 +72,13 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
+    val accountIdAndSessionId = dataStore.data
+        .catch {exception ->
+            Log.d(TAG, exception.message.toString())
+            emit(emptyPreferences())
+        }.map { pref ->
+            val accountId = pref[accountIdKey] ?: -1
+            val sessionId = pref[sessionIdKey] ?: "null"
+            Pair(accountId, sessionId)
+        }
 }

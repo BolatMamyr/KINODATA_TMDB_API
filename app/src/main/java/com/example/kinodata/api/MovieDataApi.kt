@@ -2,11 +2,12 @@ package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.account.AccountDetails
-import com.example.kinodata.model.auth.DeleteSessionResponse
+import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.SessionIdResult
-import com.example.kinodata.model.auth.requestBodies.DeleteSessionRequestBody
+import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
+import com.example.kinodata.model.favorite.MarkAsFavoriteRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -169,7 +170,7 @@ interface MovieDataApi {
     @POST(MyConstants.URL_VALIDATE_TOKEN)
     suspend fun validateToken(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
-        @Body requestBody: HashMap<String, String>
+        @Body requestBody: ValidateTokenRequestBody
         ): Response<RequestToken>
 
     @POST(MyConstants.URL_CREATE_SESSION_ID)
@@ -178,21 +179,39 @@ interface MovieDataApi {
         @Body requestBody: SessionIdRequestBody
     ): Response<SessionIdResult>
 
-//    @DELETE(MyConstants.URL_DELETE_SESSION)
-//    suspend fun deleteSession(
-//        @Query("api_key") api_key: String = MyConstants.API_KEY,
-//        @Body requestBody: DeleteSessionRequestBody
-//    ): Response<DeleteSessionResponse>
-
     @DELETE(MyConstants.URL_DELETE_SESSION)
     suspend fun deleteSession(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query ("session_id") session_id: String
-    ): Response<DeleteSessionResponse>
+    ): Response<SuccessResponse>
 
-    @GET(MyConstants.URL_ACCOUNT_DETAILS)
+    @GET(MyConstants.URL_ACCOUNT)
     suspend fun getAccountDetails(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query ("session_id") session_id: String
     ): Response<AccountDetails>
+
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_MOVIES)
+    suspend fun getFavoriteMovies(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForMovies>
+
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_TV)
+    suspend fun getFavoriteTv(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForTvSeries>
+
+    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
+    suspend fun markAsFavorite(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Body requestBody: MarkAsFavoriteRequestBody
+    ):Response<SuccessResponse>
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.profile.account.list.FavoriteListFragment">
+    tools:context=".fragments.profile.lists.favorite.FavoriteListFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tb_favorite"
@@ -14,12 +14,15 @@
         app:title="Favorite" />
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tb_favorite"
-        app:tabTextColor="@color/light_gray"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/orange"
+        app:tabMode="fixed"
         app:tabSelectedTextColor="@color/orange"
-        app:tabIndicatorColor="@color/orange">
+        app:tabTextColor="@color/light_gray">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -31,4 +34,12 @@
             android:layout_height="wrap_content"
             android:text="@string/tv_series" />
     </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tab_favorite" />
+
+
 </RelativeLayout>

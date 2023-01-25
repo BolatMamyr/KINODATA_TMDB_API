@@ -64,8 +64,6 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
         val colorId = rating?.let { MyUtils.getRatingColorId(it, holder.itemView) }
         colorId?.let { holder.voteAve.setTextColor(it) }
 
-        // TODO: get genres, countries and runtime OR change layout item: Vote Ave to right top
-
         val img = getItem(position)?.poster_path
         Glide.with(holder.itemView.context)
             .load(MyConstants.IMG_BASE_URL + img).into(holder.img)

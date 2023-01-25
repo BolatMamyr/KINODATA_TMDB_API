@@ -2,11 +2,12 @@ package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
 import com.example.kinodata.model.account.AccountDetails
-import com.example.kinodata.model.auth.DeleteSessionResponse
+import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.SessionIdResult
-import com.example.kinodata.model.auth.requestBodies.DeleteSessionRequestBody
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
+import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
+import com.example.kinodata.model.favorite.MarkAsFavoriteRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -142,7 +143,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
     }
 
     suspend fun validateToken(
-        requestBody: HashMap<String, String>
+        requestBody: ValidateTokenRequestBody
     ): Response<RequestToken> {
         return api.validateToken(
             requestBody = requestBody
@@ -160,7 +161,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
 //    }
 suspend fun deleteSession(
     session_id: String
-): Response<DeleteSessionResponse> {
+): Response<SuccessResponse> {
     return api.deleteSession(session_id = session_id)
 }
 
@@ -170,4 +171,31 @@ suspend fun deleteSession(
         return api.getAccountDetails(session_id = session_id)
     }
 
+    suspend fun getFavoriteMovies(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForMovies> {
+        return api.getFavoriteMovies(accountId = accountId, session_id = session_id, page = page)
+    }
+
+    suspend fun getFavoriteTv(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForTvSeries> {
+        return api.getFavoriteTv(accountId = accountId, session_id = session_id, page = page)
+    }
+
+    suspend fun markAsFavorite(
+        accountId: Int,
+        session_id: String,
+        requestBody: MarkAsFavoriteRequestBody
+    ): Response<SuccessResponse> {
+        return api.markAsFavorite(
+            accountId = accountId,
+            session_id = session_id,
+            requestBody = requestBody
+        )
+    }
 }

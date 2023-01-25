@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,7 +18,9 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
+import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.utils.MyUtils
+import com.example.kinodata.utils.NetworkState
 import dagger.hilt.android.AndroidEntryPoint
 
 //private val Context.datastore: DataStore<Preferences> by dataStore()
@@ -39,47 +42,78 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.tbMovieDetails.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
         binding.svMovieDetails.isSaveEnabled = true
-        // *************************MovieDetails*************************
-        viewModel.getMovieDetails()
-        val movie = viewModel.movie
-        movie.observe(viewLifecycleOwner) {
-            binding.tbMovieDetails.title = it.title
-            binding.txtDetailsTitle.text = it.title
+        val movieDetails = getMovieDetails(view)
+        getMovieCredits(view, movieDetails)
+        getReviews(movieDetails)
 
-            val rating = it.vote_average
-            binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
-
-            val colorId = MyUtils.getRatingColorId(rating, view)
-            binding.txtDetailsVoteAve.setTextColor(colorId)
-
-            val voteCount = if(it.vote_count < 1000) {
-                it.vote_count.toString()
-            } else {
-                "${(it.vote_count / 1000)}K"
+        // TODO: finish adding to favs. Always observe if favorite and depending on it change UI state
+        viewModel.markAsFavoriteNetworkState.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkState.Success -> {
+                    binding.imgDetailsFavorite.setImageResource(R.drawable.ic_star_orange)
+                    Toast.makeText(
+                        context,
+                        getString(R.string.addedToFavorites),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is NetworkState.Error -> {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.couldntMarkAsFavorite),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {}
             }
-            binding.txtDetailsVoteCount.text = voteCount
-            binding.txtDetailsTitleOriginal.text = it.original_title
-            binding.txtDetailsYear.text = it.release_date.take(4) + ","
-            binding.txtDetailsGenres.text = it.getGenres()
-            binding.txtDetailsCountry.text = it.getCountries() + ","
-            binding.txtDetailsDescription.text = it.overview
-            binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
-            binding.txtDetailsVoteAveBig.setTextColor(colorId)
+        }
+        binding.imgDetailsFavorite.setOnClickListener {
+                viewModel.markAsFavorite()
+            }
 
-            binding.txtDetailsVoteCountBig.text = it.vote_count.toString()
+    }
 
-            Glide.with(view)
-                .load(MyConstants.IMG_BASE_URL + it.poster_path)
-                .into(binding.imgMovieDetailsPoster)
+    private fun getReviews(movieDetails: MovieDetails?) {
+        val reviewHorizontalAdapter = ReviewHorizontalAdapter()
+        reviewHorizontalAdapter.onItemClick = {
+            it?.let { review ->
+                val action = MovieDetailsFragmentDirections
+                    .actionMovieDetailsFragmentToReviewFragment(review)
+                findNavController().navigate(action)
+            }
         }
 
-        // *************************Credits**********************************
+        binding.rvMovieDetailsReviews.apply {
+            this.adapter = reviewHorizontalAdapter
+            val manager = LinearLayoutManager(context)
+            manager.orientation = LinearLayoutManager.HORIZONTAL
+            layoutManager = manager
+            isSaveEnabled = true
+        }
+        viewModel.getMovieReviews()
+        viewModel.reviews.observe(viewLifecycleOwner) {
+            it?.let { list -> reviewHorizontalAdapter.updateData(list) }
+        }
+        // Click Listener for See All Reviews button
+        binding.btnDetailsSeeAllReviews.setOnClickListener {
+            movieDetails?.id?.toString()?.let { id ->
+                val action = MovieDetailsFragmentDirections
+                    .actionMovieDetailsFragmentToAllReviewsFragment(
+                        movieId = id, context = MyConstants.MOVIE
+                    )
+                findNavController().navigate(action)
+            }
+        }
+    }
 
+    private fun getMovieCredits(
+        view: View,
+        movieDetails: MovieDetails?
+    ) {
         viewModel.getMovieCredits()
 
         // ***********Cast************
@@ -109,9 +143,11 @@ class MovieDetailsFragment : Fragment() {
 
             if (it.cast.isNotEmpty()) {
                 if (it.cast.size < 4) {
-                    binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
+                    binding.txtDetailsStars.text =
+                        "${resources.getString(R.string.stars)} $firstFour"
                 } else {
-                    binding.txtDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+                    binding.txtDetailsStars.text =
+                        "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
                 }
             }
 
@@ -123,7 +159,7 @@ class MovieDetailsFragment : Fragment() {
         }
         // Click Listener for See All Cast button
         binding.btnDetailsSeeAllCast.setOnClickListener {
-            movie.value?.id?.let {
+            movieDetails?.id?.let {
                 val action = MovieDetailsFragmentDirections
                     .actionMovieDetailsFragmentToAllMovieCastFragment(it)
                 findNavController().navigate(action)
@@ -141,7 +177,7 @@ class MovieDetailsFragment : Fragment() {
 
         // Click Listener for See All Crew button
         binding.btnDetailsSeeAllCrew.setOnClickListener {
-            movie.value?.id?.let {
+            movieDetails?.id?.let {
                 val action = MovieDetailsFragmentDirections
                     .actionMovieDetailsFragmentToAllMovieCrewFragment(it)
                 findNavController().navigate(action)
@@ -157,40 +193,46 @@ class MovieDetailsFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-
-        // **************************Reviews***********************************
-        val reviewHorizontalAdapter = ReviewHorizontalAdapter()
-        reviewHorizontalAdapter.onItemClick = {
-            it?.let { review ->
-                val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToReviewFragment(review)
-                findNavController().navigate(action)
-            }
-        }
-
-        binding.rvMovieDetailsReviews.apply {
-            this.adapter = reviewHorizontalAdapter
-            val manager = LinearLayoutManager(context)
-            manager.orientation = LinearLayoutManager.HORIZONTAL
-            layoutManager = manager
-            isSaveEnabled = true
-        }
-        viewModel.getMovieReviews()
-        viewModel.reviews.observe(viewLifecycleOwner) {
-            it?.let { list -> reviewHorizontalAdapter.updateData(list) }
-        }
-        // Click Listener for See All Reviews button
-        binding.btnDetailsSeeAllReviews.setOnClickListener {
-            movie.value?.id?.toString()?.let { id ->
-                val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllReviewsFragment(
-                        movieId = id, context = MyConstants.MOVIE
-                    )
-                findNavController().navigate(action)
-            }
-        }
-
     }
 
+    private fun getMovieDetails(view: View): MovieDetails? {
+        viewModel.getMovieDetails()
+        val movieDetails = viewModel.movie
+        movieDetails.observe(viewLifecycleOwner) {
+            binding.tbMovieDetails.title = it.title
+            binding.txtDetailsTitle.text = it.title
+
+            val rating = it.vote_average
+            binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
+
+            val colorId = MyUtils.getRatingColorId(rating, view)
+            binding.txtDetailsVoteAve.setTextColor(colorId)
+
+            val voteCount = if (it.vote_count < 1000) {
+                it.vote_count.toString()
+            } else {
+                "${(it.vote_count / 1000)}K"
+            }
+            binding.txtDetailsVoteCount.text = voteCount
+            binding.txtDetailsTitleOriginal.text = it.original_title
+            binding.txtDetailsYear.text = it.release_date.take(4) + ","
+            binding.txtDetailsGenres.text = it.getGenres()
+            binding.txtDetailsCountry.text = it.getCountries() + ","
+            binding.txtDetailsDescription.text = it.overview
+            binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
+            binding.txtDetailsVoteAveBig.setTextColor(colorId)
+
+            binding.txtDetailsVoteCountBig.text = it.vote_count.toString()
+
+            Glide.with(view)
+                .load(MyConstants.IMG_BASE_URL + it.poster_path)
+                .into(binding.imgMovieDetailsPoster)
+        }
+        return movieDetails.value
+    }
+
+    private fun setClickListeners() {
+
+    }
 
 }

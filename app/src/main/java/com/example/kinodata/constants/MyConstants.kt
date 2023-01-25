@@ -15,9 +15,13 @@ object MyConstants {
     const val URL_CREATE_SESSION_ID = "authentication/session/new?"
     const val URL_DELETE_SESSION = "authentication/session"
 
-    const val URL_ACCOUNT_DETAILS = "account"
+    const val URL_ACCOUNT = "account/"
 
     const val URL_MOVIE = "movie/"
+
+    const val URL_FAVORITE = "/favorite"
+    const val URL_FAVORITE_MOVIES = "/favorite/movies"
+    const val URL_FAVORITE_TV = "/favorite/tv"
 
     const val URL_POPULAR = "movie/popular"
     const val URL_TOP_RATED = "movie/top_rated"
@@ -66,6 +70,6 @@ object MyConstants {
     const val PREFERENCES_DATA_STORE_NAME = "account_info"
     const val SESSION_ID_PREFERENCE = "sessionId"
     const val IS_SIGNED_IN_PREFERENCE = "isSignedIn"
-
+    const val ACCOUNT_ID_PREFERENCE = "accountId"
 
 }

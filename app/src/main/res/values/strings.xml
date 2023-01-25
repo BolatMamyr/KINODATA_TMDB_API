@@ -68,4 +68,9 @@
     <string name="created_lists">Created Lists</string>
     <string name="sign_out">Sign Out</string>
     <string name="signed_out">Signed Out</string>
+    <string name="couldntSignIn">Couldn\'t Sign In</string>
+    <string name="signedIn">"Successfully Signed In "</string>
+    <string name="couldntSignOut">Couldn\'t Sign Out</string>
+    <string name="couldntMarkAsFavorite">Couldn\'t add to favorites</string>
+    <string name="addedToFavorites">Added to favorites</string>
 </resources>

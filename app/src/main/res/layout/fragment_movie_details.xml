@@ -177,7 +177,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/img_details_rate"
+                    android:id="@+id/img_details_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
