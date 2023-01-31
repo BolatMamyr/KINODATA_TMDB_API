@@ -1,115 +1,189 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
+import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
+import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
-import com.example.kinodata.model.favorite.MarkAsFavoriteRequestBody
+import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
-import com.example.kinodata.utils.NetworkState
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MovieDetailsViewModel"
+
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    private val state: SavedStateHandle,
+    @ApplicationContext private val mContext: Context,
+    state: SavedStateHandle,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private val id = state.get<Int>("movieId") ?: 0
-    private var _movie: MutableLiveData<MovieDetails> = MutableLiveData()
-    val movie: LiveData<MovieDetails> = _movie
+    // TODO: impl "add to watchlist", "rate" func
 
-    private var _credits: MutableLiveData<Credits> = MutableLiveData()
-    val credits: LiveData<Credits> = _credits
+    init {
+        val id = state.get<Int>("movieId") ?: 0
+        getMovieReviews(id)
+        getMovieAccountStates(id)
+        getMovieCredits(id)
+        getMovieDetails(id)
+    }
 
-    private var _reviews: MutableLiveData<List<Review>> = MutableLiveData()
-    val reviews: LiveData<List<Review>> = _reviews
+    private var isFavorite = false
+    private var _reviews = MutableStateFlow<NetworkResult<List<Review>>>(NetworkResult.Loading)
+    val reviews = _reviews.asStateFlow()
 
-    private val _markAsFavorite: MutableLiveData<SuccessResponse> = MutableLiveData()
-    val markAsFavorite: LiveData<SuccessResponse> = _markAsFavorite
+    private val _addOrRemoveFromFavorite = MutableSharedFlow<NetworkResult<SuccessResponse>>()
+    val addOrRemoveFromFavorite = _addOrRemoveFromFavorite.asSharedFlow()
 
-    private val _markAsFavoriteNetworkState: MutableLiveData<NetworkState> = MutableLiveData()
-    val markAsFavoriteNetworkState: LiveData<NetworkState> = _markAsFavoriteNetworkState
+    private val _accountState =
+        MutableStateFlow<NetworkResult<AccountStates>>(NetworkResult.Loading)
+    val accountState = _accountState.asStateFlow()
 
-    fun getMovieDetails() {
+    private val _movie = MutableStateFlow<NetworkResult<MovieDetails>>(NetworkResult.Loading)
+    val movie = _movie.asStateFlow()
+
+    private val _credits = MutableStateFlow<NetworkResult<Credits>>(NetworkResult.Loading)
+    val credits = _credits.asStateFlow()
+
+    private fun getMovieDetails(id: Int) {
         viewModelScope.launch {
             try {
                 val response = repository.getMovieDetails(id.toString(), MyConstants.LANGUAGE)
+                Log.d(TAG, "getMovieDetails response code: ${response.code()}")
+                Log.d(TAG, "getMovieDetails movieId: $id")
                 if (response.isSuccessful) {
-                    _movie.value = response.body()
+                    val movie = response.body()
+                    if (movie != null) {
+                        _movie.value = NetworkResult.Success(movie)
+                    } else {
+                        _movie.value = throwError()
+                    }
+                } else {
+                    _movie.value = throwError()
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "getMovieDetails: ${e.message}")
+                _movie.value = NetworkResult.Error(e)
             }
-
         }
     }
 
-    fun getMovieCredits() {
+
+    private fun getMovieCredits(id: Int) {
         viewModelScope.launch {
             try {
                 val response = repository.getMovieCredits(id.toString(), MyConstants.LANGUAGE)
-                if(response.isSuccessful) {
-                    _credits.value = response.body()
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    data?.let { _credits.value = NetworkResult.Success(it) }
+                } else {
+                    _credits.value = throwError()
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "getMovieCredits: ${e.message}")
+                _credits.value = NetworkResult.Error(e)
             }
         }
     }
 
-    fun getMovieReviews() {
+    private fun getMovieReviews(id: Int) {
         viewModelScope.launch {
             try {
                 val response = repository
                     .getMovieReviews(id = id.toString(), language = MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
-                    val list = response.body()?.reviews
-                    list?.let { _reviews.value = it }
+                    val data = response.body()?.reviews
+                    data?.let { _reviews.value = NetworkResult.Success(it) }
+                } else {
+                    _reviews.value = throwError()
                 }
             } catch (e: Exception) {
-                Log.d("MyLog", "Error: getReviews: ${e.message}")
+                _reviews.value = NetworkResult.Error(e)
             }
         }
     }
 
-    fun markAsFavorite() {
+    private fun getMovieAccountStates(id: Int) {
         viewModelScope.launch {
             try {
-                dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
-                    val accountId = pair.first
-                    val sessionId = pair.second
-                    val requestBody = MarkAsFavoriteRequestBody(
-                        favorite = true,
-                        media_id = id,
-                        media_type = MyConstants.MEDIA_TYPE_MOVIE
-                    )
-                    val response = repository.markAsFavorite(accountId, sessionId, requestBody)
+                dataStoreRepository.sessionId.collectLatest { sessionId ->
+                    val response = repository.getMovieAccountStates(id.toString(), sessionId)
                     if (response.isSuccessful) {
-                        _markAsFavorite.value = response.body()
-                        if (response.body()?.success == true) {
-                            val message = response.body()?.status_message ?: "null"
-                            _markAsFavoriteNetworkState.value = NetworkState.Success(message)
-                        } else {
-                            _markAsFavoriteNetworkState.value = NetworkState.Error("Couldn't mark as favorite")
-                        }
-
+                        response.body()?.let { _accountState.value = NetworkResult.Success(it) }
+                    } else {
+                        _accountState.value = throwError()
                     }
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "markAsFavorite: ${e.message}")
+                _accountState.value = NetworkResult.Error(e)
             }
+        }
+    }
+
+
+    fun addOrRemoveFromFavorite(id: Int) {
+        viewModelScope.launch {
+            dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
+                if (isSignedIn) {
+                    // After clicking button check if it is favorite, only then do operation
+                    getMovieAccountStates(id)
+                    try {
+                        val accState = accountState.value
+                        // if it can get movie account state then it is signed in
+                        if (accState is NetworkResult.Success) {
+                            dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
+                                val accountId = pair.first
+                                val sessionId = pair.second
+
+                                // if it is already marked as favorite then remove from favorites
+                                val isFavorite = accState.data.favorite
+                                val requestBody = AddOrRemoveFromFavoriteRequestBody(
+                                    favorite = !isFavorite,
+                                    media_id = id,
+                                    media_type = MyConstants.MEDIA_TYPE_MOVIE
+                                )
+                                val response = repository
+                                    .addOrRemoveFromFavorite(accountId, sessionId, requestBody)
+                                if (response.isSuccessful) {
+                                    response.body()?.let {
+                                        _addOrRemoveFromFavorite.emit(NetworkResult.Success(it))
+                                        // after changing its favorite state call func again to trigger UI
+                                        getMovieAccountStates(id)
+                                    }
+                                } else {
+                                    _addOrRemoveFromFavorite.emit(throwError())
+                                }
+                            }
+                        }
+
+
+                    } catch (e: Exception) {
+                        _addOrRemoveFromFavorite.emit(NetworkResult.Error(e))
+                    }
+                } else {
+                    Toast.makeText(mContext, mContext.getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
 
         }
     }
 
+    private fun throwError(): NetworkResult.Error {
+        return NetworkResult.Error(
+            Exception(mContext.getString(R.string.something_went_wrong))
+        )
+    }
 }

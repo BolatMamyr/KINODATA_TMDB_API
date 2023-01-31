@@ -8,9 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kinodata.R
 import com.example.kinodata.adapters.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllMovieCrewBinding
 import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
+import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
+import com.example.kinodata.utils.MyUtils.Companion.toast
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,10 +47,20 @@ class AllMovieCrewFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-        viewModel.getMovieCredits()
-        viewModel.credits.observe(viewLifecycleOwner) {
-            val sortedList = it.crew.sortedByDescending { it.popularity }
-            adapter.updateData(sortedList)
+
+        collectLatestLifecycleFlow(viewModel.credits) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    adapter.updateData(it.data.crew)
+                }
+                is NetworkResult.Error -> {
+                    val message = it.throwable.message ?: getString(R.string.something_went_wrong)
+                    toast(message)
+                }
+                else -> {
+                    // TODO: add progressbar
+                }
+            }
         }
 
         adapter.onItemClick = {

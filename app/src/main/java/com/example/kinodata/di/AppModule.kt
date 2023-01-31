@@ -14,13 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-//    val api: MovieDataApi by lazy {
-//        Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(MovieDataApi::class.java)
-//    }
 
     @Provides
     @Singleton

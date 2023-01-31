@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +20,13 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
-import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.utils.MyUtils
-import com.example.kinodata.utils.NetworkState
+import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
+import com.example.kinodata.utils.MyUtils.Companion.toast
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-//private val Context.datastore: DataStore<Preferences> by dataStore()
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
 
@@ -31,6 +34,7 @@ class MovieDetailsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MovieDetailsViewModel by viewModels()
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,39 +49,60 @@ class MovieDetailsFragment : Fragment() {
         binding.tbMovieDetails.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+        binding.imgDetailsFavorite.setOnClickListener {
+            viewModel.addOrRemoveFromFavorite(args.movieId)
+        }
         binding.svMovieDetails.isSaveEnabled = true
-        val movieDetails = getMovieDetails(view)
-        getMovieCredits(view, movieDetails)
-        getReviews(movieDetails)
+        getMovieDetails(view)
+        getMovieCredits(view)
+        getReviews()
+        getAccountStates()
+        addOrRemoveFromFavorites()
 
-        // TODO: finish adding to favs. Always observe if favorite and depending on it change UI state
-        viewModel.markAsFavoriteNetworkState.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkState.Success -> {
-                    binding.imgDetailsFavorite.setImageResource(R.drawable.ic_star_orange)
-                    Toast.makeText(
-                        context,
-                        getString(R.string.addedToFavorites),
-                        Toast.LENGTH_SHORT
-                    ).show()
+    }
+
+    private fun addOrRemoveFromFavorites() {
+        lifecycleScope.launch {
+            viewModel.addOrRemoveFromFavorite.collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        val message = if (it.data.status_message?.contains("deleted") == true) {
+                            getString(R.string.removed_from_favorites)
+                        } else {
+                            getString(R.string.added_to_favorites)
+                        }
+                        toast(message)
+                    }
+                    is NetworkResult.Error -> {
+                        toast(getString(R.string.something_went_wrong))
+                    }
+                    else -> {}
                 }
-                is NetworkState.Error -> {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.couldntMarkAsFavorite),
-                        Toast.LENGTH_SHORT
-                    ).show()
+            }
+        }
+    }
+
+    private fun getAccountStates() {
+        collectLatestLifecycleFlow(viewModel.accountState) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val accountStates = it.data
+                    val isFavorite = accountStates.favorite
+                    val isInWatchlist = accountStates.watchlist
+
+                    val imgResource = if (isFavorite) {
+                        R.drawable.ic_star_orange
+                    } else {
+                        R.drawable.ic_star_gray
+                    }
+                    binding.imgDetailsFavorite.setImageResource(imgResource)
                 }
                 else -> {}
             }
         }
-        binding.imgDetailsFavorite.setOnClickListener {
-                viewModel.markAsFavorite()
-            }
-
     }
 
-    private fun getReviews(movieDetails: MovieDetails?) {
+    private fun getReviews() {
         val reviewHorizontalAdapter = ReviewHorizontalAdapter()
         reviewHorizontalAdapter.onItemClick = {
             it?.let { review ->
@@ -94,28 +119,29 @@ class MovieDetailsFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-        viewModel.getMovieReviews()
-        viewModel.reviews.observe(viewLifecycleOwner) {
-            it?.let { list -> reviewHorizontalAdapter.updateData(list) }
+        collectLatestLifecycleFlow(viewModel.reviews) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    reviewHorizontalAdapter.updateData(it.data)
+                }
+                else -> {}
+            }
         }
+
         // Click Listener for See All Reviews button
         binding.btnDetailsSeeAllReviews.setOnClickListener {
-            movieDetails?.id?.toString()?.let { id ->
-                val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllReviewsFragment(
-                        movieId = id, context = MyConstants.MOVIE
-                    )
-                findNavController().navigate(action)
-            }
+            val action = MovieDetailsFragmentDirections
+                .actionMovieDetailsFragmentToAllReviewsFragment(
+                    movieId = args.movieId.toString(), context = MyConstants.MOVIE
+                )
+            findNavController().navigate(action)
         }
     }
 
-    private fun getMovieCredits(
-        view: View,
-        movieDetails: MovieDetails?
-    ) {
-        viewModel.getMovieCredits()
 
+    private fun getMovieCredits(
+        view: View
+    ) {
         // ***********Cast************
         val castHorizontalAdapter = CastHorizontalAdapter()
         val crewHorizontalAdapter = CrewHorizontalAdapter()
@@ -135,35 +161,42 @@ class MovieDetailsFragment : Fragment() {
             )
         }
 
-        viewModel.credits.observe(viewLifecycleOwner) {
-            val cast = it.cast
-            val crew = it.crew
+        collectLatestLifecycleFlow(viewModel.credits) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val credits = it.data
+                    val cast = credits.cast
+                    val crew = credits.crew
 
-            val firstFour = it.getFirstFourActors()
+                    val firstFour = credits.getFirstFourActors()
 
-            if (it.cast.isNotEmpty()) {
-                if (it.cast.size < 4) {
-                    binding.txtDetailsStars.text =
-                        "${resources.getString(R.string.stars)} $firstFour"
-                } else {
-                    binding.txtDetailsStars.text =
-                        "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+                    if (credits.cast.isNotEmpty()) {
+                        binding.txtDetailsStars.text = if (credits.cast.size < 4) {
+                            "${resources.getString(R.string.stars)} $firstFour"
+                        } else {
+                            "${resources.getString(R.string.stars)} $firstFour ${
+                                resources.getString(
+                                    R.string.and_others
+                                )
+                            }"
+                        }
+                    }
+
+                    castHorizontalAdapter.updateData(cast.take(12))
+
+                    // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
+                    val sortedList = crew.sortedByDescending { it.popularity }
+                    crewHorizontalAdapter.updateData(sortedList.take(7))
                 }
+                else -> {}
             }
-
-            castHorizontalAdapter.updateData(cast.take(12))
-
-            // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
-            val sortedList = crew.sortedByDescending { it.popularity }
-            crewHorizontalAdapter.updateData(sortedList.take(7))
         }
+
         // Click Listener for See All Cast button
         binding.btnDetailsSeeAllCast.setOnClickListener {
-            movieDetails?.id?.let {
-                val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllMovieCastFragment(it)
-                findNavController().navigate(action)
-            }
+            val action = MovieDetailsFragmentDirections
+                .actionMovieDetailsFragmentToAllMovieCastFragment(args.movieId)
+            findNavController().navigate(action)
         }
 
         // Click Listener for cast RV item
@@ -177,11 +210,10 @@ class MovieDetailsFragment : Fragment() {
 
         // Click Listener for See All Crew button
         binding.btnDetailsSeeAllCrew.setOnClickListener {
-            movieDetails?.id?.let {
-                val action = MovieDetailsFragmentDirections
-                    .actionMovieDetailsFragmentToAllMovieCrewFragment(it)
-                findNavController().navigate(action)
-            }
+            val action = MovieDetailsFragmentDirections
+                .actionMovieDetailsFragmentToAllMovieCrewFragment(args.movieId)
+            findNavController().navigate(action)
+
         }
 
         // Click Listener for crew RV item
@@ -195,44 +227,69 @@ class MovieDetailsFragment : Fragment() {
         }
     }
 
-    private fun getMovieDetails(view: View): MovieDetails? {
-        viewModel.getMovieDetails()
-        val movieDetails = viewModel.movie
-        movieDetails.observe(viewLifecycleOwner) {
-            binding.tbMovieDetails.title = it.title
-            binding.txtDetailsTitle.text = it.title
+    private fun getMovieDetails(view: View) {
+        collectLatestLifecycleFlow(viewModel.movie) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    showUi()
+                    val movie = it.data
+                    binding.tbMovieDetails.title = movie.title
+                    binding.txtDetailsTitle.text = movie.title
 
-            val rating = it.vote_average
-            binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
+                    val rating = movie.vote_average
+                    binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
 
-            val colorId = MyUtils.getRatingColorId(rating, view)
-            binding.txtDetailsVoteAve.setTextColor(colorId)
+                    val colorId = MyUtils.getRatingColorId(rating, view)
+                    binding.txtDetailsVoteAve.setTextColor(colorId)
 
-            val voteCount = if (it.vote_count < 1000) {
-                it.vote_count.toString()
-            } else {
-                "${(it.vote_count / 1000)}K"
+                    val voteCount = if (movie.vote_count < 1000) {
+                        movie.vote_count.toString()
+                    } else {
+                        "${(movie.vote_count / 1000)}K"
+                    }
+                    binding.txtDetailsVoteCount.text = voteCount
+                    binding.txtDetailsTitleOriginal.text = movie.original_title
+                    // TODO: trailing commas are wrong if there is only 1 item
+                    binding.txtDetailsYear.text = movie.release_date.take(4) + ","
+                    binding.txtDetailsGenres.text = movie.getGenres()
+                    binding.txtDetailsCountry.text = movie.getCountries() + ","
+                    binding.txtDetailsDescription.text = movie.overview
+                    binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
+                    binding.txtDetailsVoteAveBig.setTextColor(colorId)
+
+                    binding.txtDetailsVoteCountBig.text = movie.vote_count.toString()
+
+                    Glide.with(view)
+                        .load(MyConstants.IMG_BASE_URL + movie.poster_path)
+                        .into(binding.imgMovieDetailsPoster)
+                }
+                is NetworkResult.Error -> {
+                    // TODO: if error show reload page button
+                    hideUi()
+                    Toast.makeText(context, it.throwable.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    hideUi()
+                }
             }
-            binding.txtDetailsVoteCount.text = voteCount
-            binding.txtDetailsTitleOriginal.text = it.original_title
-            binding.txtDetailsYear.text = it.release_date.take(4) + ","
-            binding.txtDetailsGenres.text = it.getGenres()
-            binding.txtDetailsCountry.text = it.getCountries() + ","
-            binding.txtDetailsDescription.text = it.overview
-            binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
-            binding.txtDetailsVoteAveBig.setTextColor(colorId)
 
-            binding.txtDetailsVoteCountBig.text = it.vote_count.toString()
-
-            Glide.with(view)
-                .load(MyConstants.IMG_BASE_URL + it.poster_path)
-                .into(binding.imgMovieDetailsPoster)
         }
-        return movieDetails.value
+
+
     }
 
-    private fun setClickListeners() {
+    private fun showUi() {
+        binding.apply {
+            pbMovieDetails.visibility = View.GONE
+            svMovieDetails.visibility = View.VISIBLE
+        }
+    }
 
+    private fun hideUi() {
+        binding.apply {
+            pbMovieDetails.visibility = View.VISIBLE
+            svMovieDetails.visibility = View.GONE
+        }
     }
 
 }

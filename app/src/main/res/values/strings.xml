@@ -73,4 +73,8 @@
     <string name="couldntSignOut">Couldn\'t Sign Out</string>
     <string name="couldntMarkAsFavorite">Couldn\'t add to favorites</string>
     <string name="addedToFavorites">Added to favorites</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="please_sign_in">Please Sign In!</string>
 </resources>

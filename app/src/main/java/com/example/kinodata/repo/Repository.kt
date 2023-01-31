@@ -2,12 +2,13 @@ package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
 import com.example.kinodata.model.account.AccountDetails
+import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
-import com.example.kinodata.model.favorite.MarkAsFavoriteRequestBody
+import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -25,9 +26,6 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(private val api: MovieDataApi) {
 
-    init {
-        println("Repository initialized")
-    }
 //    suspend fun getPopularMovies(language: String, page: String): Flow<Response<ResultForMovies>> {
 //        return flow {
 //            var retryCount = 0
@@ -75,6 +73,10 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         id: String, language: String, page: String = "1"
     ): Response<ReviewResult> {
         return api.getMovieReviews(movieId = id, language = language)
+    }
+
+    suspend fun getMovieAccountStates(movieId: String, session_id: String): Response<AccountStates> {
+        return api.getMovieAccountStates(movieId = movieId, session_id = session_id)
     }
 
     suspend fun getPopularTvSeries(language: String, page: String): Response<ResultForTvSeries> {
@@ -187,12 +189,12 @@ suspend fun deleteSession(
         return api.getFavoriteTv(accountId = accountId, session_id = session_id, page = page)
     }
 
-    suspend fun markAsFavorite(
+    suspend fun addOrRemoveFromFavorite(
         accountId: Int,
         session_id: String,
-        requestBody: MarkAsFavoriteRequestBody
+        requestBody: AddOrRemoveFromFavoriteRequestBody
     ): Response<SuccessResponse> {
-        return api.markAsFavorite(
+        return api.addOrRemoveFromFavorite(
             accountId = accountId,
             session_id = session_id,
             requestBody = requestBody

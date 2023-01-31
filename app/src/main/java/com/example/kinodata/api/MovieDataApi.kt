@@ -2,12 +2,13 @@ package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.account.AccountDetails
+import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
-import com.example.kinodata.model.favorite.MarkAsFavoriteRequestBody
+import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -79,6 +80,13 @@ interface MovieDataApi {
         @Query("language") language: String,
         @Query("page") page: String = "1"
     ): Response<ReviewResult>
+
+    @GET(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_ACCOUNT_STATES)
+    suspend fun getMovieAccountStates(
+        @Path("movieId") movieId: String,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String
+    ): Response<AccountStates>
 
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)
@@ -208,10 +216,10 @@ interface MovieDataApi {
     ): Response<ResultForTvSeries>
 
     @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
-    suspend fun markAsFavorite(
+    suspend fun addOrRemoveFromFavorite(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
-        @Body requestBody: MarkAsFavoriteRequestBody
+        @Body requestBody: AddOrRemoveFromFavoriteRequestBody
     ):Response<SuccessResponse>
 }
