@@ -1,11 +1,13 @@
-package com.example.kinodata.fragments.profile.lists.favorite
+package com.example.kinodata.fragments.profile.lists.watchlist
 
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.example.kinodata.fragments.profile.lists.favorite.movies.FavoriteMoviesPagingSource
-import com.example.kinodata.fragments.profile.lists.favorite.tv.FavoriteTvPagingSource
+import com.example.kinodata.fragments.profile.lists.watchlist.movies.MoviesWatchlistPagingSource
+import com.example.kinodata.fragments.profile.lists.watchlist.tv.TvWatchlistPagingSource
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.repo.DataStoreRepository
@@ -15,43 +17,40 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "FavoriteViewModel"
-
 @HiltViewModel
-class FavoriteViewModel @Inject constructor(
+class WatchlistViewModel @Inject constructor(
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
-    private val _favoriteMovies: MutableLiveData<Pager<Int, RMovie>> = MutableLiveData()
-    val favoriteMovies: LiveData<Pager<Int, RMovie>> = _favoriteMovies
+    private val _movies: MutableLiveData<Pager<Int, RMovie>> = MutableLiveData()
+    val movies: LiveData<Pager<Int, RMovie>> = _movies
 
-    private val _favoriteTv: MutableLiveData<Pager<Int, RTvSeries>> = MutableLiveData()
-    val favoriteTv: LiveData<Pager<Int, RTvSeries>> = _favoriteTv
+    private val _tv: MutableLiveData<Pager<Int, RTvSeries>> = MutableLiveData()
+    val tv: LiveData<Pager<Int, RTvSeries>> = _tv
 
-    fun getFavoriteMovies() {
+    fun getMoviesWatchlist() {
         viewModelScope.launch {
             dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
                 val accountId = pair.first
                 val sessionId = pair.second
                 val movies = Pager(PagingConfig(pageSize = 20)) {
-                    FavoriteMoviesPagingSource(repository, accountId, sessionId)
+                    MoviesWatchlistPagingSource(repository, accountId, sessionId)
                 }
-                _favoriteMovies.value = movies
-                Log.d(TAG, "accountId: $accountId\nsessionId: $sessionId")
+                _movies.value = movies
             }
         }
     }
 
-    fun getFavoriteTv() {
+    fun getTvWatchlist() {
         viewModelScope.launch {
             dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
                 val accountId = pair.first
                 val sessionId = pair.second
                 val tv = Pager(PagingConfig(pageSize = 20)) {
-                    FavoriteTvPagingSource(repository, accountId, sessionId)
+                    TvWatchlistPagingSource(repository, accountId, sessionId)
                 }
-                _favoriteTv.value = tv
+                _tv.value = tv
             }
         }
     }

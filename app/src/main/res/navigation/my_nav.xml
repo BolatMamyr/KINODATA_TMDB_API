@@ -293,7 +293,7 @@
         android:id="@+id/favoriteListFragment"
         android:name="com.example.kinodata.fragments.profile.lists.favorite.FavoriteListFragment"
         android:label="fragment_favorite_list"
-        tools:layout="@layout/fragment_favorite_list" >
+        tools:layout="@layout/fragment_favorite_list">
         <argument
             android:name="accountId"
             app:argType="integer" />
@@ -316,5 +316,27 @@
         <action
             android:id="@+id/action_profileFragment_to_favoriteListFragment"
             app:destination="@id/favoriteListFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_watchlistFragment"
+            app:destination="@id/watchlistFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/watchlistFragment"
+        android:name="com.example.kinodata.fragments.profile.lists.watchlist.WatchlistFragment"
+        android:label="fragment_watchlist"
+        tools:layout="@layout/fragment_watchlist">
+        <argument
+            android:name="accountId"
+            app:argType="integer" />
+        <argument
+            android:name="sessionId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_watchlistFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_watchlistFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
     </fragment>
 </navigation>

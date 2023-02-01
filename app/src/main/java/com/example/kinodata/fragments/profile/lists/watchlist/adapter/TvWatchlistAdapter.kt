@@ -1,4 +1,4 @@
-package com.example.kinodata.fragments.profile.lists.favorite.adapter
+package com.example.kinodata.fragments.profile.lists.watchlist.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,37 +10,40 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.ItemVerticalListBinding
 import com.example.kinodata.model.movie.RMovie
+import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.utils.MyUtils
 
-private const val TAG = "FavoriteMoviesAdapter"
+class TvWatchlistAdapter
+    : PagingDataAdapter<RTvSeries, TvWatchlistAdapter.MyViewHolder>(diffUtil) {
 
-class FavoriteMoviesAdapter
-    : PagingDataAdapter<RMovie, FavoriteMoviesAdapter.MyViewHolder>(diffUtil) {
-
-    var onItemClick: ((RMovie?) -> Unit)? = null
+    var onItemClick: ((RTvSeries?) -> Unit)? = null
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<RMovie>() {
-            override fun areItemsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<RTvSeries>() {
+            override fun areItemsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
+            override fun areContentsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
                 return oldItem == newItem
             }
         }
     }
 
-    inner class MyViewHolder(val binding: ItemVerticalListBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    inner class MyViewHolder(val binding: ItemVerticalListBinding)
+        : RecyclerView.ViewHolder(binding.root)
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.apply {
-            txtTitleVertical.text = getItem(position)?.title
+            txtTitleVertical.text = getItem(position)?.name
             // Date
-            val date = getItem(position)?.release_date
-            txtReleaseDateVertical.text =
-                date?.let { MyUtils.getFormattedDate(it, holder.itemView) }
+            val date = getItem(position)?.first_air_date
+            txtReleaseDateVertical.text = date?.let {
+                MyUtils.getFormattedDate(
+                    it,
+                    holder.itemView
+                )
+            }
 
             // Rating
             val rating = getItem(position)?.vote_average
@@ -63,8 +66,8 @@ class FavoriteMoviesAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = ItemVerticalListBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemVerticalListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 }

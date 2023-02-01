@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.profile.lists.favorite.FavoriteListFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.profile.lists.watchlist.WatchlistFragment">
+
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/tb_favorite"
+        android:id="@+id/tb_watchlist"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:navigationIcon="@drawable/ic_arrow_left"
-        app:title="@string/favorite" />
+        app:title="@string/watchlist" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_favorite"
+        android:id="@+id/tab_watchlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tb_favorite"
+        android:layout_below="@id/tb_watchlist"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/orange"
         app:tabMode="fixed"
@@ -36,10 +37,9 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager_favorite"
+        android:id="@+id/viewpager_watchlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_favorite" />
-
+        android:layout_below="@id/tab_watchlist" />
 
 </RelativeLayout>

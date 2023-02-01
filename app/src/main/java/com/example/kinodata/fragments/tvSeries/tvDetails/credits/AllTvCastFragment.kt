@@ -9,10 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.CastVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllTvCastBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
+import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: NOT SHOWING All cast and crew
@@ -27,6 +30,8 @@ class AllTvCastFragment : Fragment() {
     private var _binding: FragmentAllTvCastBinding? = null
     private val binding get() = _binding!!
 
+    private val args: AllTvCastFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +42,7 @@ class AllTvCastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getTvCredits(args.tvId.toString())
         binding.tbAllTvCast.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -49,12 +55,13 @@ class AllTvCastFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-        viewModel.getTvCredits()
-        viewModel.credits.observe(viewLifecycleOwner) {
-            val cast = it.cast
-            adapter.updateData(cast)
+        collectLatestLifecycleFlow(viewModel.credits) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    adapter.updateData(it.data.cast)
+                } else -> {}
+            }
 
-            Log.d(TAG, "Cast size: ${cast.size}")
         }
 
         adapter.onItemClick = {

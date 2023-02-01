@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +20,11 @@ import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.utils.MyUtils
+import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
+import com.example.kinodata.utils.MyUtils.Companion.toast
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TvDetailsFragment : Fragment() {
@@ -49,13 +54,86 @@ class TvDetailsFragment : Fragment() {
         getTvDetails(view)
         getCredits(view)
         getReviews(view)
-
-
+        getAccountStates()
+        addToFavorite()
+        addToWatchlist()
     }
 
-    private fun getCredits(view: View) {
-        viewModel.getTvCredits()
+    private fun getAccountStates() {
+        collectLatestLifecycleFlow(viewModel.accountState) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val accountStates = it.data
+                    val isFavorite = accountStates.favorite
+                    val isInWatchlist = accountStates.watchlist
 
+                    // Favorite
+                    val imgFavorite = if (isFavorite) {
+                        R.drawable.ic_favorite_red
+                    } else {
+                        R.drawable.ic_favorite_gray
+                    }
+                    binding.imgTvDetailsFavorite.setImageResource(imgFavorite)
+
+                    // Watchlist
+                    val imgWatchlist = if (isInWatchlist) {
+                        R.drawable.ic_watch_later_orange
+                    } else {
+                        R.drawable.ic_watch_later_gray
+                    }
+                    binding.imgTvDetailsWatchLater.setImageResource(imgWatchlist)
+                }
+                else -> {}
+            }
+        }
+    }
+    private fun addToFavorite() {
+        binding.imgTvDetailsFavorite.setOnClickListener {
+            viewModel.addOrRemoveFromFavorite(args.tvSeriesId)
+        }
+        lifecycleScope.launch {
+            viewModel.addToFavorite.collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        val message = if (it.data.status_message?.contains("deleted") == true) {
+                            getString(R.string.removed_from_favorites)
+                        } else {
+                            getString(R.string.added_to_favorites)
+                        }
+                        toast(message)
+                    }
+                    is NetworkResult.Error -> {
+                        toast(getString(R.string.something_went_wrong))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+    private fun addToWatchlist() {
+        binding.imgTvDetailsWatchLater.setOnClickListener {
+            viewModel.addToWatchlist(args.tvSeriesId)
+        }
+        lifecycleScope.launch {
+            viewModel.addToWatchlist.collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        val message = if (it.data.status_message?.contains("deleted") == true) {
+                            getString(R.string.removed_from_watchlist)
+                        } else {
+                            getString(R.string.added_to_watchlist)
+                        }
+                        toast(message)
+                    }
+                    is NetworkResult.Error -> {
+                        toast(getString(R.string.something_went_wrong))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+    private fun getCredits(view: View) {
         val castHorizontalAdapter = CastHorizontalAdapter()
         val crewHorizontalAdapter = CrewHorizontalAdapter()
 
@@ -71,41 +149,46 @@ class TvDetailsFragment : Fragment() {
             manager.orientation = RecyclerView.HORIZONTAL
             layoutManager = manager
         }
-        viewModel.credits.observe(viewLifecycleOwner) {
-            val firstFour = it.getFirstFourActors()
-            binding.txtTvDetailsStars.text =
-                "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+        collectLatestLifecycleFlow(viewModel.credits) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val credits = it.data
+                    val firstFour = credits.getFirstFourActors()
 
-            if (it.cast.isNotEmpty()) {
-                if (it.cast.size < 4) {
-                    binding.txtTvDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour"
-                } else {
-                    binding.txtTvDetailsStars.text = "${resources.getString(R.string.stars)} $firstFour ${resources.getString(R.string.and_others)}"
+                    if (credits.cast.isNotEmpty()) {
+                        binding.txtTvDetailsStars.text = if (credits.cast.size < 4) {
+                                "${resources.getString(R.string.stars)} $firstFour"
+                        } else {
+                                "${resources.getString(R.string.stars)} $firstFour ${
+                                    resources.getString(R.string.and_others)
+                                }"
+                        }
+                    }
+
+                    castHorizontalAdapter.updateData(credits.cast.take(12))
+
+                    // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
+                    val sortedList = credits.crew.sortedByDescending { it.popularity }
+                    crewHorizontalAdapter.updateData(sortedList.take(7))
                 }
+                else -> {}
             }
 
-            castHorizontalAdapter.updateData(it.cast.take(12))
-
-            // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
-            val sortedList = it.crew.sortedByDescending { it.popularity }
-            crewHorizontalAdapter.updateData(sortedList.take(7))
         }
         // Click Listener for See All Cast button
         binding.btnTvDetailsSeeAllCast.setOnClickListener {
-            viewModel.credits.value?.id?.let {
-                val action = TvDetailsFragmentDirections
-                    .actionTvDetailsFragmentToAllTvCastFragment(it)
-                findNavController().navigate(action)
-            }
+            val action = TvDetailsFragmentDirections
+                .actionTvDetailsFragmentToAllTvCastFragment(args.tvSeriesId)
+            findNavController().navigate(action)
         }
 
         // Click Listener for See All Crew button
         binding.btnTvDetailsSeeAllCrew.setOnClickListener {
-            viewModel.credits.value?.id?.let {
+
                 val action = TvDetailsFragmentDirections
-                    .actionTvDetailsFragmentToAllTvCrewFragment(it)
+                    .actionTvDetailsFragmentToAllTvCrewFragment(args.tvSeriesId)
                 findNavController().navigate(action)
-            }
+
         }
 
         // Click Listener for cast RV item
@@ -128,38 +211,52 @@ class TvDetailsFragment : Fragment() {
     }
 
     private fun getTvDetails(view: View) {
-        viewModel.getTvDetails()
-        viewModel.tvSeries.observe(viewLifecycleOwner) {
-            binding.tbTvDetails.title = it.name
-            binding.txtTvDetailsTitle.text = it.name
+        collectLatestLifecycleFlow(viewModel.tvDetails) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    showUi()
+                    val tvDetails = it.data
+                    binding.tbTvDetails.title = tvDetails.name
+                    binding.txtTvDetailsTitle.text = tvDetails.name
 
-            val rating = it.vote_average
-            val colorId = MyUtils.getRatingColorId(rating, view)
+                    val rating = tvDetails.vote_average
+                    val colorId = MyUtils.getRatingColorId(rating, view)
 
-            binding.txtTvDetailsVoteAve.text = String.format("%.1f", rating)
-            binding.txtTvDetailsVoteAve.setTextColor(colorId)
+                    binding.txtTvDetailsVoteAve.text = String.format("%.1f", rating)
+                    binding.txtTvDetailsVoteAve.setTextColor(colorId)
 
-            val voteCount = if (it.vote_count < 1000) {
-                it.vote_count.toString()
-            } else {
-                "${(it.vote_count / 1000)}K"
+                    val voteCount = if (tvDetails.vote_count < 1000) {
+                        tvDetails.vote_count.toString()
+                    } else {
+                        "${(tvDetails.vote_count / 1000)}K"
+                    }
+                    binding.txtTvDetailsVoteCount.text = voteCount
+                    binding.txtTvDetailsTitleOriginal.text = tvDetails.original_name
+                    binding.txtTvDetailsYear.text = tvDetails.first_air_date.take(4) + ","
+                    binding.txtTvDetailsGenres.text = tvDetails.getGenres()
+                    binding.txtTvDetailsCountry.text = tvDetails.getCountries() + ","
+                    binding.txtTvDetailsDescription.text = tvDetails.overview
+
+                    binding.txtTvDetailsVoteAveBig.text = String.format("%.1f", rating)
+                    binding.txtTvDetailsVoteAveBig.setTextColor(colorId)
+
+                    binding.txtTvDetailsVoteCountBig.text = tvDetails.vote_count.toString()
+
+                    Glide.with(view)
+                        .load(MyConstants.IMG_BASE_URL + tvDetails.poster_path)
+                        .into(binding.imgTvDetailsPoster)
+                }
+                is NetworkResult.Error -> {
+                    hideUi()
+                    it.throwable.message?.let { it1 -> toast(it1) }
+                }
+                else -> {
+                    hideUi()
+                }
             }
-            binding.txtTvDetailsVoteCount.text = voteCount
-            binding.txtTvDetailsTitleOriginal.text = it.original_name
-            binding.txtTvDetailsYear.text = it.first_air_date.take(4) + ","
-            binding.txtTvDetailsGenres.text = it.getGenres()
-            binding.txtTvDetailsCountry.text = it.getCountries() + ","
-            binding.txtTvDetailsDescription.text = it.overview
 
-            binding.txtTvDetailsVoteAveBig.text = String.format("%.1f", rating)
-            binding.txtTvDetailsVoteAveBig.setTextColor(colorId)
-
-            binding.txtTvDetailsVoteCountBig.text = it.vote_count.toString()
-
-            Glide.with(view)
-                .load(MyConstants.IMG_BASE_URL + it.poster_path)
-                .into(binding.imgTvDetailsPoster)
         }
+
     }
 
     private fun getReviews(view: View) {
@@ -171,10 +268,14 @@ class TvDetailsFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-        viewModel.getTvReviews()
 
-        viewModel.reviews.observe(viewLifecycleOwner) {
-            it?.let { list -> reviewHorizontalAdapter.updateData(list) }
+        collectLatestLifecycleFlow(viewModel.reviews) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    reviewHorizontalAdapter.updateData(it.data)
+                } else -> {}
+            }
+
         }
 
         reviewHorizontalAdapter.onItemClick = {
@@ -186,11 +287,25 @@ class TvDetailsFragment : Fragment() {
         }
 
         binding.btnTvDetailsSeeAllReviews.setOnClickListener {
-            val action = TvDetailsFragmentDirections
-                .actionTvDetailsFragmentToAllReviewsFragment(
-                    movieId = args.tvSeriesId.toString(), context = MyConstants.TV
+            val action = TvDetailsFragmentDirections.actionTvDetailsFragmentToAllReviewsFragment(
+                    movieId = args.tvSeriesId.toString(),
+                    context = MyConstants.TV
                 )
             findNavController().navigate(action)
+        }
+    }
+
+    private fun showUi() {
+        binding.apply {
+            pbTvDetails.visibility = View.GONE
+            svTvDetails.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideUi() {
+        binding.apply {
+            pbTvDetails.visibility = View.VISIBLE
+            svTvDetails.visibility = View.GONE
         }
     }
 

@@ -8,7 +8,8 @@ import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
-import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
+import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
@@ -41,12 +42,14 @@ class MovieDetailsViewModel @Inject constructor(
         getMovieDetails(id)
     }
 
-    private var isFavorite = false
     private var _reviews = MutableStateFlow<NetworkResult<List<Review>>>(NetworkResult.Loading)
     val reviews = _reviews.asStateFlow()
 
-    private val _addOrRemoveFromFavorite = MutableSharedFlow<NetworkResult<SuccessResponse>>()
-    val addOrRemoveFromFavorite = _addOrRemoveFromFavorite.asSharedFlow()
+    private val _addToFavorite = MutableSharedFlow<NetworkResult<SuccessResponse>>()
+    val addToFavorite = _addToFavorite.asSharedFlow()
+
+    private val _addToWatchlist = MutableSharedFlow<NetworkResult<SuccessResponse>>()
+    val addToWatchlist = _addToWatchlist.asSharedFlow()
 
     private val _accountState =
         MutableStateFlow<NetworkResult<AccountStates>>(NetworkResult.Loading)
@@ -132,7 +135,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
 
-    fun addOrRemoveFromFavorite(id: Int) {
+    fun addToFavorite(id: Int) {
         viewModelScope.launch {
             dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
                 if (isSignedIn) {
@@ -148,36 +151,79 @@ class MovieDetailsViewModel @Inject constructor(
 
                                 // if it is already marked as favorite then remove from favorites
                                 val isFavorite = accState.data.favorite
-                                val requestBody = AddOrRemoveFromFavoriteRequestBody(
+                                val requestBody = AddToFavoriteRequestBody(
                                     favorite = !isFavorite,
                                     media_id = id,
                                     media_type = MyConstants.MEDIA_TYPE_MOVIE
                                 )
                                 val response = repository
-                                    .addOrRemoveFromFavorite(accountId, sessionId, requestBody)
+                                    .addToFavorite(accountId, sessionId, requestBody)
                                 if (response.isSuccessful) {
                                     response.body()?.let {
-                                        _addOrRemoveFromFavorite.emit(NetworkResult.Success(it))
+                                        _addToFavorite.emit(NetworkResult.Success(it))
                                         // after changing its favorite state call func again to trigger UI
                                         getMovieAccountStates(id)
                                     }
                                 } else {
-                                    _addOrRemoveFromFavorite.emit(throwError())
+                                    _addToFavorite.emit(throwError())
                                 }
                             }
                         }
 
 
                     } catch (e: Exception) {
-                        _addOrRemoveFromFavorite.emit(NetworkResult.Error(e))
+                        _addToFavorite.emit(NetworkResult.Error(e))
                     }
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    fun addToWatchlist(id: Int) {
+        viewModelScope.launch {
+            dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
+                if (isSignedIn) {
+                    // After clicking button check if it is favorite, only then do operation
+                    getMovieAccountStates(id)
+                    try {
+                        val accState = accountState.value
+                        // if it can get movie account state then it is signed in
+                        if (accState is NetworkResult.Success) {
+                            dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
+                                val accountId = pair.first
+                                val sessionId = pair.second
+
+                                // if it is already marked as favorite then remove from favorites
+                                val isInWatchlist = accState.data.watchlist
+                                val requestBody = AddToWatchlistRequestBody(
+                                    watchlist = !isInWatchlist,
+                                    media_id = id,
+                                    media_type = MyConstants.MEDIA_TYPE_MOVIE
+                                )
+                                val response = repository
+                                    .addToWatchlist(accountId, sessionId, requestBody)
+                                if (response.isSuccessful) {
+                                    response.body()?.let {
+                                        _addToWatchlist.emit(NetworkResult.Success(it))
+                                        // after changing its favorite state call func again to trigger UI
+                                        getMovieAccountStates(id)
+                                    }
+                                } else {
+                                    _addToWatchlist.emit(throwError())
+                                }
+                            }
+                        }
 
 
-
+                    } catch (e: Exception) {
+                        _addToWatchlist.emit(NetworkResult.Error(e))
+                    }
+                } else {
+                    Toast.makeText(mContext, mContext.getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

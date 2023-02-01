@@ -1,6 +1,5 @@
-package com.example.kinodata.fragments.profile.lists.favorite.adapter
+package com.example.kinodata.fragments.profile.lists.watchlist.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -12,10 +11,8 @@ import com.example.kinodata.databinding.ItemVerticalListBinding
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.utils.MyUtils
 
-private const val TAG = "FavoriteMoviesAdapter"
-
-class FavoriteMoviesAdapter
-    : PagingDataAdapter<RMovie, FavoriteMoviesAdapter.MyViewHolder>(diffUtil) {
+class MoviesWatchlistAdapter :
+    PagingDataAdapter<RMovie, MoviesWatchlistAdapter.MyViewHolder>(diffUtil) {
 
     var onItemClick: ((RMovie?) -> Unit)? = null
 
@@ -62,7 +59,10 @@ class FavoriteMoviesAdapter
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MyViewHolder {
         val binding = ItemVerticalListBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)

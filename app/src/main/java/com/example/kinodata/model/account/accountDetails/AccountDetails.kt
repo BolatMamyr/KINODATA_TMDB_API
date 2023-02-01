@@ -1,4 +1,4 @@
-package com.example.kinodata.model.account
+package com.example.kinodata.model.account.accountDetails
 
 data class AccountDetails(
     val avatar: Avatar,

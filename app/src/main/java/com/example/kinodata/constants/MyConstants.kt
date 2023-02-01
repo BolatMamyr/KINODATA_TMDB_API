@@ -25,6 +25,10 @@ object MyConstants {
     const val URL_FAVORITE_MOVIES = "/favorite/movies"
     const val URL_FAVORITE_TV = "/favorite/tv"
 
+    const val URL_WATCHLIST = "/watchlist"
+    const val URL_WATCHLIST_MOVIES = "/watchlist/movies"
+    const val URL_WATCHLIST_TV = "/watchlist/tv"
+
     const val URL_POPULAR = "movie/popular"
     const val URL_TOP_RATED = "movie/top_rated"
     const val URL_UPCOMING = "movie/upcoming"

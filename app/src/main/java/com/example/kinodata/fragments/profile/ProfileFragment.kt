@@ -89,6 +89,14 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(action)
             }
 
+            btnWatchList.setOnClickListener {
+                val action = ProfileFragmentDirections.actionProfileFragmentToWatchlistFragment(
+                    accountId = accountId,
+                    sessionId = sessionId
+                )
+                findNavController().navigate(action)
+            }
+
         }
     }
 

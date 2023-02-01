@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllTvCrewBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
+import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: NOT SHOWING All cast and crew
@@ -25,6 +28,8 @@ class AllTvCrewFragment : Fragment() {
 
     private var _binding: FragmentAllTvCrewBinding? = null
     private val binding get() = _binding!!
+
+    private val args: AllTvCrewFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +40,7 @@ class AllTvCrewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getTvCredits(args.tvId.toString())
         binding.tbAllTvCrew.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -48,11 +54,15 @@ class AllTvCrewFragment : Fragment() {
             isSaveEnabled = true
         }
 
-        viewModel.getTvCredits()
-        viewModel.credits.observe(viewLifecycleOwner) {
-            val sortedList = it.crew.sortedByDescending { it.popularity }
-            adapter.updateData(sortedList)
-            Log.d(TAG, "Crew size: ${it.crew.size}")
+        collectLatestLifecycleFlow(viewModel.credits) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    val sortedList = it.data.crew.sortedByDescending { it.popularity }
+                    adapter.updateData(sortedList)
+                }
+                else -> {}
+            }
+
         }
         adapter.onItemClick = {
             it?.id?.let { personId ->

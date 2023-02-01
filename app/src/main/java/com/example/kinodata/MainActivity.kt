@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     // TODO: SearchFrag navigate to another frag when clicking on EditText
+    // TODO: when showing keyboard bottomNav going up in SearchFrag
     // TODO: toolbars with animation
     // TODO: clickable photos
     // TODO: videos

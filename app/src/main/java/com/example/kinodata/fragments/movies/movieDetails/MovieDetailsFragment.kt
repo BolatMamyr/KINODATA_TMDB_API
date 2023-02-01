@@ -49,27 +49,52 @@ class MovieDetailsFragment : Fragment() {
         binding.tbMovieDetails.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-        binding.imgDetailsFavorite.setOnClickListener {
-            viewModel.addOrRemoveFromFavorite(args.movieId)
-        }
+
         binding.svMovieDetails.isSaveEnabled = true
         getMovieDetails(view)
         getMovieCredits(view)
         getReviews()
         getAccountStates()
-        addOrRemoveFromFavorites()
-
+        addToFavorite()
+        addToWatchlist()
     }
 
-    private fun addOrRemoveFromFavorites() {
+    private fun addToFavorite() {
+        binding.imgDetailsFavorite.setOnClickListener {
+            viewModel.addToFavorite(args.movieId)
+        }
         lifecycleScope.launch {
-            viewModel.addOrRemoveFromFavorite.collect {
+            viewModel.addToFavorite.collect {
                 when (it) {
                     is NetworkResult.Success -> {
                         val message = if (it.data.status_message?.contains("deleted") == true) {
                             getString(R.string.removed_from_favorites)
                         } else {
                             getString(R.string.added_to_favorites)
+                        }
+                        toast(message)
+                    }
+                    is NetworkResult.Error -> {
+                        toast(getString(R.string.something_went_wrong))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun addToWatchlist() {
+        binding.imgDetailsWatchLater.setOnClickListener {
+            viewModel.addToWatchlist(args.movieId)
+        }
+        lifecycleScope.launch {
+            viewModel.addToWatchlist.collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        val message = if (it.data.status_message?.contains("deleted") == true) {
+                            getString(R.string.removed_from_watchlist)
+                        } else {
+                            getString(R.string.added_to_watchlist)
                         }
                         toast(message)
                     }
@@ -90,12 +115,21 @@ class MovieDetailsFragment : Fragment() {
                     val isFavorite = accountStates.favorite
                     val isInWatchlist = accountStates.watchlist
 
-                    val imgResource = if (isFavorite) {
-                        R.drawable.ic_star_orange
+                    // Favorite
+                    val imgFavorite = if (isFavorite) {
+                        R.drawable.ic_favorite_red
                     } else {
-                        R.drawable.ic_star_gray
+                        R.drawable.ic_favorite_gray
                     }
-                    binding.imgDetailsFavorite.setImageResource(imgResource)
+                    binding.imgDetailsFavorite.setImageResource(imgFavorite)
+
+                    // Watchlist
+                    val imgWatchlist = if (isInWatchlist) {
+                        R.drawable.ic_watch_later_orange
+                    } else {
+                        R.drawable.ic_watch_later_gray
+                    }
+                    binding.imgDetailsWatchLater.setImageResource(imgWatchlist)
                 }
                 else -> {}
             }

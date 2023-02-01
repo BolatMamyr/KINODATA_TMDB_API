@@ -1,14 +1,15 @@
 package com.example.kinodata.api
 
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.account.AccountDetails
+import com.example.kinodata.model.account.accountDetails.AccountDetails
 import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
-import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
+import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -131,6 +132,13 @@ interface MovieDataApi {
         @Query("language") language: String,
         @Query("page") page: String = "1"
     ): Response<ReviewResult>
+
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_ACCOUNT_STATES)
+    suspend fun getTvAccountStates(
+        @Path("tvId") tvId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String
+    ): Response<AccountStates>
     // *******************************Person**************************************
 
     @GET(MyConstants.URL_PERSON + "{personId}")
@@ -170,6 +178,7 @@ interface MovieDataApi {
         @Query("page") page: String = "1"
     ): Response<MultiSearch>
 
+    // *************************Authentication**********************************
     @GET(MyConstants.URL_REQUEST_TOKEN)
     suspend fun createRequestToken(
         @Query("api_key") api_key: String = MyConstants.API_KEY
@@ -193,11 +202,20 @@ interface MovieDataApi {
         @Query ("session_id") session_id: String
     ): Response<SuccessResponse>
 
+    // *************************Account**********************************
     @GET(MyConstants.URL_ACCOUNT)
     suspend fun getAccountDetails(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query ("session_id") session_id: String
     ): Response<AccountDetails>
+
+    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
+    suspend fun addToFavorite(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Body requestBody: AddToFavoriteRequestBody
+    ):Response<SuccessResponse>
 
     @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_MOVIES)
     suspend fun getFavoriteMovies(
@@ -215,11 +233,29 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForTvSeries>
 
-    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
-    suspend fun addOrRemoveFromFavorite(
+    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST)
+    suspend fun addToWatchlist(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
-        @Body requestBody: AddOrRemoveFromFavoriteRequestBody
+        @Body requestBody: AddToWatchlistRequestBody
     ):Response<SuccessResponse>
+
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST_MOVIES)
+    suspend fun getMoviesWatchlist(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForMovies>
+
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST_TV)
+    suspend fun getTvWatchlist(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForTvSeries>
+
+
 }

@@ -1,14 +1,15 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
-import com.example.kinodata.model.account.AccountDetails
+import com.example.kinodata.model.account.accountDetails.AccountDetails
 import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.auth.RequestToken
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
-import com.example.kinodata.model.favorite.AddOrRemoveFromFavoriteRequestBody
+import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -75,7 +76,10 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getMovieReviews(movieId = id, language = language)
     }
 
-    suspend fun getMovieAccountStates(movieId: String, session_id: String): Response<AccountStates> {
+    suspend fun getMovieAccountStates(
+        movieId: String,
+        session_id: String
+    ): Response<AccountStates> {
         return api.getMovieAccountStates(movieId = movieId, session_id = session_id)
     }
 
@@ -134,6 +138,10 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getTvReviews(tvId = tvId, language = language)
     }
 
+    suspend fun getTvAccountStates(tvId: Int, session_id: String): Response<AccountStates> {
+        return api.getTvAccountStates(tvId = tvId, session_id = session_id)
+    }
+
     suspend fun getMultiSearchResults(
         query: String?, language: String, page: String = "1"
     ): Response<MultiSearch> {
@@ -156,21 +164,33 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.createSessionId(requestBody = requestBody)
     }
 
-//    suspend fun deleteSession(
+    //    suspend fun deleteSession(
 //        requestBody: DeleteSessionRequestBody
 //    ): Response<DeleteSessionResponse> {
 //        return api.deleteSession(requestBody = requestBody)
 //    }
-suspend fun deleteSession(
-    session_id: String
-): Response<SuccessResponse> {
-    return api.deleteSession(session_id = session_id)
-}
+    suspend fun deleteSession(
+        session_id: String
+    ): Response<SuccessResponse> {
+        return api.deleteSession(session_id = session_id)
+    }
 
     suspend fun getAccountDetails(
         session_id: String
     ): Response<AccountDetails> {
         return api.getAccountDetails(session_id = session_id)
+    }
+
+    suspend fun addToFavorite(
+        accountId: Int,
+        session_id: String,
+        requestBody: AddToFavoriteRequestBody
+    ): Response<SuccessResponse> {
+        return api.addToFavorite(
+            accountId = accountId,
+            session_id = session_id,
+            requestBody = requestBody
+        )
     }
 
     suspend fun getFavoriteMovies(
@@ -189,15 +209,32 @@ suspend fun deleteSession(
         return api.getFavoriteTv(accountId = accountId, session_id = session_id, page = page)
     }
 
-    suspend fun addOrRemoveFromFavorite(
+    suspend fun addToWatchlist(
         accountId: Int,
         session_id: String,
-        requestBody: AddOrRemoveFromFavoriteRequestBody
+        requestBody: AddToWatchlistRequestBody
     ): Response<SuccessResponse> {
-        return api.addOrRemoveFromFavorite(
+        return api.addToWatchlist(
             accountId = accountId,
             session_id = session_id,
             requestBody = requestBody
         )
     }
+    suspend fun getMoviesWatchlist(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForMovies> {
+        return api.getMoviesWatchlist(accountId = accountId, session_id = session_id, page = page)
+    }
+
+    suspend fun getTvWatchlist(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForTvSeries> {
+        return api.getTvWatchlist(accountId = accountId, session_id = session_id, page = page)
+    }
+
+
 }

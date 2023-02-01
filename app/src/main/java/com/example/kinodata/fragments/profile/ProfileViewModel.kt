@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kinodata.model.account.AccountDetails
+import com.example.kinodata.model.account.accountDetails.AccountDetails
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.repo.DataStoreRepository
