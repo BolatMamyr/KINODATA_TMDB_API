@@ -6,10 +6,11 @@ import com.google.gson.JsonElement
 data class AccountStates(
     val favorite: Boolean,
     val id: Int,
+    // if not rated by user it is Boolean (false), if rated then Rated JsonObject.
     val rated: JsonElement,
     val watchlist: Boolean
 ) {
-    data class Rated(
+    data class Rating(
         val value: Double
     )
 
@@ -19,9 +20,9 @@ data class AccountStates(
 
     fun ratedItemAsBoolean() = rated.asBoolean
 
-    fun ratedItemAsRatedObject(): Rated {
+    fun ratedItemAsRatedObject(): Rating {
         val jsonObject = rated.asJsonObject
-        return Gson().fromJson(jsonObject, Rated::class.java)
+        return Gson().fromJson(jsonObject, Rating::class.java)
     }
 
 

@@ -9,6 +9,7 @@ import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
@@ -24,23 +25,26 @@ import javax.inject.Inject
 
 private const val TAG = "MovieDetailsViewModel"
 
+// Shared ViewModel across: MovieDetailsFragment and RateFragment
+// SavedStateHandle cannot be used in Shared ViewModel
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     @ApplicationContext private val mContext: Context,
-    state: SavedStateHandle,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
-
-    // TODO: impl "add to watchlist", "rate" func
+    private lateinit var sessionId: String
 
     init {
-        val id = state.get<Int>("movieId") ?: 0
-        getMovieReviews(id)
-        getMovieAccountStates(id)
-        getMovieCredits(id)
-        getMovieDetails(id)
+        viewModelScope.launch {
+            dataStoreRepository.sessionId.collectLatest {
+                sessionId = it
+            }
+        }
     }
+
+    // will initialize it in getMovieDetails func to access it in rate func
+    private var movieId = 0
 
     private var _reviews = MutableStateFlow<NetworkResult<List<Review>>>(NetworkResult.Loading)
     val reviews = _reviews.asStateFlow()
@@ -61,21 +65,33 @@ class MovieDetailsViewModel @Inject constructor(
     private val _credits = MutableStateFlow<NetworkResult<Credits>>(NetworkResult.Loading)
     val credits = _credits.asStateFlow()
 
-    private fun getMovieDetails(id: Int) {
+    // current rating by user. If 0 then not rated by user
+    private val _ratingByUser = MutableStateFlow(.0)
+    val ratingByUser = _ratingByUser.asStateFlow()
+
+    // after rating by user it shows toast with the result of rating
+    private val _rateResult = MutableSharedFlow<NetworkResult<SuccessResponse>>()
+    val rate = _rateResult.asSharedFlow()
+
+    // in RateFragment BottomSheetDialog: to show in UI current to rate val. if it is equal to
+    // _ratingByUser nothing happens, else updates rating. By default = 7
+    private val _toRate = MutableStateFlow(7.0)
+    val toRate = _toRate.asStateFlow()
+
+    fun getMovieDetails(id: Int) {
+        movieId = id
         viewModelScope.launch {
             try {
                 val response = repository.getMovieDetails(id.toString(), MyConstants.LANGUAGE)
-                Log.d(TAG, "getMovieDetails response code: ${response.code()}")
-                Log.d(TAG, "getMovieDetails movieId: $id")
                 if (response.isSuccessful) {
                     val movie = response.body()
                     if (movie != null) {
                         _movie.value = NetworkResult.Success(movie)
                     } else {
-                        _movie.value = throwError()
+                        _movie.value = throwError(mContext.getString(R.string.something_went_wrong))
                     }
                 } else {
-                    _movie.value = throwError()
+                    _movie.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
             } catch (e: Exception) {
                 _movie.value = NetworkResult.Error(e)
@@ -84,7 +100,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
 
-    private fun getMovieCredits(id: Int) {
+    fun getMovieCredits(id: Int) {
         viewModelScope.launch {
             try {
                 val response = repository.getMovieCredits(id.toString(), MyConstants.LANGUAGE)
@@ -92,7 +108,7 @@ class MovieDetailsViewModel @Inject constructor(
                     val data = response.body()
                     data?.let { _credits.value = NetworkResult.Success(it) }
                 } else {
-                    _credits.value = throwError()
+                    _credits.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
             } catch (e: Exception) {
                 _credits.value = NetworkResult.Error(e)
@@ -100,7 +116,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieReviews(id: Int) {
+    fun getMovieReviews(id: Int) {
         viewModelScope.launch {
             try {
                 val response = repository
@@ -109,7 +125,7 @@ class MovieDetailsViewModel @Inject constructor(
                     val data = response.body()?.reviews
                     data?.let { _reviews.value = NetworkResult.Success(it) }
                 } else {
-                    _reviews.value = throwError()
+                    _reviews.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
             } catch (e: Exception) {
                 _reviews.value = NetworkResult.Error(e)
@@ -117,15 +133,23 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieAccountStates(id: Int) {
+    fun getMovieAccountStates(id: Int) {
         viewModelScope.launch {
             try {
-                dataStoreRepository.sessionId.collectLatest { sessionId ->
-                    val response = repository.getMovieAccountStates(id.toString(), sessionId)
+                dataStoreRepository.sessionId.collectLatest { sessId ->
+                    val response = repository.getMovieAccountStates(id.toString(), sessId)
                     if (response.isSuccessful) {
-                        response.body()?.let { _accountState.value = NetworkResult.Success(it) }
+                        response.body()?.let {
+                            _accountState.value = NetworkResult.Success(it)
+                            // if rated by user it is Rated JsonObject, if not rated then it is Boolean(false)
+                            if (it.isRatedItemRatedObject()) {
+                                val ratedItem = it.ratedItemAsRatedObject()
+                                _ratingByUser.emit(ratedItem.value)
+                            }
+                        }
                     } else {
-                        _accountState.value = throwError()
+                        _accountState.value =
+                            throwError(mContext.getString(R.string.couldntGetAccountStates))
                     }
                 }
             } catch (e: Exception) {
@@ -165,7 +189,7 @@ class MovieDetailsViewModel @Inject constructor(
                                         getMovieAccountStates(id)
                                     }
                                 } else {
-                                    _addToFavorite.emit(throwError())
+                                    _addToFavorite.emit(throwError(mContext.getString(R.string.couldntMarkAsFavorite)))
                                 }
                             }
                         }
@@ -175,7 +199,11 @@ class MovieDetailsViewModel @Inject constructor(
                         _addToFavorite.emit(NetworkResult.Error(e))
                     }
                 } else {
-                    Toast.makeText(mContext, mContext.getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        mContext,
+                        mContext.getString(R.string.please_sign_in),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -211,7 +239,7 @@ class MovieDetailsViewModel @Inject constructor(
                                         getMovieAccountStates(id)
                                     }
                                 } else {
-                                    _addToWatchlist.emit(throwError())
+                                    _addToWatchlist.emit(throwError(mContext.getString(R.string.couldntAddToWatchlist)))
                                 }
                             }
                         }
@@ -221,15 +249,66 @@ class MovieDetailsViewModel @Inject constructor(
                         _addToWatchlist.emit(NetworkResult.Error(e))
                     }
                 } else {
-                    Toast.makeText(mContext, mContext.getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        mContext,
+                        mContext.getString(R.string.please_sign_in),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
 
-    private fun throwError(): NetworkResult.Error {
+    fun incrementRating() {
+        // cannot be rated more than 10
+        if (_toRate.value < 10) {
+            val n = _toRate.value + .5
+            viewModelScope.launch {
+                _toRate.emit(n)
+            }
+        }
+    }
+
+    fun subtractRating() {
+        // cannot be rated less than 0.5
+        if (_toRate.value > .5) {
+            val n = _toRate.value - .5
+            viewModelScope.launch {
+                _toRate.emit(n)
+            }
+        }
+    }
+
+    fun rate(rating: Double) {
+        viewModelScope.launch {
+            try {
+                val requestBody = RateRequestBody(rating)
+                Log.d(TAG, "requestBody val = ${requestBody.value}, movieId = $movieId")
+                val response = repository.rateMovie(movieId.toString(), sessionId, requestBody)
+                Log.d(TAG, "rate: ${response.code()} + ${response.message()}")
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _ratingByUser.emit(rating)
+                        _rateResult.emit(NetworkResult.Success(it))
+                    }
+                } else {
+                    _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
+                }
+            } catch (e: Exception) {
+                _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
+            }
+        }
+    }
+
+    fun changeToRateValue(rating: Double) {
+        viewModelScope.launch {
+            _toRate.emit(rating)
+        }
+    }
+
+    private fun throwError(message: String): NetworkResult.Error {
         return NetworkResult.Error(
-            Exception(mContext.getString(R.string.something_went_wrong))
+            Exception(message)
         )
     }
 }

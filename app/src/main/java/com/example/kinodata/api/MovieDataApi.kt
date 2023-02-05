@@ -9,6 +9,7 @@ import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
@@ -88,6 +89,14 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String
     ): Response<AccountStates>
+
+    @POST(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_RATING)
+    suspend fun rateMovie(
+        @Path("movieId") movieId: String,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Body requestBody: RateRequestBody
+    ): Response<SuccessResponse>
 
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)

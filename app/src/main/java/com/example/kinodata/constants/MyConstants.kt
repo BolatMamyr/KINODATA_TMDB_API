@@ -21,6 +21,8 @@ object MyConstants {
 
     const val URL_ACCOUNT_STATES = "/account_states"
 
+    const val URL_RATING = "/rating"
+
     const val URL_FAVORITE = "/favorite"
     const val URL_FAVORITE_MOVIES = "/favorite/movies"
     const val URL_FAVORITE_TV = "/favorite/tv"

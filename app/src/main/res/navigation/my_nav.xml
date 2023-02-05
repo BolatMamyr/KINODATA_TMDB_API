@@ -77,6 +77,9 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_allMovieCrewFragment"
             app:destination="@id/allMovieCrewFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_rateFragment"
+            app:destination="@id/rateFragment" />
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -197,6 +200,9 @@
         <action
             android:id="@+id/action_tvDetailsFragment_to_allTvCrewFragment"
             app:destination="@id/allTvCrewFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_rateFragment"
+            app:destination="@id/rateFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"
@@ -339,4 +345,9 @@
             android:id="@+id/action_watchlistFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/rateFragment"
+        android:name="com.example.kinodata.fragments.rating.RateFragment"
+        android:label="fragment_rate"
+        tools:layout="@layout/fragment_rate" />
 </navigation>

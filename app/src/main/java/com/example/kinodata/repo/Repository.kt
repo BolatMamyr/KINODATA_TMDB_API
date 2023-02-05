@@ -9,6 +9,7 @@ import com.example.kinodata.model.auth.SessionIdResult
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
+import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
@@ -219,6 +220,14 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
             session_id = session_id,
             requestBody = requestBody
         )
+    }
+
+    suspend fun rateMovie(
+        movieId: String,
+        session_id: String,
+        requestBody: RateRequestBody
+    ): Response<SuccessResponse> {
+        return api.rateMovie(movieId = movieId, session_id = session_id, requestBody = requestBody)
     }
     suspend fun getMoviesWatchlist(
         accountId: Int,

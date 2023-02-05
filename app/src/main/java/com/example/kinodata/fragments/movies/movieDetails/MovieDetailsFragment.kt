@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,21 +22,33 @@ import com.example.kinodata.adapters.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
+import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.MyUtils.Companion.toast
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+// TODO: launch separate coroutines for each UI related stuff. Now it is loading slow
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
 
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MovieDetailsViewModel by viewModels()
+    private val viewModel: MovieDetailsViewModel by activityViewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
+
+    // argument of RateFragment to rate movie
+    private var posterPath = ""
+    private var rating = .0
+
+    @Inject
+    lateinit var dataStoreRepository: DataStoreRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +71,63 @@ class MovieDetailsFragment : Fragment() {
         getAccountStates()
         addToFavorite()
         addToWatchlist()
+        rateMovie()
+        collectRateResult()
+//        collectRatingByUser()
+    }
+
+//    private fun collectRatingByUser() {
+//        collectLatestLifecycleFlow(viewModel.ratingByUser) {
+//            // if > 0 it is rated by user
+//
+//            if (it > .0) {
+//                val colorId = MyUtils.getRatingColorId(it, requireView())
+//                binding.cardRatingByUser.visibility = View.VISIBLE
+//                binding.cardRatingByUser.setCardBackgroundColor(colorId)
+//                binding.txtRatingByUser.text = it.toString()
+//            } else {
+//                binding.cardRatingByUser.visibility = View.GONE
+//            }
+//        }
+//    }
+
+    // after rating by user it shows toast with the result of rating
+    private fun collectRateResult() {
+        lifecycleScope.launch {
+            viewModel.rate.collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        val response = it.data
+                        if (response.success) {
+                            toast(getString(R.string.movie_rated_successfully))
+                        } else {
+                            toast(getString(R.string.couldntRateMovie))
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        toast(getString(R.string.couldntRateMovie))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun rateMovie() {
+        binding.btnDetailsRate.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.Main) {
+                dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
+                    if (!isSignedIn) {
+                        toast(getString(R.string.please_sign_in))
+                    } else {
+                        val action = MovieDetailsFragmentDirections
+                            .actionMovieDetailsFragmentToRateFragment()
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+
+        }
     }
 
     private fun addToFavorite() {
@@ -108,35 +179,64 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun getAccountStates() {
-        collectLatestLifecycleFlow(viewModel.accountState) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    val accountStates = it.data
-                    val isFavorite = accountStates.favorite
-                    val isInWatchlist = accountStates.watchlist
+        viewModel.getMovieAccountStates(args.movieId)
+        lifecycleScope.launch(Dispatchers.Main) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.accountState.collectLatest {
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            val accountStates = it.data
+                            launch {
+                                val isFavorite = accountStates.favorite
+                                // Favorite
+                                val imgFavorite = if (isFavorite) {
+                                    R.drawable.ic_favorite_red
+                                } else {
+                                    R.drawable.ic_favorite_gray
+                                }
+                                binding.imgDetailsFavorite.setImageResource(imgFavorite)
+                            }
+                            launch {
+                                val isInWatchlist = accountStates.watchlist
 
-                    // Favorite
-                    val imgFavorite = if (isFavorite) {
-                        R.drawable.ic_favorite_red
-                    } else {
-                        R.drawable.ic_favorite_gray
-                    }
-                    binding.imgDetailsFavorite.setImageResource(imgFavorite)
+                                // Watchlist
+                                val imgWatchlist = if (isInWatchlist) {
+                                    R.drawable.ic_watch_later_orange
+                                } else {
+                                    R.drawable.ic_watch_later_gray
+                                }
+                                binding.imgDetailsWatchLater.setImageResource(imgWatchlist)
+                            }
+                            launch {
+                                // Rated
+                                // if rated val is Rated obj then it is rated by user
+                                // TODO: change "Rate" button to update rating depending on rated by user or not
+                                if (accountStates.isRatedItemRatedObject()) {
+                                    val rated = accountStates.ratedItemAsRatedObject()
+                                    rating = rated.value
+                                    val colorId = MyUtils.getRatingColorId(rating, requireView())
+                                    binding.cardRatingByUser.visibility = View.VISIBLE
+                                    binding.cardRatingByUser.setCardBackgroundColor(colorId)
+                                    binding.txtRatingByUser.text = rating.toString()
 
-                    // Watchlist
-                    val imgWatchlist = if (isInWatchlist) {
-                        R.drawable.ic_watch_later_orange
-                    } else {
-                        R.drawable.ic_watch_later_gray
+                                } else {
+                                    // else it is JsonPrimitive Boolean = false means it is not rated by user
+                                    binding.cardRatingByUser.visibility = View.GONE
+                                }
+                            }
+                            showUi()
+                        }
+                        is NetworkResult.Error -> { showUi() }
+                        // else if loading hide ui and wait until Error or success
+                        else -> { hideUi() }
                     }
-                    binding.imgDetailsWatchLater.setImageResource(imgWatchlist)
                 }
-                else -> {}
             }
         }
     }
 
     private fun getReviews() {
+        viewModel.getMovieReviews(args.movieId)
         val reviewHorizontalAdapter = ReviewHorizontalAdapter()
         reviewHorizontalAdapter.onItemClick = {
             it?.let { review ->
@@ -176,6 +276,7 @@ class MovieDetailsFragment : Fragment() {
     private fun getMovieCredits(
         view: View
     ) {
+        viewModel.getMovieCredits(args.movieId)
         // ***********Cast************
         val castHorizontalAdapter = CastHorizontalAdapter()
         val crewHorizontalAdapter = CrewHorizontalAdapter()
@@ -262,11 +363,13 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun getMovieDetails(view: View) {
+        viewModel.getMovieDetails(args.movieId)
         collectLatestLifecycleFlow(viewModel.movie) {
             when (it) {
                 is NetworkResult.Success -> {
-                    showUi()
                     val movie = it.data
+                    posterPath = movie.poster_path
+
                     binding.tbMovieDetails.title = movie.title
                     binding.txtDetailsTitle.text = movie.title
 
@@ -303,7 +406,6 @@ class MovieDetailsFragment : Fragment() {
                     Toast.makeText(context, it.throwable.message, Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    hideUi()
                 }
             }
 
