@@ -19,12 +19,14 @@ import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MovieDetailsViewModel"
 
+// TODO: add isInWatchlist StateFlow for UI(see isFavorite). Also make 3 dots(see more) btn depend on it.
 // Shared ViewModel across: MovieDetailsFragment and RateFragment
 // SavedStateHandle cannot be used in Shared ViewModel
 @HiltViewModel
@@ -33,14 +35,9 @@ class MovieDetailsViewModel @Inject constructor(
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
-    private lateinit var sessionId: String
 
     init {
-        viewModelScope.launch {
-            dataStoreRepository.sessionId.collectLatest {
-                sessionId = it
-            }
-        }
+        Log.d(TAG, "INITIALIZED")
     }
 
     // will initialize it in getMovieDetails func to access it in rate func
@@ -49,8 +46,12 @@ class MovieDetailsViewModel @Inject constructor(
     private var _reviews = MutableStateFlow<NetworkResult<List<Review>>>(NetworkResult.Loading)
     val reviews = _reviews.asStateFlow()
 
+    // to show toast msg
     private val _addToFavorite = MutableSharedFlow<NetworkResult<SuccessResponse>>()
     val addToFavorite = _addToFavorite.asSharedFlow()
+    // for UI State
+    private val _isFavorite = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
+    val isFavorite = _isFavorite.asStateFlow()
 
     private val _addToWatchlist = MutableSharedFlow<NetworkResult<SuccessResponse>>()
     val addToWatchlist = _addToWatchlist.asSharedFlow()
@@ -66,7 +67,7 @@ class MovieDetailsViewModel @Inject constructor(
     val credits = _credits.asStateFlow()
 
     // current rating by user. If 0 then not rated by user
-    private val _ratingByUser = MutableStateFlow(.0)
+    private val _ratingByUser = MutableStateFlow<NetworkResult<Double>>(NetworkResult.Loading)
     val ratingByUser = _ratingByUser.asStateFlow()
 
     // after rating by user it shows toast with the result of rating
@@ -79,6 +80,8 @@ class MovieDetailsViewModel @Inject constructor(
     val toRate = _toRate.asStateFlow()
 
     fun getMovieDetails(id: Int) {
+        _movie.value = NetworkResult.Loading
+        // Since SavedStateHandle does not work in SharedViewModel save movieId to use it later
         movieId = id
         viewModelScope.launch {
             try {
@@ -101,6 +104,7 @@ class MovieDetailsViewModel @Inject constructor(
 
 
     fun getMovieCredits(id: Int) {
+        _credits.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
                 val response = repository.getMovieCredits(id.toString(), MyConstants.LANGUAGE)
@@ -117,6 +121,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     fun getMovieReviews(id: Int) {
+        _reviews.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
                 val response = repository
@@ -134,6 +139,9 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     fun getMovieAccountStates(id: Int) {
+        _accountState.value = NetworkResult.Loading
+        _ratingByUser.value = NetworkResult.Loading
+        _isFavorite.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
                 dataStoreRepository.sessionId.collectLatest { sessId ->
@@ -144,16 +152,24 @@ class MovieDetailsViewModel @Inject constructor(
                             // if rated by user it is Rated JsonObject, if not rated then it is Boolean(false)
                             if (it.isRatedItemRatedObject()) {
                                 val ratedItem = it.ratedItemAsRatedObject()
-                                _ratingByUser.emit(ratedItem.value)
+                                _ratingByUser.value = NetworkResult.Success(ratedItem.value)
+                            } else {
+                                _ratingByUser.value = throwError("Not rated by user")
                             }
+                            // Favorite
+                            _isFavorite.value = NetworkResult.Success(it.favorite)
                         }
                     } else {
                         _accountState.value =
                             throwError(mContext.getString(R.string.couldntGetAccountStates))
+                        _isFavorite.value = throwError(
+                            mContext.getString(R.string.something_went_wrong)
+                        )
                     }
                 }
             } catch (e: Exception) {
                 _accountState.value = NetworkResult.Error(e)
+                _isFavorite.value = NetworkResult.Error(e)
             }
         }
     }
@@ -161,22 +177,19 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun addToFavorite(id: Int) {
         viewModelScope.launch {
-            dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
-                if (isSignedIn) {
-                    // After clicking button check if it is favorite, only then do operation
-                    getMovieAccountStates(id)
-                    try {
-                        val accState = accountState.value
-                        // if it can get movie account state then it is signed in
-                        if (accState is NetworkResult.Success) {
-                            dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
-                                val accountId = pair.first
-                                val sessionId = pair.second
-
+            try {
+                dataStoreRepository.accountIdAndSessionId.collectLatest { ids ->
+                    val accountId = ids.first
+                    val sessionId = ids.second
+                    // not empty means user is signed in
+                    if (sessionId.isNotEmpty()) {
+                        val favorite = isFavorite.value
+                        when (favorite) {
+                            is NetworkResult.Success -> {
+                                val fav = favorite.data
                                 // if it is already marked as favorite then remove from favorites
-                                val isFavorite = accState.data.favorite
                                 val requestBody = AddToFavoriteRequestBody(
-                                    favorite = !isFavorite,
+                                    favorite = !fav,
                                     media_id = id,
                                     media_type = MyConstants.MEDIA_TYPE_MOVIE
                                 )
@@ -185,26 +198,34 @@ class MovieDetailsViewModel @Inject constructor(
                                 if (response.isSuccessful) {
                                     response.body()?.let {
                                         _addToFavorite.emit(NetworkResult.Success(it))
+                                        if (it.success) {
+                                            // if it was favorite before now it is not
+                                            _isFavorite.value = NetworkResult.Success(!fav)
+                                        }
                                         // after changing its favorite state call func again to trigger UI
-                                        getMovieAccountStates(id)
                                     }
                                 } else {
                                     _addToFavorite.emit(throwError(mContext.getString(R.string.couldntMarkAsFavorite)))
                                 }
                             }
+                            is NetworkResult.Error -> {
+                                _isFavorite.value =
+                                    throwError(mContext.getString(R.string.couldntMarkAsFavorite))
+                                _addToFavorite.emit(throwError(mContext.getString(R.string.couldntMarkAsFavorite)))
+                            }
+                            else -> {
+                                _isFavorite.value = NetworkResult.Loading
+                                _addToFavorite.emit(NetworkResult.Loading)
+                            }
                         }
-
-
-                    } catch (e: Exception) {
-                        _addToFavorite.emit(NetworkResult.Error(e))
+                    } else {
+                        _isFavorite.value = throwError(mContext.getString(R.string.please_sign_in))
+                        _addToFavorite.emit(throwError(mContext.getString(R.string.please_sign_in)))
                     }
-                } else {
-                    Toast.makeText(
-                        mContext,
-                        mContext.getString(R.string.please_sign_in),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
+            } catch (e: Exception) {
+                _addToFavorite.emit(NetworkResult.Error(e))
+                _isFavorite.value = NetworkResult.Error(e)
             }
         }
     }
@@ -281,19 +302,23 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun rate(rating: Double) {
         viewModelScope.launch {
+            _rateResult.emit(NetworkResult.Loading)
             try {
-                val requestBody = RateRequestBody(rating)
-                Log.d(TAG, "requestBody val = ${requestBody.value}, movieId = $movieId")
-                val response = repository.rateMovie(movieId.toString(), sessionId, requestBody)
-                Log.d(TAG, "rate: ${response.code()} + ${response.message()}")
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        _ratingByUser.emit(rating)
-                        _rateResult.emit(NetworkResult.Success(it))
+                dataStoreRepository.sessionId.collectLatest { sessionId ->
+                    val requestBody = RateRequestBody(rating)
+                    Log.d(TAG, "requestBody val = ${requestBody.value}, movieId = $movieId")
+                    val response = repository.rateMovie(movieId.toString(), sessionId, requestBody)
+                    Log.d(TAG, "rate: ${response.code()} + ${response.message()}")
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            _ratingByUser.value = NetworkResult.Success(rating)
+                            _rateResult.emit(NetworkResult.Success(it))
+                        }
+                    } else {
+                        _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
                     }
-                } else {
-                    _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
                 }
+
             } catch (e: Exception) {
                 _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
             }

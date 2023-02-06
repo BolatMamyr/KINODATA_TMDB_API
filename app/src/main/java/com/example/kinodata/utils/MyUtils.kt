@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.kinodata.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,6 +64,13 @@ class MyUtils {
 
         fun <T> Fragment.collectLatestLifecycleFlow(flow: Flow<T>, collect: (T) -> Unit) {
             lifecycleScope.launch(Dispatchers.Main) {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    flow.collectLatest(collect)
+                }
+            }
+        }
+        fun <T> Fragment.collectLatestLifecycleFlowReturnJob(flow: Flow<T>, collect: (T) -> Unit): Job {
+            return lifecycleScope.launch(Dispatchers.Main) {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     flow.collectLatest(collect)
                 }

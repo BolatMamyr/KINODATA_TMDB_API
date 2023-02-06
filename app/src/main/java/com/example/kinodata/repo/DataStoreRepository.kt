@@ -43,7 +43,7 @@ class DataStoreRepository @Inject constructor(
                 emit(emptyPreferences())
             }
         }.map { preferences ->
-            val sessionId = preferences[sessionIdKey] ?: "null"
+            val sessionId = preferences[sessionIdKey] ?: ""
             sessionId
         }
 
@@ -67,7 +67,7 @@ class DataStoreRepository @Inject constructor(
 
     suspend fun deleteSessionId() {
         dataStore.edit { preference ->
-            preference[sessionIdKey] = "null"
+            preference[sessionIdKey] = ""
             preference[isSignedInKey] = false
         }
     }
@@ -78,7 +78,7 @@ class DataStoreRepository @Inject constructor(
             emit(emptyPreferences())
         }.map { pref ->
             val accountId = pref[accountIdKey] ?: -1
-            val sessionId = pref[sessionIdKey] ?: "null"
+            val sessionId = pref[sessionIdKey] ?: ""
             Pair(accountId, sessionId)
         }
 }

@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.rating
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,14 +84,27 @@ class RateFragment : BottomSheetDialogFragment() {
 
     private fun collectRatingByUser() {
         collectLatestLifecycleFlow(viewModel.ratingByUser) {
-            // if it is zero then it's not rated by user
-            if (it > .0) {
-                viewModel.changeToRateValue(it)
-                ratingByUser = it
+            when (it) {
+                is NetworkResult.Success -> {
+                    val rating = it.data
+                    if (rating > 0) {
+                        // if it is more than zero then it's rated by user. toRate value in ViewModel
+                        // needs to be changed to be collected in collectToRate() function.
+                        viewModel.changeToRateValue(rating)
+                        ratingByUser = rating
+                    }
+                }
+                is NetworkResult.Error -> {
+
+                }
+                else -> {}
             }
         }
     }
 
+    // current val which represents UI state. if it is rated by user it will get that value, if not
+    // by default will be equal to 7.0. Changes with incrementRating() and subtractRating()
+    // functions of ViewModel
     private fun collectToRate() {
         collectLatestLifecycleFlow(viewModel.toRate) {
             binding.txtRating.apply {
