@@ -2,11 +2,9 @@ package com.example.kinodata.fragments.movies.movieDetails
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
@@ -19,16 +17,18 @@ import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MovieDetailsViewModel"
 
-// TODO: add isInWatchlist StateFlow for UI(see isFavorite). Also make 3 dots(see more) btn depend on it.
 // Shared ViewModel across: MovieDetailsFragment and RateFragment
-// SavedStateHandle cannot be used in Shared ViewModel
+// SavedStateHandle cannot be used in Shared ViewModel. Thus passing movieId when calling functions
+// in MovieDetailsFragment. The pitfall is it calls all these functions everytime Fragment is shown.
+// To solve this problem in ViewModel there is a _movieId StateFlow. Fragments observe its value and
+// checks if it is equal to current movies' id (SafeArgs.movieId).
+// TODO: Check for moviesId in RateFragment?
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     @ApplicationContext private val mContext: Context,
@@ -36,39 +36,47 @@ class MovieDetailsViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
-    init {
-        Log.d(TAG, "INITIALIZED")
+    // ********************ID**************************
+    // to use it in rate func
+    private var _movieId = MutableStateFlow(0)
+    val movieId = _movieId.asStateFlow()
+
+    fun setMovieId(id: Int) {
+        if (_movieId.value != id) {
+            _movieId.value = id
+            println("SetMovieId to $id")
+        }
     }
 
-    // will initialize it in getMovieDetails func to access it in rate func
-    private var movieId = 0
+    // ***********************************UI Part********************************************
+    private val _movieDetails = MutableLiveData<NetworkResult<MovieDetails>>(NetworkResult.Loading)
+    val movieDetails: LiveData<NetworkResult<MovieDetails>> = _movieDetails
 
-    private var _reviews = MutableStateFlow<NetworkResult<List<Review>>>(NetworkResult.Loading)
-    val reviews = _reviews.asStateFlow()
+    private val _credits = MutableLiveData<NetworkResult<Credits>>(NetworkResult.Loading)
+    val credits: LiveData<NetworkResult<Credits>> = _credits
+
+    private val _reviews = MutableLiveData<NetworkResult<List<Review>>>(NetworkResult.Loading)
+    val reviews: LiveData<NetworkResult<List<Review>>> = _reviews
+
+    private val _isFavorite = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
+    val isFavorite: LiveData<NetworkResult<Boolean>> = _isFavorite
+
+    private val _isInWatchlist = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
+    val isInWatchlist:LiveData<NetworkResult<Boolean>> = _isInWatchlist
+
+    // current rating by user. If 0 then not rated by user
+    private val _ratingByUser = MutableLiveData(.0)
+    val ratingByUser:LiveData<Double> = _ratingByUser
+
+    // ***********************************Actions***************************************
 
     // to show toast msg
     private val _addToFavorite = MutableSharedFlow<NetworkResult<SuccessResponse>>()
     val addToFavorite = _addToFavorite.asSharedFlow()
-    // for UI State
-    private val _isFavorite = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
-    val isFavorite = _isFavorite.asStateFlow()
 
+    // to show toast msg
     private val _addToWatchlist = MutableSharedFlow<NetworkResult<SuccessResponse>>()
     val addToWatchlist = _addToWatchlist.asSharedFlow()
-
-    private val _accountState =
-        MutableStateFlow<NetworkResult<AccountStates>>(NetworkResult.Loading)
-    val accountState = _accountState.asStateFlow()
-
-    private val _movie = MutableStateFlow<NetworkResult<MovieDetails>>(NetworkResult.Loading)
-    val movie = _movie.asStateFlow()
-
-    private val _credits = MutableStateFlow<NetworkResult<Credits>>(NetworkResult.Loading)
-    val credits = _credits.asStateFlow()
-
-    // current rating by user. If 0 then not rated by user
-    private val _ratingByUser = MutableStateFlow<NetworkResult<Double>>(NetworkResult.Loading)
-    val ratingByUser = _ratingByUser.asStateFlow()
 
     // after rating by user it shows toast with the result of rating
     private val _rateResult = MutableSharedFlow<NetworkResult<SuccessResponse>>()
@@ -79,38 +87,45 @@ class MovieDetailsViewModel @Inject constructor(
     private val _toRate = MutableStateFlow(7.0)
     val toRate = _toRate.asStateFlow()
 
+    private val _deleteRating = MutableSharedFlow<NetworkResult<SuccessResponse>>()
+    val deleteRating = _deleteRating.asSharedFlow()
+
     fun getMovieDetails(id: Int) {
-        _movie.value = NetworkResult.Loading
-        // Since SavedStateHandle does not work in SharedViewModel save movieId to use it later
-        movieId = id
+        println("movieId in getMovieDetails = ${_movieId.value}")
+        _movieDetails.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
                 val response = repository.getMovieDetails(id.toString(), MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     val movie = response.body()
                     if (movie != null) {
-                        _movie.value = NetworkResult.Success(movie)
+                        _movieDetails.value = NetworkResult.Success(movie)
                     } else {
-                        _movie.value = throwError(mContext.getString(R.string.something_went_wrong))
+                        _movieDetails.value = throwError(mContext.getString(R.string.something_went_wrong))
                     }
                 } else {
-                    _movie.value = throwError(mContext.getString(R.string.something_went_wrong))
+                    _movieDetails.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
             } catch (e: Exception) {
-                _movie.value = NetworkResult.Error(e)
+                _movieDetails.value = NetworkResult.Error(e)
             }
         }
     }
 
 
     fun getMovieCredits(id: Int) {
+        println("movieId in getMovieCredits = ${_movieId.value}")
         _credits.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
                 val response = repository.getMovieCredits(id.toString(), MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     val data = response.body()
-                    data?.let { _credits.value = NetworkResult.Success(it) }
+                    if (data != null) {
+                        _credits.value = NetworkResult.Success(data)
+                    } else {
+                        _credits.value = throwError(mContext.getString(R.string.something_went_wrong))
+                    }
                 } else {
                     _credits.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
@@ -118,9 +133,11 @@ class MovieDetailsViewModel @Inject constructor(
                 _credits.value = NetworkResult.Error(e)
             }
         }
+
     }
 
     fun getMovieReviews(id: Int) {
+        println("movieId in getMovieReviews = ${_movieId.value}")
         _reviews.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
@@ -128,7 +145,9 @@ class MovieDetailsViewModel @Inject constructor(
                     .getMovieReviews(id = id.toString(), language = MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     val data = response.body()?.reviews
-                    data?.let { _reviews.value = NetworkResult.Success(it) }
+                    data?.let {
+                        _reviews.value = NetworkResult.Success(it)
+                    }
                 } else {
                     _reviews.value = throwError(mContext.getString(R.string.something_went_wrong))
                 }
@@ -136,42 +155,57 @@ class MovieDetailsViewModel @Inject constructor(
                 _reviews.value = NetworkResult.Error(e)
             }
         }
+
     }
 
     fun getMovieAccountStates(id: Int) {
-        _accountState.value = NetworkResult.Loading
-        _ratingByUser.value = NetworkResult.Loading
+        println("movieId in getMovieAccountStates = ${_movieId.value}")
+        _ratingByUser.value = .0
         _isFavorite.value = NetworkResult.Loading
+        _isInWatchlist.value = NetworkResult.Loading
         viewModelScope.launch {
+            _rateResult.emit(NetworkResult.Loading)
+            _deleteRating.emit(NetworkResult.Loading)
             try {
                 dataStoreRepository.sessionId.collectLatest { sessId ->
                     val response = repository.getMovieAccountStates(id.toString(), sessId)
                     if (response.isSuccessful) {
-                        response.body()?.let {
-                            _accountState.value = NetworkResult.Success(it)
+                        val accountStates = response.body()
+                        if (accountStates != null) {
                             // if rated by user it is Rated JsonObject, if not rated then it is Boolean(false)
-                            if (it.isRatedItemRatedObject()) {
-                                val ratedItem = it.ratedItemAsRatedObject()
-                                _ratingByUser.value = NetworkResult.Success(ratedItem.value)
+                            if (accountStates.isRatedItemRatedObject()) {
+                                val ratedItem = accountStates.ratedItemAsRatedObject()
+                                _ratingByUser.value = ratedItem.value
                             } else {
-                                _ratingByUser.value = throwError("Not rated by user")
+                                _ratingByUser.value = .0
                             }
                             // Favorite
-                            _isFavorite.value = NetworkResult.Success(it.favorite)
+                            _isFavorite.value = NetworkResult.Success(accountStates.favorite)
+                            // Watchlist
+                            _isInWatchlist.value = NetworkResult.Success(accountStates.watchlist)
+                        } else {
+                            _isFavorite.value = throwError(
+                                mContext.getString(R.string.something_went_wrong)
+                            )
+                            _isInWatchlist.value = throwError(
+                                mContext.getString(R.string.something_went_wrong)
+                            )
                         }
                     } else {
-                        _accountState.value =
-                            throwError(mContext.getString(R.string.couldntGetAccountStates))
                         _isFavorite.value = throwError(
+                            mContext.getString(R.string.something_went_wrong)
+                        )
+                        _isInWatchlist.value = throwError(
                             mContext.getString(R.string.something_went_wrong)
                         )
                     }
                 }
             } catch (e: Exception) {
-                _accountState.value = NetworkResult.Error(e)
                 _isFavorite.value = NetworkResult.Error(e)
+                _isInWatchlist.value = NetworkResult.Error(e)
             }
         }
+
     }
 
 
@@ -183,7 +217,7 @@ class MovieDetailsViewModel @Inject constructor(
                     val sessionId = ids.second
                     // not empty means user is signed in
                     if (sessionId.isNotEmpty()) {
-                        val favorite = isFavorite.value
+                        val favorite = _isFavorite.value
                         when (favorite) {
                             is NetworkResult.Success -> {
                                 val fav = favorite.data
@@ -232,22 +266,19 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun addToWatchlist(id: Int) {
         viewModelScope.launch {
-            dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
-                if (isSignedIn) {
-                    // After clicking button check if it is favorite, only then do operation
-                    getMovieAccountStates(id)
-                    try {
-                        val accState = accountState.value
-                        // if it can get movie account state then it is signed in
-                        if (accState is NetworkResult.Success) {
-                            dataStoreRepository.accountIdAndSessionId.collectLatest { pair ->
-                                val accountId = pair.first
-                                val sessionId = pair.second
-
-                                // if it is already marked as favorite then remove from favorites
-                                val isInWatchlist = accState.data.watchlist
+            try {
+                dataStoreRepository.accountIdAndSessionId.collectLatest { ids ->
+                    val accountId = ids.first
+                    val sessionId = ids.second
+                    // not empty means user is signed in
+                    if (sessionId.isNotEmpty()) {
+                        val inWatchlist = _isInWatchlist.value
+                        when (inWatchlist) {
+                            is NetworkResult.Success -> {
+                                val watchlist = inWatchlist.data
+                                // if it is in watchlist then remove from list
                                 val requestBody = AddToWatchlistRequestBody(
-                                    watchlist = !isInWatchlist,
+                                    watchlist = !watchlist,
                                     media_id = id,
                                     media_type = MyConstants.MEDIA_TYPE_MOVIE
                                 )
@@ -256,26 +287,34 @@ class MovieDetailsViewModel @Inject constructor(
                                 if (response.isSuccessful) {
                                     response.body()?.let {
                                         _addToWatchlist.emit(NetworkResult.Success(it))
-                                        // after changing its favorite state call func again to trigger UI
-                                        getMovieAccountStates(id)
+                                        if (it.success) {
+                                            // if it was in Watchlist before, now it is not
+                                            _isInWatchlist.value = NetworkResult.Success(!watchlist)
+                                        }
                                     }
                                 } else {
                                     _addToWatchlist.emit(throwError(mContext.getString(R.string.couldntAddToWatchlist)))
                                 }
                             }
+                            is NetworkResult.Error -> {
+                                _isInWatchlist.value =
+                                    throwError(mContext.getString(R.string.couldntAddToWatchlist))
+                                _addToWatchlist.emit(throwError(mContext.getString(R.string.couldntAddToWatchlist)))
+                            }
+                            else -> {
+                                _isInWatchlist.value = NetworkResult.Loading
+                                _addToWatchlist.emit(NetworkResult.Loading)
+                            }
                         }
-
-
-                    } catch (e: Exception) {
-                        _addToWatchlist.emit(NetworkResult.Error(e))
+                    } else {
+                        _isInWatchlist.value =
+                            throwError(mContext.getString(R.string.please_sign_in))
+                        _addToWatchlist.emit(throwError(mContext.getString(R.string.please_sign_in)))
                     }
-                } else {
-                    Toast.makeText(
-                        mContext,
-                        mContext.getString(R.string.please_sign_in),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
+            } catch (e: Exception) {
+                _addToWatchlist.emit(NetworkResult.Error(e))
+                _isInWatchlist.value = NetworkResult.Error(e)
             }
         }
     }
@@ -306,12 +345,13 @@ class MovieDetailsViewModel @Inject constructor(
             try {
                 dataStoreRepository.sessionId.collectLatest { sessionId ->
                     val requestBody = RateRequestBody(rating)
-                    Log.d(TAG, "requestBody val = ${requestBody.value}, movieId = $movieId")
-                    val response = repository.rateMovie(movieId.toString(), sessionId, requestBody)
+                    Log.d(TAG, "requestBody val = ${requestBody.value}, movieId = $_movieId")
+                    val response =
+                        repository.rateMovie(_movieId.value.toString(), sessionId, requestBody)
                     Log.d(TAG, "rate: ${response.code()} + ${response.message()}")
                     if (response.isSuccessful) {
                         response.body()?.let {
-                            _ratingByUser.value = NetworkResult.Success(rating)
+                            _ratingByUser.value = rating
                             _rateResult.emit(NetworkResult.Success(it))
                         }
                     } else {
@@ -321,6 +361,32 @@ class MovieDetailsViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 _rateResult.emit(throwError(mContext.getString(R.string.couldntRateMovie)))
+            }
+        }
+    }
+
+    fun deleteRating() {
+        viewModelScope.launch {
+            _deleteRating.emit(NetworkResult.Loading)
+            try {
+                dataStoreRepository.sessionId.collectLatest { sessionId ->
+                    val response = repository.deleteMovieRating(_movieId.value.toString(), sessionId)
+                    if (response.isSuccessful) {
+                        val data = response.body()
+                        if (data != null) {
+                            _deleteRating.emit(NetworkResult.Success(data))
+                            if (data.success) {
+                                _ratingByUser.value = .0
+                            }
+                        } else {
+                            _deleteRating.emit(throwError(mContext.getString(R.string.couldntDeleteRating)))
+                        }
+                    } else {
+                        _deleteRating.emit(throwError(mContext.getString(R.string.couldntDeleteRating)))
+                    }
+                }
+            } catch (e: Exception) {
+                _deleteRating.emit(NetworkResult.Error(e))
             }
         }
     }

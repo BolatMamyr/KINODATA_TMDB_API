@@ -54,7 +54,7 @@ class AllTvCrewFragment : Fragment() {
             isSaveEnabled = true
         }
 
-        collectLatestLifecycleFlow(viewModel.credits) {
+        viewModel.credits.observe(viewLifecycleOwner) {
             when(it) {
                 is NetworkResult.Success -> {
                     val sortedList = it.data.crew.sortedByDescending { it.popularity }

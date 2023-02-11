@@ -1,7 +1,7 @@
 package com.example.kinodata.fragments.rating
 
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,23 +11,24 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentRateBinding
+import com.example.kinodata.databinding.FragmentRateTvBinding
 import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
+import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.NetworkResult
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
-private const val TAG = "RateFragment"
-
-// TODO: Rating not working
 @AndroidEntryPoint
-class RateFragment : BottomSheetDialogFragment() {
+class RateTvFragment : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentRateBinding? = null
+    private var _binding: FragmentRateTvBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MovieDetailsViewModel by activityViewModels()
+    private val viewModel: TvDetailsViewModel by activityViewModels()
     private var ratingByUser = .0
     private var toRate = 7.0
 
@@ -35,26 +36,31 @@ class RateFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRateBinding.inflate(layoutInflater)
+        _binding = FragmentRateTvBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tbBsRate.setOnMenuItemClickListener {
+        // Expand to see all views
+        val bottomSheet = dialog as BottomSheetDialog
+        bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        binding.tbBsRateTv.setOnMenuItemClickListener {
             findNavController().navigateUp()
         }
         viewModel.changeToRateValue(7.0)
-        collectRatingByUser()
+        observeRatingByUser()
         incrementRating()
         subtractRating()
         setImage()
         rate()
         collectToRate()
+        deleteRating()
     }
 
     private fun rate() {
-        binding.btnBsRate.setOnClickListener {
+        binding.btnBsRateTv.setOnClickListener {
             // if it is on number already rated by user on Clicking "Rate" btn nothing happens
             if (toRate == ratingByUser) {
                 findNavController().navigateUp()
@@ -65,39 +71,40 @@ class RateFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun deleteRating() {
+        binding.btnBsDeleteTvRating.setOnClickListener {
+            viewModel.deleteRating()
+            findNavController().navigateUp()
+        }
+    }
+
     private fun setImage() {
-        collectLatestLifecycleFlow(viewModel.movie) {
-            when(it) {
+        viewModel.tvDetails.observe(viewLifecycleOwner) {
+            when (it) {
                 is NetworkResult.Success -> {
                     val posterPath = it.data.poster_path
                     Glide.with(requireContext())
                         .load(MyConstants.IMG_BASE_URL + posterPath)
-                        .into(binding.imgBsRate)
-                } is NetworkResult.Error -> {
-                    binding.imgBsRate.setImageResource(R.drawable.ic_movie)
+                        .into(binding.imgBsRateTv)
+                }
+                is NetworkResult.Error -> {
+                    binding.imgBsRateTv.setImageResource(R.drawable.ic_movie)
                 }
                 else -> {}
             }
         }
-
     }
 
-    private fun collectRatingByUser() {
-        collectLatestLifecycleFlow(viewModel.ratingByUser) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    val rating = it.data
-                    if (rating > 0) {
-                        // if it is more than zero then it's rated by user. toRate value in ViewModel
-                        // needs to be changed to be collected in collectToRate() function.
-                        viewModel.changeToRateValue(rating)
-                        ratingByUser = rating
-                    }
-                }
-                is NetworkResult.Error -> {
-
-                }
-                else -> {}
+    private fun observeRatingByUser() {
+        viewModel.ratingByUser.observe(viewLifecycleOwner) { rating ->
+            if (rating > 0) {
+                // if it is more than zero then it's rated by user. toRate value in ViewModel
+                // needs to be changed to be collected in collectToRate() function.
+                viewModel.changeToRateValue(rating)
+                ratingByUser = rating
+                binding.btnBsDeleteTvRating.visibility = View.VISIBLE
+            } else {
+                binding.btnBsDeleteTvRating.visibility = View.GONE
             }
         }
     }
@@ -107,7 +114,7 @@ class RateFragment : BottomSheetDialogFragment() {
     // functions of ViewModel
     private fun collectToRate() {
         collectLatestLifecycleFlow(viewModel.toRate) {
-            binding.txtRating.apply {
+            binding.txtBsRatingTv.apply {
                 toRate = it
                 val colorId = MyUtils.getRatingColorId(it, requireView())
                 setTextColor(colorId)
@@ -117,15 +124,14 @@ class RateFragment : BottomSheetDialogFragment() {
     }
 
     private fun incrementRating() {
-        binding.btnBsRatePlus.setOnClickListener {
+        binding.btnBsRateTvPlus.setOnClickListener {
             viewModel.incrementRating()
         }
     }
 
     private fun subtractRating() {
-        binding.btnBsRateMinus.setOnClickListener {
+        binding.btnBsRateTvMinus.setOnClickListener {
             viewModel.subtractRating()
         }
     }
-
 }

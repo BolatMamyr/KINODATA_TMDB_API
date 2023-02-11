@@ -229,6 +229,26 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
     ): Response<SuccessResponse> {
         return api.rateMovie(movieId = movieId, session_id = session_id, requestBody = requestBody)
     }
+    suspend fun deleteMovieRating(
+        movieId: String,
+        session_id: String
+    ): Response<SuccessResponse> {
+        return api.deleteMovieRating(movieId = movieId, session_id = session_id)
+    }
+    suspend fun rateTv(
+        tvId: String,
+        session_id: String,
+        requestBody: RateRequestBody
+    ): Response<SuccessResponse> {
+        return api.rateTv(tvId = tvId, session_id = session_id, requestBody = requestBody)
+    }
+
+    suspend fun deleteTvRating(
+        tvId: String,
+        session_id: String
+    ): Response<SuccessResponse> {
+        return api.deleteTvRating(tvId = tvId, session_id = session_id)
+    }
     suspend fun getMoviesWatchlist(
         accountId: Int,
         session_id: String,

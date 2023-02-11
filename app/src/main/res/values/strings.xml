@@ -81,8 +81,13 @@
     <string name="couldntGetReviews">Couldn\'t get reviews</string>
     <string name="removed_from_watchlist">Removed from watchlist</string>
     <string name="added_to_watchlist">Added to watchlist</string>
-    <string name="movie_rated_successfully">The movie rated successfully</string>
+    <string name="rated_successfully">Rated successfully</string>
     <string name="couldntRateMovie">Couldn\'t rate movie</string>
+    <string name="couldntRateTv">Couldn\'t rate TV</string>
     <string name="couldntAddToWatchlist">Couldn\'t add to watchlist</string>
     <string name="couldntGetAccountStates">Couldn\'t get account states</string>
+    <string name="couldntDeleteRating">Couldn\'t delete rating</string>
+    <string name="delete">Delete</string>
+    <string name="rating_deleted_successfully">Rating deleted successfully</string>
+    <string name="update_rating">Update rating</string>
 </resources>

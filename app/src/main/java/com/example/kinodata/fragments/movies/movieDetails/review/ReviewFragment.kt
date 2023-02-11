@@ -35,7 +35,7 @@ class ReviewFragment : Fragment() {
         binding.tbReview.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-
+        binding.svReview.isSaveEnabled = true
         val review = args.review
         binding.txtReviewAuthor.text = review.author_details.username
         binding.txtReviewDate.text = review.getDate(view.context)

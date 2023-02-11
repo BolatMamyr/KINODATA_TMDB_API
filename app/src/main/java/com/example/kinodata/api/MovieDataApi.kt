@@ -98,6 +98,12 @@ interface MovieDataApi {
         @Body requestBody: RateRequestBody
     ): Response<SuccessResponse>
 
+    @DELETE(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_RATING)
+    suspend fun deleteMovieRating(
+        @Path("movieId") movieId: String,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String
+    ): Response<SuccessResponse>
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)
     suspend fun getPopularTvSeries(
@@ -148,6 +154,21 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String
     ): Response<AccountStates>
+
+    @POST(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_RATING)
+    suspend fun rateTv(
+        @Path("tvId") tvId: String,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Body requestBody: RateRequestBody
+    ): Response<SuccessResponse>
+
+    @DELETE(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_RATING)
+    suspend fun deleteTvRating(
+        @Path("tvId") tvId: String,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String
+    ): Response<SuccessResponse>
     // *******************************Person**************************************
 
     @GET(MyConstants.URL_PERSON + "{personId}")
@@ -172,7 +193,7 @@ interface MovieDataApi {
     ): Response<PersonTvSeriesCredits>
 
     @GET(MyConstants.URL_PERSON_POPULAR)
-    suspend fun  getPopularPersons(
+    suspend fun getPopularPersons(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
         @Query("page") page: String
@@ -191,13 +212,13 @@ interface MovieDataApi {
     @GET(MyConstants.URL_REQUEST_TOKEN)
     suspend fun createRequestToken(
         @Query("api_key") api_key: String = MyConstants.API_KEY
-    ):Response<RequestToken>
+    ): Response<RequestToken>
 
     @POST(MyConstants.URL_VALIDATE_TOKEN)
     suspend fun validateToken(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Body requestBody: ValidateTokenRequestBody
-        ): Response<RequestToken>
+    ): Response<RequestToken>
 
     @POST(MyConstants.URL_CREATE_SESSION_ID)
     suspend fun createSessionId(
@@ -208,14 +229,14 @@ interface MovieDataApi {
     @DELETE(MyConstants.URL_DELETE_SESSION)
     suspend fun deleteSession(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
-        @Query ("session_id") session_id: String
+        @Query("session_id") session_id: String
     ): Response<SuccessResponse>
 
     // *************************Account**********************************
     @GET(MyConstants.URL_ACCOUNT)
     suspend fun getAccountDetails(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
-        @Query ("session_id") session_id: String
+        @Query("session_id") session_id: String
     ): Response<AccountDetails>
 
     @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
@@ -224,7 +245,7 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
         @Body requestBody: AddToFavoriteRequestBody
-    ):Response<SuccessResponse>
+    ): Response<SuccessResponse>
 
     @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_MOVIES)
     suspend fun getFavoriteMovies(
@@ -248,7 +269,7 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
         @Body requestBody: AddToWatchlistRequestBody
-    ):Response<SuccessResponse>
+    ): Response<SuccessResponse>
 
     @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST_MOVIES)
     suspend fun getMoviesWatchlist(

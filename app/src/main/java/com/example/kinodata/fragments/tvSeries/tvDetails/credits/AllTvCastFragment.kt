@@ -55,7 +55,7 @@ class AllTvCastFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-        collectLatestLifecycleFlow(viewModel.credits) {
+        viewModel.credits.observe(viewLifecycleOwner) {
             when(it) {
                 is NetworkResult.Success -> {
                     adapter.updateData(it.data.cast)

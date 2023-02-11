@@ -201,8 +201,8 @@
             android:id="@+id/action_tvDetailsFragment_to_allTvCrewFragment"
             app:destination="@id/allTvCrewFragment" />
         <action
-            android:id="@+id/action_tvDetailsFragment_to_rateFragment"
-            app:destination="@id/rateFragment" />
+            android:id="@+id/action_tvDetailsFragment_to_rateTvFragment"
+            app:destination="@id/rateTvFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"
@@ -347,7 +347,12 @@
     </fragment>
     <dialog
         android:id="@+id/rateFragment"
-        android:name="com.example.kinodata.fragments.rating.RateFragment"
+        android:name="com.example.kinodata.fragments.rating.RateMovieFragment"
         android:label="fragment_rate"
         tools:layout="@layout/fragment_rate" />
+    <dialog
+        android:id="@+id/rateTvFragment"
+        android:name="com.example.kinodata.fragments.rating.RateTvFragment"
+        android:label="fragment_rate_tv"
+        tools:layout="@layout/fragment_rate_tv" />
 </navigation>

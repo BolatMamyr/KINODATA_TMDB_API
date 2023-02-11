@@ -5,14 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
 import com.example.kinodata.adapters.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllMovieCrewBinding
 import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
-import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.MyUtils.Companion.toast
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AllMovieCrewFragment : Fragment() {
 
-    val viewModel: MovieDetailsViewModel by viewModels()
+    val viewModel: MovieDetailsViewModel by activityViewModels()
 
     private var _binding: FragmentAllMovieCrewBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +47,7 @@ class AllMovieCrewFragment : Fragment() {
             isSaveEnabled = true
         }
 
-        collectLatestLifecycleFlow(viewModel.credits) {
+        viewModel.credits.observe(viewLifecycleOwner) {
             when(it) {
                 is NetworkResult.Success -> {
                     adapter.updateData(it.data.crew)
