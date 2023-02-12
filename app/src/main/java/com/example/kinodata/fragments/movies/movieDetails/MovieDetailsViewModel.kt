@@ -91,16 +91,20 @@ class MovieDetailsViewModel @Inject constructor(
     val deleteRating = _deleteRating.asSharedFlow()
 
     fun getMovieDetails(id: Int) {
-        println("movieId in getMovieDetails = ${_movieId.value}")
+        Log.d(TAG, "getMovieDetails: id = $id")
         _movieDetails.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getMovieDetails(id.toString(), MyConstants.LANGUAGE)
+                Log.d(TAG, "getMovieDetails: before calling func")
+                val response = repository.getMovieDetails(id, MyConstants.LANGUAGE)
+                Log.d(TAG, "getMovieDetails: ${response.code()}")
                 if (response.isSuccessful) {
                     val movie = response.body()
                     if (movie != null) {
+                        Log.d(TAG, "getMovieDetails: movie not null")
                         _movieDetails.value = NetworkResult.Success(movie)
                     } else {
+                        Log.d(TAG, "getMovieDetails: movie is null")
                         _movieDetails.value = throwError(mContext.getString(R.string.something_went_wrong))
                     }
                 } else {
@@ -108,6 +112,7 @@ class MovieDetailsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _movieDetails.value = NetworkResult.Error(e)
+                Log.d(TAG, "getMovieDetails: error = ${e.message}")
             }
         }
     }
@@ -137,7 +142,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     fun getMovieReviews(id: Int) {
-        println("movieId in getMovieReviews = ${_movieId.value}")
+        println("movieId in getMovieReviews = $id")
         _reviews.value = NetworkResult.Loading
         viewModelScope.launch {
             try {

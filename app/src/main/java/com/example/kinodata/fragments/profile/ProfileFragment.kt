@@ -81,22 +81,21 @@ class ProfileFragment : Fragment() {
     private fun setClickListenersForProfileInfoLayout() {
         binding.apply {
             btnFavorite.setOnClickListener {
-                val action = ProfileFragmentDirections
-                    .actionProfileFragmentToFavoriteListFragment(
-                        accountId = accountId,
-                        sessionId = sessionId
-                    )
+                val action = ProfileFragmentDirections.actionProfileFragmentToFavoriteListFragment()
+                Log.d(TAG, "To Fav NavDir: $action")
                 findNavController().navigate(action)
             }
 
             btnWatchList.setOnClickListener {
-                val action = ProfileFragmentDirections.actionProfileFragmentToWatchlistFragment(
-                    accountId = accountId,
-                    sessionId = sessionId
-                )
+                val action = ProfileFragmentDirections.actionProfileFragmentToWatchlistFragment()
                 findNavController().navigate(action)
             }
 
+            btnRated.setOnClickListener {
+                val action = ProfileFragmentDirections.actionProfileFragmentToRatedListFragment()
+                Log.d(TAG, "To rated NavDir: $action")
+                findNavController().navigate(action)
+            }
         }
     }
 

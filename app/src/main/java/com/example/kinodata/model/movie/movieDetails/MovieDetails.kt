@@ -4,7 +4,7 @@ data class MovieDetails(
     val adult: Boolean,
     val backdrop_path: String,
     val belongs_to_collection: Any,
-    val budget: Int,
+    val budget: Long,
     val genres: List<Genre>,
     val homepage: String,
     val id: Int,
@@ -17,7 +17,7 @@ data class MovieDetails(
     val production_companies: List<ProductionCompany>,
     val production_countries: List<ProductionCountry>,
     val release_date: String,
-    val revenue: Int,
+    val revenue: Long,
     val runtime: Int,
     val spoken_languages: List<SpokenLanguage>,
     val status: String,
@@ -25,7 +25,7 @@ data class MovieDetails(
     val title: String,
     val video: Boolean,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Long
 ) {
     fun getGenres() : String {
         val list = genres.map { it.name }

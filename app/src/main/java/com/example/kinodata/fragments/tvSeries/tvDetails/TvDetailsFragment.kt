@@ -57,15 +57,13 @@ class TvDetailsFragment : Fragment() {
         binding.tbTvDetails.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-        collectLatestLifecycleFlow(viewModel.tvId) { id ->
-            if (id != args.tvSeriesId) {
-                viewModel.getTvDetails(args.tvSeriesId)
-                viewModel.getTvCredits(args.tvSeriesId.toString())
-                viewModel.getTvReviews(args.tvSeriesId.toString())
-                viewModel.getTvAccountStates(args.tvSeriesId)
-                viewModel.setTvId(args.tvSeriesId)
-            }
-        }
+
+        viewModel.getTvDetails(args.tvSeriesId)
+        viewModel.getTvCredits(args.tvSeriesId.toString())
+        viewModel.getTvReviews(args.tvSeriesId.toString())
+        viewModel.getTvAccountStates(args.tvSeriesId)
+        viewModel.setTvId(args.tvSeriesId)
+
         binding.svTvDetails.isSaveEnabled = true
         getTvDetails(view)
         getCredits(view)
@@ -106,21 +104,14 @@ class TvDetailsFragment : Fragment() {
             if (rating > 0) {
                 showRatingByUserUi()
                 val colorId = MyUtils.getRatingColorId(rating, requireView())
-                binding.cardTvRatingByUser.setCardBackgroundColor(colorId)
-                binding.txtTvRatingByUser.text = rating.toString()
+                binding.apply {
+                    cardTvRatingByUser.setCardBackgroundColor(colorId)
+                    txtTvRatingByUser.text = rating.toString()
 
-                binding.btnTvDetailsRate.apply {
-                    setBackgroundColor(resources.getColor(R.color.white, null))
-                    text = resources.getString(R.string.update_rating)
-                    setTextColor(resources.getColor(R.color.black, null))
+                    txtTvRateButtonRating.text = rating.toString()
                 }
             } else {
                 hideRatingByUserUi()
-                binding.btnTvDetailsRate.apply {
-                    setBackgroundColor(resources.getColor(R.color.orange, null))
-                    text = resources.getString(R.string.rate)
-                    setTextColor(resources.getColor(R.color.white, null))
-                }
             }
         }
     }
@@ -439,12 +430,27 @@ class TvDetailsFragment : Fragment() {
         binding.apply {
             cardTvRatingByUser.visibility = View.GONE
 
+            btnTvDetailsRate.setCardBackgroundColor(resources.getColor(R.color.orange, null))
+            txtTvRateButton.apply {
+                text = getString(R.string.rate)
+                setTextColor(resources.getColor(R.color.white, null))
+            }
+            cardTvRateButtonRating.visibility = View.GONE
         }
     }
 
     private fun showRatingByUserUi() {
         binding.apply {
+            // card showing rating by user on top next to voteCount
             cardTvRatingByUser.visibility = View.VISIBLE
+
+            // changes rate button UI to "update rating" button UI
+            btnTvDetailsRate.setCardBackgroundColor(resources.getColor(R.color.white, null))
+            txtTvRateButton.apply {
+                text = getString(R.string.update_rating)
+                setTextColor(resources.getColor(R.color.black, null))
+            }
+            cardTvRateButtonRating.visibility = View.VISIBLE
         }
     }
 }

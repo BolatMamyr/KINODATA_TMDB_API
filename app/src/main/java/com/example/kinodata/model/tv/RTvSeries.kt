@@ -1,5 +1,7 @@
 package com.example.kinodata.model.tv
 
+import com.google.gson.annotations.SerializedName
+
 data class RTvSeries(
     val backdrop_path: String,
     val first_air_date: String,
@@ -13,7 +15,9 @@ data class RTvSeries(
     val popularity: Double,
     val poster_path: String,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Int,
+    @SerializedName("rating")
+    val ratingByUser: Double?
 ) {
 
     override fun equals(other: Any?): Boolean {

@@ -63,7 +63,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getUpcomingMovies(language = language, page = page)
     }
 
-    suspend fun getMovieDetails(movieId: String, language: String): Response<MovieDetails> {
+    suspend fun getMovieDetails(movieId: Int, language: String): Response<MovieDetails> {
         return api.getMovieDetails(movieId = movieId, language = language)
     }
 
@@ -248,6 +248,22 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         session_id: String
     ): Response<SuccessResponse> {
         return api.deleteTvRating(tvId = tvId, session_id = session_id)
+    }
+
+    suspend fun getRatedMovies(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForMovies> {
+        return api.getRatedMovies(accountId = accountId, session_id = session_id, page = page)
+    }
+
+    suspend fun getRatedTv(
+        accountId: Int,
+        session_id: String,
+        page: Int
+    ): Response<ResultForTvSeries> {
+        return api.getRatedTv(accountId = accountId, session_id = session_id, page = page)
     }
     suspend fun getMoviesWatchlist(
         accountId: Int,

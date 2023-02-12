@@ -300,12 +300,6 @@
         android:name="com.example.kinodata.fragments.profile.lists.favorite.FavoriteListFragment"
         android:label="fragment_favorite_list"
         tools:layout="@layout/fragment_favorite_list">
-        <argument
-            android:name="accountId"
-            app:argType="integer" />
-        <argument
-            android:name="sessionId"
-            app:argType="string" />
         <action
             android:id="@+id/action_favoriteListFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
@@ -325,6 +319,9 @@
         <action
             android:id="@+id/action_profileFragment_to_watchlistFragment"
             app:destination="@id/watchlistFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_ratedListFragment"
+            app:destination="@id/ratedListFragment" />
     </fragment>
 
     <fragment
@@ -332,12 +329,6 @@
         android:name="com.example.kinodata.fragments.profile.lists.watchlist.WatchlistFragment"
         android:label="fragment_watchlist"
         tools:layout="@layout/fragment_watchlist">
-        <argument
-            android:name="accountId"
-            app:argType="integer" />
-        <argument
-            android:name="sessionId"
-            app:argType="string" />
         <action
             android:id="@+id/action_watchlistFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
@@ -355,4 +346,16 @@
         android:name="com.example.kinodata.fragments.rating.RateTvFragment"
         android:label="fragment_rate_tv"
         tools:layout="@layout/fragment_rate_tv" />
+    <fragment
+        android:id="@+id/ratedListFragment"
+        android:name="com.example.kinodata.fragments.profile.lists.rated.RatedListFragment"
+        android:label="fragment_rated_list"
+        tools:layout="@layout/fragment_rated_list" >
+        <action
+            android:id="@+id/action_ratedListFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment" />
+        <action
+            android:id="@+id/action_ratedListFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
 </navigation>

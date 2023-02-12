@@ -1,5 +1,7 @@
 package com.example.kinodata.model.movie
 
+import com.google.gson.annotations.SerializedName
+
 data class RMovie(
     val adult: Boolean,
     val backdrop_path: String,
@@ -14,7 +16,10 @@ data class RMovie(
     val title: String,
     val video: Boolean,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Int,
+    // only if its rated by user
+    @SerializedName("rating")
+    val ratingByUser: Double?
 ) {
     override fun equals(other: Any?): Boolean {
         if (other?.javaClass != javaClass) return false

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -65,16 +66,13 @@ class MovieDetailsFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.svMovieDetails.isSaveEnabled = true
-        // call functions only if it is new movie
-        collectLatestLifecycleFlow(viewModel.movieId) { id ->
-            if (id != args.movieId) {
-                viewModel.getMovieDetails(args.movieId)
-                viewModel.getMovieCredits(args.movieId)
-                viewModel.getMovieReviews(args.movieId)
-                viewModel.getMovieAccountStates(args.movieId)
-                viewModel.setMovieId(args.movieId)
-            }
-        }
+
+        viewModel.getMovieDetails(args.movieId)
+        viewModel.getMovieCredits(args.movieId)
+        viewModel.getMovieReviews(args.movieId)
+        viewModel.getMovieAccountStates(args.movieId)
+        viewModel.setMovieId(args.movieId)
+
         observeMovieDetails(view)
         observeMovieCredits(view)
         observeReviews()
@@ -87,6 +85,7 @@ class MovieDetailsFragment : Fragment() {
         rateMovie()
         collectRateResult()
         collectDeleteRatingResult()
+
     }
 
     private fun collectDeleteRatingResult() {
@@ -139,21 +138,15 @@ class MovieDetailsFragment : Fragment() {
             if (rating > 0) {
                 showRatingByUserUi()
                 val colorId = MyUtils.getRatingColorId(rating, requireView())
-                binding.cardRatingByUser.setCardBackgroundColor(colorId)
-                binding.txtRatingByUser.text = rating.toString()
+                binding.apply {
+                    // rating by user on top. Next to voteCount.
+                    cardRatingByUser.setCardBackgroundColor(colorId)
+                    txtRatingByUser.text = rating.toString()
 
-                binding.btnDetailsRate.apply {
-                    setBackgroundColor(resources.getColor(R.color.white, null))
-                    text = resources.getString(R.string.update_rating)
-                    setTextColor(resources.getColor(R.color.black, null))
+                    txtRateButtonRating.text = rating.toString()
                 }
             } else {
                 hideRatingByUserUi()
-                binding.btnDetailsRate.apply {
-                    setBackgroundColor(resources.getColor(R.color.orange, null))
-                    text = resources.getString(R.string.rate)
-                    setTextColor(resources.getColor(R.color.white, null))
-                }
             }
         }
     }
@@ -181,7 +174,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun rateMovie() {
-        binding.btnDetailsRate.setOnClickListener {
+        binding.btnMovieDetailsRate.setOnClickListener {
             lifecycleScope.launch {
                 dataStoreRepository.isSignedIn.collectLatest { isSignedIn ->
                     if (!isSignedIn) {
@@ -294,7 +287,7 @@ class MovieDetailsFragment : Fragment() {
                     reviewHorizontalAdapter.updateData(it.data)
                 }
                 else -> {
-                    Log.d(TAG, "observeReviews: error getting reviews")
+
                 }
             }
         }
@@ -462,14 +455,31 @@ class MovieDetailsFragment : Fragment() {
 
     private fun hideRatingByUserUi() {
         binding.apply {
+            // card showing rating by user on top next to voteCount
             cardRatingByUser.visibility = View.GONE
 
+            // changes rate button UI to "Rate" state
+            btnMovieDetailsRate.setCardBackgroundColor(resources.getColor(R.color.orange, null))
+            txtRateButton.apply {
+                text = getString(R.string.rate)
+                setTextColor(resources.getColor(R.color.white, null))
+            }
+            cardRateButtonRating.visibility = View.GONE
         }
     }
 
     private fun showRatingByUserUi() {
         binding.apply {
+            // card showing rating by user on top next to voteCount
             cardRatingByUser.visibility = View.VISIBLE
+
+            // changes rate button UI to "update rating" button UI
+            btnMovieDetailsRate.setCardBackgroundColor(resources.getColor(R.color.white, null))
+            txtRateButton.apply {
+                text = getString(R.string.update_rating)
+                setTextColor(resources.getColor(R.color.black, null))
+            }
+            cardRateButtonRating.visibility = View.VISIBLE
         }
     }
 

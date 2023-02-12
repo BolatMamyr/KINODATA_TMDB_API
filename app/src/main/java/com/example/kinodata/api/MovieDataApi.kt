@@ -30,6 +30,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+// TODO: Migrate to v4 Auth to get lists or delete lists and go further adding videos, images etc.
 interface MovieDataApi {
 
     // *******************************Movies**************************************
@@ -63,7 +64,7 @@ interface MovieDataApi {
 
     @GET(MyConstants.URL_MOVIE + "{movieId}")
     suspend fun getMovieDetails(
-        @Path("movieId") movieId: String,
+        @Path("movieId") movieId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String
     ): Response<MovieDetails>
@@ -287,5 +288,19 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForTvSeries>
 
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_RATED_MOVIES)
+    suspend fun getRatedMovies(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForMovies>
 
+    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_RATED_TV)
+    suspend fun getRatedTv(
+        @Path("accountId") accountId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY,
+        @Query("session_id") session_id: String,
+        @Query("page") page: Int
+    ): Response<ResultForTvSeries>
 }
