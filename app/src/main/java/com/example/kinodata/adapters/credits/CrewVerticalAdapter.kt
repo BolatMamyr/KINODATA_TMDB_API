@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.adapters.credits
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,27 +12,27 @@ import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.persons.media_credits.Crew
 
-class CrewHorizontalAdapter : RecyclerView.Adapter<CrewHorizontalAdapter.MyViewHolder>() {
+class CrewVerticalAdapter : RecyclerView.Adapter<CrewVerticalAdapter.MyViewHolder>() {
 
     private var crewList = emptyList<Crew>()
     var onItemClick: ((Crew?) -> Unit)? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val img: ImageView
         val name: TextView
         val job: TextView
-        val img: ImageView
 
         init {
-            name = itemView.findViewById(R.id.txt_crew_name)
-            job = itemView.findViewById(R.id.txt_crew_job)
-            img = itemView.findViewById(R.id.img_crew)
+            img = itemView.findViewById(R.id.img_vertical_cast)
+            name = itemView.findViewById(R.id.txt_verticalCast_name)
+            job = itemView.findViewById(R.id.txt_verticalCast_characterName)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_horizontal_crew, parent, false)
+                .inflate(R.layout.item_vertical_cast, parent, false)
         )
     }
 
@@ -40,9 +40,9 @@ class CrewHorizontalAdapter : RecyclerView.Adapter<CrewHorizontalAdapter.MyViewH
         holder.name.text = crewList[position].name
         holder.job.text = crewList[position].job
 
-        val picture = crewList[position].profile_path
-        if (picture == null) {
+        if (crewList[position].profile_path == null) {
             holder.img.setImageResource(R.drawable.profileblankpic)
+            holder.img.scaleType = ImageView.ScaleType.CENTER_INSIDE
         } else {
             Glide.with(holder.itemView.context)
                 .load(MyConstants.IMG_BASE_URL + crewList[position].profile_path)

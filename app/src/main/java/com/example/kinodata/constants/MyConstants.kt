@@ -15,7 +15,7 @@ object MyConstants {
     const val URL_CREATE_SESSION_ID = "authentication/session/new?"
     const val URL_DELETE_SESSION = "authentication/session"
 
-    const val URL_ACCOUNT = "account/"
+    const val URL_ACCOUNT = "account"
 
     const val URL_MOVIE = "movie/"
 

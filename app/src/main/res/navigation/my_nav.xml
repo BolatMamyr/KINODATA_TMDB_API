@@ -83,7 +83,7 @@
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
-        android:name="com.example.kinodata.fragments.movies.movieDetails.review.ReviewFragment"
+        android:name="com.example.kinodata.fragments.review.ReviewFragment"
         android:label="fragment_review"
         tools:layout="@layout/fragment_review">
         <argument
@@ -92,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/allReviewsFragment"
-        android:name="com.example.kinodata.fragments.movies.movieDetails.review.all.AllReviewsFragment"
+        android:name="com.example.kinodata.fragments.review.all.AllReviewsFragment"
         android:label="fragment_all_reviews"
         tools:layout="@layout/fragment_all_reviews">
         <action
@@ -230,7 +230,7 @@
     </fragment>
     <fragment
         android:id="@+id/personMoreDetailsFragment"
-        android:name="com.example.kinodata.fragments.people.all.PersonMoreDetailsFragment"
+        android:name="com.example.kinodata.fragments.people.PersonMoreDetailsFragment"
         android:label="fragment_person_more_details"
         tools:layout="@layout/fragment_person_more_details">
         <argument

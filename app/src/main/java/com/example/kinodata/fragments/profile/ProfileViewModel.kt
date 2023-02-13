@@ -1,17 +1,21 @@
 package com.example.kinodata.fragments.profile
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kinodata.R
 import com.example.kinodata.model.account.accountDetails.AccountDetails
 import com.example.kinodata.model.auth.requestBodies.SessionIdRequestBody
 import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
+import com.example.kinodata.utils.NetworkResult
 import com.example.kinodata.utils.NetworkState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,17 +23,18 @@ private const val TAG = "ProfileViewModel"
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    @ApplicationContext private val mContext: Context,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
-): ViewModel() {
+) : ViewModel() {
 
     //for Sign in layout
     private val _signInNetworkState: MutableLiveData<NetworkState> = MutableLiveData()
     val signInNetworkState: LiveData<NetworkState> = _signInNetworkState
 
     //for Profile info layout
-    private val _accountDetails: MutableLiveData<AccountDetails> = MutableLiveData()
-    val accountDetails: LiveData<AccountDetails> = _accountDetails
+    private val _accountDetails: MutableLiveData<NetworkResult<AccountDetails>> = MutableLiveData()
+    val accountDetails: LiveData<NetworkResult<AccountDetails>> = _accountDetails
 
     private val _signOutNetworkState: MutableLiveData<NetworkState> = MutableLiveData()
     val signOutNetworkState: LiveData<NetworkState> = _signOutNetworkState
@@ -50,8 +55,9 @@ class ProfileViewModel @Inject constructor(
                 }
 
             } catch (e: Exception) {
-                Log.d(TAG, "signIn: ${e.message}")
-                _signInNetworkState.value = NetworkState.Error("Couldn't sign in")
+                _signInNetworkState.value = NetworkState.Error(
+                    mContext.getString(R.string.couldntSignIn)
+                )
             }
         }
     }
@@ -113,18 +119,33 @@ class ProfileViewModel @Inject constructor(
 
     //***************************************Profile Info*********************************
     fun getAccountDetails(sessionId: String) {
-        try {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "getAccountDetails: sessionId = $sessionId")
                 val response = repository.getAccountDetails(sessionId)
-                Log.d(TAG, "getAccountDetails: ${response.code()}")
+                Log.d(TAG, "getAccountDetails: ${response.code()} - ${response.message()}")
                 if (response.isSuccessful) {
-                    _accountDetails.value = response.body()
+                    val data = response.body()
+                    if (data != null) {
+                        _accountDetails.value = NetworkResult.Success(data)
+                    } else {
+                        _accountDetails.value = throwError(
+                            mContext.getString(R.string.couldntGetAccountDetails)
+                        )
+                    }
                     val accountId = response.body()?.id ?: -1
                     dataStoreRepository.saveAccountId(accountId)
+                } else {
+                    _accountDetails.value = throwError(
+                        mContext.getString(R.string.couldntGetAccountDetails)
+                    )
                 }
+            } catch (e: Exception) {
+                Log.d(TAG, "getAccountDetails: ${e.message}")
+                _accountDetails.value = throwError(
+                    mContext.getString(R.string.couldntGetAccountDetails)
+                )
             }
-        } catch (e: Exception) {
-            Log.d(TAG, "getAccountDetails: ${e.message}")
         }
     }
 
@@ -148,6 +169,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-
+    private fun throwError(msg: String) = NetworkResult.Error(Exception(msg))
 
 }

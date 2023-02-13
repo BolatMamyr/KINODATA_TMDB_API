@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.movies.movieDetails.review.all.AllReviewsFragment">
+    tools:context=".fragments.review.all.AllReviewsFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tb_allReviews"

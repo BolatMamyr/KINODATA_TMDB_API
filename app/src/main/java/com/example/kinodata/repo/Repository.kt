@@ -67,7 +67,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getMovieDetails(movieId = movieId, language = language)
     }
 
-    suspend fun getMovieCredits(movieId: String, language: String): Response<Credits> {
+    suspend fun getMovieCredits(movieId: Int, language: String): Response<Credits> {
         return api.getMovieCredits(movieId = movieId, language = language)
     }
 

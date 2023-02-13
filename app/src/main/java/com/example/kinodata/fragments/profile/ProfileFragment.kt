@@ -17,6 +17,10 @@ import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentProfileBinding
 import com.example.kinodata.repo.DataStoreRepository
+import com.example.kinodata.utils.MyUtils
+import com.example.kinodata.utils.MyUtils.Companion.hideKeyboard
+import com.example.kinodata.utils.MyUtils.Companion.toast
+import com.example.kinodata.utils.NetworkResult
 import com.example.kinodata.utils.NetworkState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -54,23 +58,22 @@ class ProfileFragment : Fragment() {
 
         setClickListenersForSignInLayout()
         setClickListenersForProfileInfoLayout()
-
-
     }
 
     private fun showLayout() {
         lifecycleScope.launch {
             dataStoreRepository.sessionId.collectLatest { id ->
                 // Not null means there is a sessionId and user is signed in. then show profileInfo
-                Log.d(TAG, "sessionId: $id")
-                if (id != "null") {
+                Log.d(TAG, "showLayout: sessionId = $id")
+                if (id.isNotBlank()) {
+                    Log.d(TAG, "showLayout isNotBlank block: sessionId = $id")
                     showProfileInfoLayout()
                     getAccountDetails(id)
                     binding.btnSignOut.setOnClickListener {
                         signOut(id)
                     }
-
                 } else {
+                    Log.d(TAG, "showLayout: sessionId is blank")
                     sessionId = id
                     showSignInLayout()
                 }
@@ -124,6 +127,7 @@ class ProfileFragment : Fragment() {
     private fun setClickListenersForSignInLayout() {
         binding.apply {
             btnSignIn.setOnClickListener {
+                hideKeyboard()
                 signIn()
             }
             txtSignUp.setOnClickListener {
@@ -136,15 +140,28 @@ class ProfileFragment : Fragment() {
 
     private fun getAccountDetails(sessionId: String) {
         viewModel.getAccountDetails(sessionId)
-        viewModel.accountDetails.observe(viewLifecycleOwner) { accountDetails ->
-            binding.apply {
-                txtUsername.text = accountDetails.username
-                Log.d(TAG, "accountId: ${accountDetails.id}")
-                accountId = accountDetails.id
-                Glide.with(requireContext())
-                    .load(MyConstants.IMG_BASE_URL + accountDetails.getAvatarPath())
-                    .into(imgProfile)
+        viewModel.accountDetails.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    showProgressBar()
+                }
+                is NetworkResult.Success -> {
+                    val accountDetails = it.data
+                    binding.apply {
+                        txtUsername.text = accountDetails.username
+                        Log.d(TAG, "accountId: ${accountDetails.id}")
+                        accountId = accountDetails.id
+                        Glide.with(requireContext())
+                            .load(MyConstants.IMG_BASE_URL + accountDetails.getAvatarPath())
+                            .into(imgProfile)
+                    }
+                    showProfileInfoLayout()
+                }
+                is NetworkResult.Error -> {
+
+                }
             }
+
         }
     }
 
@@ -158,29 +175,26 @@ class ProfileFragment : Fragment() {
                     when (it) {
                         is NetworkState.Loading -> showProgressBar()
                         is NetworkState.Success -> {
-                            Toast.makeText(
-                                context, getString(R.string.signedIn),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            toast(getString(R.string.signedIn))
                             showProfileInfoLayout()
                         }
-                        else -> {
-                            // else error
+                        is NetworkState.Error -> {
                             hideProgressBar()
-                            Toast.makeText(
-                                context,
-                                getString(R.string.couldntSignIn),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            toast(getString(R.string.couldntSignIn))
                         }
-
                     }
                 }
             } else {
-                // TODO: Error: please fill out all req fields
+                if (username.isEmpty()) {
+                    binding.etUsername.error = getString(R.string.pleaseFillOutThisField)
+                }
+                if (password.isEmpty()) {
+                    binding.etPassword.error = getString(R.string.pleaseFillOutThisField)
+                }
             }
         }
     }
+
 
     private fun showProgressBar() {
         binding.pbProfile.visibility = View.VISIBLE

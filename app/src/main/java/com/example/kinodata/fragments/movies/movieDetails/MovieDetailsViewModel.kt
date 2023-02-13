@@ -123,7 +123,7 @@ class MovieDetailsViewModel @Inject constructor(
         _credits.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getMovieCredits(id.toString(), MyConstants.LANGUAGE)
+                val response = repository.getMovieCredits(id, MyConstants.LANGUAGE)
                 if (response.isSuccessful) {
                     val data = response.body()
                     if (data != null) {

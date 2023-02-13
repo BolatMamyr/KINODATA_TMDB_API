@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.fragments.people.adaptersHorizontal
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,16 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.persons.person.personTvSeries.PersonTvAsCrew
+import com.example.kinodata.model.persons.person.personMovies.PersonMoviesAsCrew
 import com.example.kinodata.utils.MyUtils
 
-class PersonTvAsCrewHorizontalAdapter
-    : RecyclerView.Adapter<PersonTvAsCrewHorizontalAdapter.MyViewHolder>() {
+class PersonMoviesAsCrewHorizontalAdapter
+    : RecyclerView.Adapter<PersonMoviesAsCrewHorizontalAdapter.MyViewHolder>() {
 
-    private var tvSeries = emptyList<PersonTvAsCrew>()
-    var tvSeriesId: Int? = null
-    var onItemClick: ((PersonTvAsCrew?) -> Unit)? = null
+    private var movies = emptyList<PersonMoviesAsCrew>()
 
+    var onItemClick : ((PersonMoviesAsCrew?) -> Unit)? = null
+    var movieId: Int? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView
@@ -51,14 +51,16 @@ class PersonTvAsCrewHorizontalAdapter
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var title = tvSeries[position].name
-        tvSeriesId = tvSeries[position].id
+        var title = movies[position].title
+        movieId = movies[position].id
+        if (title.length > 19) {
+            title = title.substring(0, 19) + "..."
+        }
+        holder.title.text = title
+        holder.date.text = MyUtils.getFormattedDate(movies[position].release_date, holder.itemView)
+        holder.job.text = movies[position].job
 
-        holder.title.text = MyUtils.getShortenedString(title)
-        holder.date.text = MyUtils.getFormattedDate(tvSeries[position].first_air_date, holder.itemView)
-        holder.job.text = tvSeries[position].job
-
-        val vote = tvSeries[position].vote_average
+        val vote = movies[position].vote_average
         holder.vote.text = String.format("%.1f", vote)
 
         if (vote == .0) {
@@ -68,31 +70,32 @@ class PersonTvAsCrewHorizontalAdapter
             holder.rl_vote.setBackgroundColor(colorId)
         }
 
-        val img = tvSeries[position].poster_path
+
+        val img = movies[position].poster_path
         Glide.with(holder.itemView.context)
             .load(MyConstants.IMG_BASE_URL + img).into(holder.img)
 
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(tvSeries[position])
+            onItemClick?.invoke(movies[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return tvSeries.size
+        return movies.size
     }
 
-    fun updateData(newList: List<PersonTvAsCrew>) {
-        val oldList = tvSeries
+    fun updateData(newList: List<PersonMoviesAsCrew>) {
+        val oldList = movies
         val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(
-            PersonTvSeriesDiffCallback(oldList, newList)
+            PersonMoviesDiffCallback(oldList, newList)
         )
-        tvSeries = newList
+        movies = newList
         diffResult.dispatchUpdatesTo(this)
     }
 
-    class PersonTvSeriesDiffCallback(
-        var oldList: List<PersonTvAsCrew>,
-        var newList: List<PersonTvAsCrew>
+    class PersonMoviesDiffCallback(
+        var oldList: List<PersonMoviesAsCrew>,
+        var newList: List<PersonMoviesAsCrew>
     ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldList.size

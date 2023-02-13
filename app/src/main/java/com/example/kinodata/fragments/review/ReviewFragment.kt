@@ -1,4 +1,4 @@
-package com.example.kinodata.fragments.movies.movieDetails.review
+package com.example.kinodata.fragments.review
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.example.kinodata.fragments.movies.movieDetails.review.all
+package com.example.kinodata.fragments.review.all
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,9 +24,6 @@ class AllReviewsFragment : Fragment() {
 
     private val args: AllReviewsFragmentArgs by navArgs()
     private val viewModel: AllReviewsViewModel by viewModels()
-//    {
-//        AllReviewsViewModelFactory(id = args.movieId, context = args.context)
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,11 +62,10 @@ class AllReviewsFragment : Fragment() {
             }
         }
 
-
         adapter.onItemClick = {
             it?.let {
-                val action = AllReviewsFragmentDirections
-                    .actionAllReviewsFragmentToReviewFragment(it)
+                val action =
+                    AllReviewsFragmentDirections.actionAllReviewsFragmentToReviewFragment(it)
                 findNavController().navigate(action)
             }
         }

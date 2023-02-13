@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
-import com.example.kinodata.adapters.CrewVerticalAdapter
+import com.example.kinodata.adapters.credits.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllMovieCrewBinding
 import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsViewModel
 import com.example.kinodata.utils.MyUtils.Companion.toast

@@ -90,4 +90,10 @@
     <string name="delete">Delete</string>
     <string name="rating_deleted_successfully">Rating deleted successfully</string>
     <string name="update_rating">Update rating</string>
+    <string name="couldntGetAccountDetails">Couldn\'t get account details</string>
+    <string name="pleaseFillOutFields">Please fill out all required fields!</string>
+    <string name="pleaseFillOutThisField">Please fill out this field!</string>
+    <string name="couldntGetPersonsMovies">Couldn\'t get persons\' movies</string>
+    <string name="couldntGetPersonsTv">Couldn\'t get persons\' TV Series</string>
+    <string name="couldntGetPersonDetails">Couldn\'t get person details</string>
 </resources>

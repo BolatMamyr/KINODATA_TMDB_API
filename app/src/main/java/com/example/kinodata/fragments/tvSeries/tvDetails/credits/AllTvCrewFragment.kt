@@ -1,7 +1,6 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails.credits
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.adapters.CrewVerticalAdapter
+import com.example.kinodata.adapters.credits.CrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentAllTvCrewBinding
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
-import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 

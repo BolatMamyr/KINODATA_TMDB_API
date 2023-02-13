@@ -1,4 +1,4 @@
-package com.example.kinodata.fragments.movies.movieDetails.review.all
+package com.example.kinodata.fragments.review.all
 
 import android.util.Log
 import androidx.lifecycle.*

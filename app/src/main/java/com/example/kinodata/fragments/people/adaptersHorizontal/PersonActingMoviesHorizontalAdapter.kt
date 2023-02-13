@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.fragments.people.adaptersHorizontal
 
 import android.view.LayoutInflater
 import android.view.View

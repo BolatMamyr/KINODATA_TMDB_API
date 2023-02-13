@@ -31,6 +31,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 // TODO: Migrate to v4 Auth to get lists or delete lists and go further adding videos, images etc.
+// TODO: Change search
 interface MovieDataApi {
 
     // *******************************Movies**************************************
@@ -71,7 +72,7 @@ interface MovieDataApi {
 
     @GET(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_CREDITS)
     suspend fun getMovieCredits(
-        @Path("movieId") movieId: String,
+        @Path("movieId") movieId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String
     ): Response<Credits>
@@ -240,7 +241,7 @@ interface MovieDataApi {
         @Query("session_id") session_id: String
     ): Response<AccountDetails>
 
-    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE)
+    @POST(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_FAVORITE)
     suspend fun addToFavorite(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -248,7 +249,7 @@ interface MovieDataApi {
         @Body requestBody: AddToFavoriteRequestBody
     ): Response<SuccessResponse>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_MOVIES)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_FAVORITE_MOVIES)
     suspend fun getFavoriteMovies(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -256,7 +257,7 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForMovies>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_FAVORITE_TV)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_FAVORITE_TV)
     suspend fun getFavoriteTv(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -264,7 +265,7 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForTvSeries>
 
-    @POST(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST)
+    @POST(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_WATCHLIST)
     suspend fun addToWatchlist(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -272,7 +273,7 @@ interface MovieDataApi {
         @Body requestBody: AddToWatchlistRequestBody
     ): Response<SuccessResponse>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST_MOVIES)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_WATCHLIST_MOVIES)
     suspend fun getMoviesWatchlist(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -280,7 +281,7 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForMovies>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_WATCHLIST_TV)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_WATCHLIST_TV)
     suspend fun getTvWatchlist(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -288,7 +289,7 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForTvSeries>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_RATED_MOVIES)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_RATED_MOVIES)
     suspend fun getRatedMovies(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,
@@ -296,7 +297,7 @@ interface MovieDataApi {
         @Query("page") page: Int
     ): Response<ResultForMovies>
 
-    @GET(MyConstants.URL_ACCOUNT + "{accountId}" + MyConstants.URL_RATED_TV)
+    @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_RATED_TV)
     suspend fun getRatedTv(
         @Path("accountId") accountId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY,

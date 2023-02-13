@@ -1,10 +1,8 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -17,19 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
-import com.example.kinodata.adapters.CastHorizontalAdapter
-import com.example.kinodata.adapters.CrewHorizontalAdapter
+import com.example.kinodata.adapters.credits.CastHorizontalAdapter
+import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
-import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.MyUtils.Companion.toast
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -67,11 +63,13 @@ class MovieDetailsFragment : Fragment() {
         }
         binding.svMovieDetails.isSaveEnabled = true
 
-        viewModel.getMovieDetails(args.movieId)
-        viewModel.getMovieCredits(args.movieId)
-        viewModel.getMovieReviews(args.movieId)
-        viewModel.getMovieAccountStates(args.movieId)
-        viewModel.setMovieId(args.movieId)
+        if (args.movieId != viewModel.movieId.value) {
+            viewModel.getMovieDetails(args.movieId)
+            viewModel.getMovieCredits(args.movieId)
+            viewModel.getMovieReviews(args.movieId)
+            viewModel.getMovieAccountStates(args.movieId)
+            viewModel.setMovieId(args.movieId)
+        }
 
         observeMovieDetails(view)
         observeMovieCredits(view)

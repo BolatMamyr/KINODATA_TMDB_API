@@ -1,7 +1,6 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,18 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
-import com.example.kinodata.adapters.CastHorizontalAdapter
-import com.example.kinodata.adapters.CrewHorizontalAdapter
+import com.example.kinodata.adapters.credits.CastHorizontalAdapter
+import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
 import com.example.kinodata.adapters.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
-import com.example.kinodata.utils.MyUtils.Companion.collectLatestLifecycleFlow
 import com.example.kinodata.utils.MyUtils.Companion.toast
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,11 +55,13 @@ class TvDetailsFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        viewModel.getTvDetails(args.tvSeriesId)
-        viewModel.getTvCredits(args.tvSeriesId.toString())
-        viewModel.getTvReviews(args.tvSeriesId.toString())
-        viewModel.getTvAccountStates(args.tvSeriesId)
-        viewModel.setTvId(args.tvSeriesId)
+        if (args.tvSeriesId != viewModel.tvId.value) {
+            viewModel.getTvDetails(args.tvSeriesId)
+            viewModel.getTvCredits(args.tvSeriesId.toString())
+            viewModel.getTvReviews(args.tvSeriesId.toString())
+            viewModel.getTvAccountStates(args.tvSeriesId)
+            viewModel.setTvId(args.tvSeriesId)
+        }
 
         binding.svTvDetails.isSaveEnabled = true
         getTvDetails(view)

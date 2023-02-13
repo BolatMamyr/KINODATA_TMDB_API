@@ -9,14 +9,17 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    // TODO: SearchFrag navigate to another frag when clicking on EditText
+
+    // TODO: SearchFrag navigate to another frag when clicking on EditText !!!!!!!!!!!!
+    // TODO: photos(clickable) and videos. Photos of persons !!!!!!!!!!!
+    // TODO: SearchFragment: Recommended to watch: change photos and add more data(trending?) !!!!!!!!!!!
+
     // TODO: when showing keyboard bottomNav going up in SearchFrag
     // TODO: toolbars with animation
-    // TODO: clickable photos
-    // TODO: videos
     // TODO: implement Retrofit with Flow to get data after re-connecting to Internet
     // TODO: RemoteMediator for offline access of already loaded data
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,19 +5,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
-import com.example.kinodata.adapters.PersonActingMoviesHorizontalAdapter
-import com.example.kinodata.adapters.PersonActingTvHorizontalAdapter
-import com.example.kinodata.adapters.PersonMoviesAsCrewHorizontalAdapter
-import com.example.kinodata.adapters.PersonTvAsCrewHorizontalAdapter
+import com.example.kinodata.fragments.people.adaptersHorizontal.PersonActingMoviesHorizontalAdapter
+import com.example.kinodata.fragments.people.adaptersHorizontal.PersonActingTvHorizontalAdapter
+import com.example.kinodata.fragments.people.adaptersHorizontal.PersonMoviesAsCrewHorizontalAdapter
+import com.example.kinodata.fragments.people.adaptersHorizontal.PersonTvAsCrewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonBinding
+import com.example.kinodata.utils.MyUtils
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "PersonFragment"
 
 @AndroidEntryPoint
 class PersonFragment : Fragment() {
@@ -25,7 +29,7 @@ class PersonFragment : Fragment() {
     // TODO: Crew Members are being repeated if director and producer at the same time.
     private val args: PersonFragmentArgs by navArgs()
 
-    private val viewModel: PersonViewModel by viewModels()
+    private val viewModel: PersonViewModel by activityViewModels()
 
     private var _binding: FragmentPersonBinding? = null
     private val binding get() = _binding!!
@@ -45,9 +49,16 @@ class PersonFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        getPersonInfo()
-        getPersonMovies(view)
-        getPersonTvSeries(view)
+        if (args.personId != viewModel.personId.value) {
+            viewModel.getPersonInfo(args.personId)
+            viewModel.getPersonMovieCredits(args.personId)
+            viewModel.getPersonTvSeriesCredits(args.personId)
+            viewModel.setPersonId(args.personId)
+        }
+
+        observePersonInfo()
+        observePersonMovies(view)
+        observePersonTvSeries(view)
 
         setClickListeners()
     }
@@ -109,50 +120,56 @@ class PersonFragment : Fragment() {
     }
 
 
-    private fun getPersonInfo() {
-        viewModel.getPersonInfo()
+    private fun observePersonInfo() {
         viewModel.person.observe(viewLifecycleOwner) {
-            binding.tbPerson.title = it.name
-            binding.txtPersonName.text = it.name
+            when (it) {
+                is NetworkResult.Success -> {
+                    val person = it.data
+                    binding.tbPerson.title = person.name
+                    binding.txtPersonName.text = person.name
 
-            val department = if (it.known_for_department == MyConstants.DEPARTMENT_ACTING) {
-                if (it.gender == 1) {
-                    getString(R.string.Actress)
-                } else {
-                    getString(R.string.Actor)
+                    val department = if (person.known_for_department == MyConstants.DEPARTMENT_ACTING) {
+                        if (person.gender == 1) {
+                            getString(R.string.Actress)
+                        } else {
+                            getString(R.string.Actor)
+                        }
+                    } else {
+                        getString(R.string.department) + person.known_for_department
+                    }
+                    binding.txtPersonKnownFor.text = department
+
+
+                    val birthday = MyUtils.getFormattedDate(person.birthday, requireView())
+                    val deathday = person.deathday?.let { deathday ->
+                        MyUtils.getFormattedDate(deathday, requireView())
+                    }
+                    val date = if (deathday != null) {
+                        "$birthday - $deathday"
+                    } else {
+                        birthday
+                    }
+                    binding.txtPersonDate.text = date
+
+                    val profilePath = person.profile_path
+
+                    if (profilePath == null) {
+                        // TODO: Not showing ProfileBlankPic
+                        binding.imgPerson.setImageResource(R.drawable.profileblankpic)
+                    } else {
+                        Glide.with(requireContext())
+                            .load(MyConstants.IMG_BASE_URL + profilePath)
+                            .into(binding.imgPerson)
+                    }
                 }
-            } else {
-                getString(R.string.department) + it.known_for_department
+                else -> {
+
+                }
             }
-            binding.txtPersonKnownFor.text = department
-
-
-            val birthday = getDate(it.birthday)
-            val deathday = it.deathday?.let { it1 -> getDate(it1) }
-            val date = if (deathday != null) {
-                "$birthday - $deathday"
-            } else {
-                birthday
-            }
-            binding.txtPersonDate.text = date
-
-            val profilePath = it.profile_path
-
-            if (profilePath == null) {
-                // TODO: Not showing ProfileBlankPic
-                binding.imgPerson.setImageResource(R.drawable.profileblankpic)
-            } else {
-                Glide.with(requireContext())
-                    .load(MyConstants.IMG_BASE_URL + profilePath)
-                    .into(binding.imgPerson)
-            }
-
         }
     }
 
-    private fun getPersonMovies(view: View) {
-        viewModel.getPersonMovieCredits()
-
+    private fun observePersonMovies(view: View) {
         val actingMoviesAdapter = PersonActingMoviesHorizontalAdapter()
         val moviesAsCrewAdapter = PersonMoviesAsCrewHorizontalAdapter()
 
@@ -168,30 +185,6 @@ class PersonFragment : Fragment() {
             val manager = LinearLayoutManager(view.context)
             manager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = manager
-        }
-
-        viewModel.actingMovies.observe(viewLifecycleOwner) {
-            // *********************Acting Movies***************************
-            // if no movies hide layout
-            if (it.isEmpty()) {
-                binding.layoutActingMovies.visibility = View.GONE
-            } else {
-                binding.layoutActingMovies.visibility = View.VISIBLE
-            }
-
-            val sortedList = it.sortedByDescending { it.popularity }.take(20)
-            actingMoviesAdapter.updateData(sortedList)
-        }
-
-        viewModel.moviesAsCrew.observe(viewLifecycleOwner) {
-            // *********************Movies As Crew***************************
-            if (it.isEmpty()) {
-                binding.layoutMoviesAsCrew.visibility = View.GONE
-            } else {
-                binding.layoutMoviesAsCrew.visibility = View.VISIBLE
-            }
-            val crewSortedList = it.sortedByDescending { it.popularity }.take(20)
-            moviesAsCrewAdapter.updateData(crewSortedList)
         }
 
         // Acting Movies RV OnItemClickListener
@@ -212,11 +205,39 @@ class PersonFragment : Fragment() {
             }
         }
 
+        viewModel.movies.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    // TODO: add progressBar
+                }
+                is NetworkResult.Success -> {
+                    val cast = it.data.cast
+                    val crew = it.data.crew
+
+                    if (cast.isNotEmpty()) {
+                        val sortedList = cast.sortedByDescending { it.popularity }.take(20)
+                        actingMoviesAdapter.updateData(sortedList)
+                        binding.layoutActingMovies.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutActingMovies.visibility = View.GONE
+                    }
+                    if (crew.isNotEmpty()) {
+                        val sortedList = crew.sortedByDescending { it.popularity }.take(20)
+                        moviesAsCrewAdapter.updateData(sortedList)
+                        binding.layoutMoviesAsCrew.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutMoviesAsCrew.visibility = View.GONE
+                    }
+                }
+                is NetworkResult.Error -> {
+                    binding.layoutActingMovies.visibility = View.GONE
+                    binding.layoutMoviesAsCrew.visibility = View.GONE
+                }
+            }
+        }
     }
 
-    private fun getPersonTvSeries(view: View) {
-        viewModel.getPersonTvSeriesCredits()
-
+    private fun observePersonTvSeries(view: View) {
         val actingTvAdapter = PersonActingTvHorizontalAdapter()
         val tvAsCrewAdapter = PersonTvAsCrewHorizontalAdapter()
 
@@ -232,32 +253,6 @@ class PersonFragment : Fragment() {
             val manager = LinearLayoutManager(view.context)
             manager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = manager
-        }
-
-        viewModel.actingTv.observe(viewLifecycleOwner) {
-            // *****************Acting TV Series*****************************
-            if (it.isEmpty()) {
-                binding.layoutActingTv.visibility = View.GONE
-            } else {
-                binding.layoutActingTv.visibility = View.VISIBLE
-            }
-
-            val sortedList = it.sortedByDescending { it.popularity }.take(20)
-            actingTvAdapter.updateData(sortedList)
-
-        }
-
-        viewModel.tvAsCrew.observe(viewLifecycleOwner) {
-            // *****************TV Series As Crew*****************************
-            if (it.isEmpty()) {
-                binding.layoutTvAsCrew.visibility = View.GONE
-            } else {
-                binding.layoutTvAsCrew.visibility = View.VISIBLE
-            }
-
-            val crewSortedList = it.sortedByDescending { it.popularity }.take(20)
-            tvAsCrewAdapter.updateData(crewSortedList)
-
         }
 
         // Acting Tv RV OnItemClickListener
@@ -276,32 +271,37 @@ class PersonFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-    }
 
-    private fun getDate(date: String): String {
-        return if (date.length > 7) {
-            val year = date.substring(0, 4)
-            var month = date.substring(5, 7)
-            var day = date.substring(8)
-            if (day[0] == '0') day = day[1].toString()
+        viewModel.tv.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    // TODO: add progressBar
+                }
+                is NetworkResult.Success -> {
+                    val cast = it.data.cast
+                    val crew = it.data.crew
 
-            month = when (month) {
-                "01" -> resources.getString(R.string.january)
-                "02" -> resources.getString(R.string.february)
-                "03" -> resources.getString(R.string.march)
-                "04" -> resources.getString(R.string.april)
-                "05" -> resources.getString(R.string.may)
-                "06" -> resources.getString(R.string.june)
-                "07" -> resources.getString(R.string.july)
-                "08" -> resources.getString(R.string.august)
-                "09" -> resources.getString(R.string.september)
-                "10" -> resources.getString(R.string.october)
-                "11" -> resources.getString(R.string.november)
-                "12" -> resources.getString(R.string.december)
-                else -> ""
+                    if (cast.isNotEmpty()) {
+                        val sortedList = cast.sortedByDescending { it.popularity }.take(20)
+                        actingTvAdapter.updateData(sortedList)
+                        binding.layoutActingTv.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutActingTv.visibility = View.GONE
+                    }
+                    if (crew.isNotEmpty()) {
+                        val sortedList = crew.sortedByDescending { it.popularity }.take(20)
+                        tvAsCrewAdapter.updateData(sortedList)
+                        binding.layoutTvAsCrew.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutTvAsCrew.visibility = View.GONE
+                    }
+                }
+                is NetworkResult.Error -> {
+                    binding.layoutActingTv.visibility = View.GONE
+                    binding.layoutTvAsCrew.visibility = View.GONE
+                }
             }
-            "$day $month, $year"
-        } else ""
+        }
     }
 
 }
