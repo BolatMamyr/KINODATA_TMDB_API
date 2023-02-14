@@ -8,11 +8,10 @@ import com.example.kinodata.repo.Repository
 import retrofit2.Response
 import javax.inject.Inject
 
-class MoviesPagingSource @Inject constructor(
-    private val category: String,
-    private val repository: Repository)
-    : PagingSource<Int, RMovie> () {
+class MoviesPagingSource(private val category: String) : PagingSource<Int, RMovie> () {
 
+    @Inject
+    lateinit var repository: Repository
 
     override fun getRefreshKey(state: PagingState<Int, RMovie>): Int? {
         return state.anchorPosition?.let {
@@ -27,16 +26,16 @@ class MoviesPagingSource @Inject constructor(
         return try {
             var data: Response<ResultForMovies>? = null
             if (category == MyConstants.POPULAR) {
-                data = repository.getPopularMovies(MyConstants.LANGUAGE, page.toString())
+                data = repository.getPopularMovies(MyConstants.LANGUAGE, page)
             }
             if (category == MyConstants.TOP_RATED) {
-                data = repository.getTopRatedMovies(MyConstants.LANGUAGE, page.toString())
+                data = repository.getTopRatedMovies(MyConstants.LANGUAGE, page)
             }
             if (category == MyConstants.NOW_PLAYING) {
-                data = repository.getNowPlayingMovies(MyConstants.LANGUAGE, page.toString())
+                data = repository.getNowPlayingMovies(MyConstants.LANGUAGE, page)
             }
             if (category == MyConstants.UPCOMING) {
-                data = repository.getUpcomingMovies(MyConstants.LANGUAGE, page.toString())
+                data = repository.getUpcomingMovies(MyConstants.LANGUAGE, page)
             }
 
             LoadResult.Page(

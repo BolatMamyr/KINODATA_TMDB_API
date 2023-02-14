@@ -23,7 +23,7 @@ class VerticalListViewModel @Inject constructor(
     private val category = state.get<String>("category") ?: "null"
 
     val movies = Pager(PagingConfig(pageSize = 20)) {
-        MoviesPagingSource(category, repository)
+        MoviesPagingSource(category)
     }.flow.cachedIn(viewModelScope)
 
 }

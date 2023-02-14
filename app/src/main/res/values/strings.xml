@@ -96,4 +96,8 @@
     <string name="couldntGetPersonsMovies">Couldn\'t get persons\' movies</string>
     <string name="couldntGetPersonsTv">Couldn\'t get persons\' TV Series</string>
     <string name="couldntGetPersonDetails">Couldn\'t get person details</string>
+    <string name="errorGettingPopularMovies">Error getting popular movies</string>
+    <string name="errorGettingTopMovies">Error getting top rated movies</string>
+    <string name="errorGettingNowPlayingMovies">Error getting now playing movies</string>
+    <string name="errorGettingUpcomingMovies">Error getting upcoming movies</string>
 </resources>

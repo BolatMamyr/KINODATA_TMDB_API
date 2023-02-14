@@ -1,22 +1,18 @@
 package com.example.kinodata.fragments.movies
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.example.kinodata.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMoviesBinding
 import com.example.kinodata.model.movie.RMovie
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,170 +21,190 @@ class MoviesFragment : Fragment() {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var navController: NavController
-
-    private lateinit var rv_popular: RecyclerView
-    private lateinit var popularAdapter: MoviesHorizontalAdapter
-
-    private lateinit var rv_top: RecyclerView
-    private lateinit var topAdapter: MoviesHorizontalAdapter
-
-    private lateinit var rv_now: RecyclerView
-    private lateinit var nowAdapter: MoviesHorizontalAdapter
-
-    private lateinit var rv_upcoming: RecyclerView
-    private lateinit var upcomingAdapter: MoviesHorizontalAdapter
-
-    private lateinit var pb_popular: ProgressBar
-    private lateinit var pb_top: ProgressBar
-    private lateinit var pb_now: ProgressBar
-    private lateinit var pb_upcoming: ProgressBar
-
-    private lateinit var btn_seeAll_popular: Button
-    private lateinit var btn_seeAll_top: Button
-    private lateinit var btn_seeAll_now: Button
-    private lateinit var btn_seeAll_upcoming: Button
-
     private val viewModel: MoviesFragViewModel by viewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
+        _binding = FragmentMoviesBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init()
+        binding.svMovies.isSaveEnabled = true
+        viewModel.apply {
+            // check if Success (has data) not reload everytime
+            if (popularMovies.value !is NetworkResult.Success) {
+                getPopularMovies()
+                getTopRatedMovies()
+                getNowPlayingMovies()
+                getUpcomingMovies()
+            }
+        }
         setClickListeners()
         getPopular()
         getTopRated()
         getNowPlaying()
         getUpcoming()
-        // to save scroll position when fragment is changed
-        binding.svMovies.isSaveEnabled = true
     }
 
     private fun getPopular() {
-        viewModel.getPopularMovies(getString(R.string.language), "1")
-        pb_popular.visibility = View.VISIBLE
-        viewModel.popularMovies.observe(viewLifecycleOwner)  {
-            popularAdapter.updateData(it)
-            pb_popular.visibility = View.GONE
+        val mAdapter = MoviesHorizontalAdapter()
+        binding.rvPopular.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
+        }
+
+        mAdapter.onItemClick = {
+            navigate(it)
+        }
+
+        viewModel.popularMovies.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbPopular.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbPopular.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
+
+                }
+            }
         }
     }
 
     private fun getTopRated() {
-        viewModel.getTopRatedMovies(getString(R.string.language), "1")
-        pb_top.visibility = View.VISIBLE
+        val mAdapter = MoviesHorizontalAdapter()
+        binding.rvTop.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
+        }
+
+        mAdapter.onItemClick = {
+            navigate(it)
+        }
+
         viewModel.topMovies.observe(viewLifecycleOwner) {
-            topAdapter.updateData(it)
-            pb_top.visibility = View.GONE
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbTop.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbTop.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
+
+                }
+            }
         }
     }
 
     private fun getNowPlaying() {
-        viewModel.getNowPlayingMovies(getString(R.string.language), "1")
-        pb_now.visibility = View.VISIBLE
+        val mAdapter = MoviesHorizontalAdapter()
+        binding.rvNow.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
+        }
+
+        mAdapter.onItemClick = {
+            navigate(it)
+        }
+
         viewModel.nowPlayingMovies.observe(viewLifecycleOwner) {
-            nowAdapter.updateData(it)
-            pb_now.visibility = View.GONE
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbNow.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbNow.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
+
+                }
+            }
         }
     }
 
     private fun getUpcoming() {
-        viewModel.getUpcomingMovies(getString(R.string.language), "1")
-        pb_upcoming.visibility = View.VISIBLE
-        viewModel.upcomingMovies.observe(viewLifecycleOwner) {
-            upcomingAdapter.updateData(it)
-            pb_upcoming.visibility = View.GONE
+        val mAdapter = MoviesHorizontalAdapter()
+        binding.rvUpcoming.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
         }
-    }
 
-    // initializing all views, adapters and navController
-    private fun init() {
-        navController = findNavController()
-        pb_popular = binding.pbPopular
-        pb_top = binding.pbTop
-        pb_now = binding.pbNow
-        pb_upcoming = binding.pbUpcoming
+        mAdapter.onItemClick = {
+            navigate(it)
+        }
 
-        rv_popular = binding.rvPopular
-        popularAdapter = MoviesHorizontalAdapter()
-        rv_popular.adapter = popularAdapter
-        rv_popular.isNestedScrollingEnabled = true
+        viewModel.upcomingMovies.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbUpcoming.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbUpcoming.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
 
-        rv_top = binding.rvTop
-        topAdapter = MoviesHorizontalAdapter()
-        rv_top.adapter = topAdapter
-        rv_top.isNestedScrollingEnabled = true
-
-        rv_now = binding.rvNow
-        nowAdapter = MoviesHorizontalAdapter()
-        rv_now.adapter = nowAdapter
-        rv_now.isNestedScrollingEnabled = true
-
-        rv_upcoming = binding.rvUpcoming
-        upcomingAdapter = MoviesHorizontalAdapter()
-        rv_upcoming.adapter = upcomingAdapter
-        rv_upcoming.isNestedScrollingEnabled = true
-
-        btn_seeAll_popular = binding.btnSeeAllPopular
-        btn_seeAll_top = binding.btnSeeAllTop
-        btn_seeAll_now = binding.btnSeeAllNow
-        btn_seeAll_upcoming = binding.btnSeeAllUpcoming
+                }
+            }
+        }
     }
 
     // Click listeners for See All buttons
     private fun setClickListeners() {
         // ******************Click Listeners for See All buttons************
-        btn_seeAll_popular.setOnClickListener {
-            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category =  MyConstants.POPULAR
-            )
-            navController.navigate(action)
-        }
-        btn_seeAll_top.setOnClickListener {
-            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category = MyConstants.TOP_RATED
-            )
-            navController.navigate(action)
-        }
-        btn_seeAll_now.setOnClickListener {
-            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category =  MyConstants.NOW_PLAYING
-            )
-            navController.navigate(action)
-        }
-        btn_seeAll_upcoming.setOnClickListener {
-            val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
-                category = MyConstants.UPCOMING
-            )
-            navController.navigate(action)
-        }
-
-        // *******************Click Listeners for RV Adapters*****************
-        popularAdapter.onItemClick = {
-            navigate(it)
-        }
-        topAdapter.onItemClick = {
-            navigate(it)
-        }
-        nowAdapter.onItemClick = {
-            navigate(it)
-        }
-        upcomingAdapter.onItemClick = {
-            navigate(it)
+        binding.apply {
+            btnSeeAllPopular.setOnClickListener {
+                val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                    category = MyConstants.POPULAR
+                )
+                findNavController().navigate(action)
+            }
+            btnSeeAllTop.setOnClickListener {
+                val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                    category = MyConstants.TOP_RATED
+                )
+                findNavController().navigate(action)
+            }
+            btnSeeAllNow.setOnClickListener {
+                val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                    category = MyConstants.NOW_PLAYING
+                )
+                findNavController().navigate(action)
+            }
+            btnSeeAllUpcoming.setOnClickListener {
+                val action = MoviesFragmentDirections.actionMoviesFragmentToVerticalListFragment(
+                    category = MyConstants.UPCOMING
+                )
+                findNavController().navigate(action)
+            }
         }
     }
 
-    private fun navigate(it: RMovie?) {
-        val action = it?.id?.let { movieId ->
-            MoviesFragmentDirections.actionMoviesFragmentToMovieDetailsFragment(movieId)
+    private fun navigate(movie: RMovie?) {
+        movie?.id?.let {
+            val action = MoviesFragmentDirections.actionMoviesFragmentToMovieDetailsFragment(it)
+            findNavController().navigate(action)
         }
-        action?.let { it1 -> navController.navigate(it1) }
     }
 }

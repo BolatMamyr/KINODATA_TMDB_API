@@ -91,6 +91,7 @@ class MyUtils {
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
 
+        fun throwError(msg: String) = NetworkResult.Error(Exception(msg))
     }
 
 }

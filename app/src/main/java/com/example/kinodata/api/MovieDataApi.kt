@@ -39,28 +39,28 @@ interface MovieDataApi {
     suspend fun getPopularMovies(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
+        @Query("page") page: Int
     ): Response<ResultForMovies>
 
     @GET(MyConstants.URL_TOP_RATED)
     suspend fun getTopRatedMovies(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
+        @Query("page") page: Int
     ): Response<ResultForMovies>
 
     @GET(MyConstants.URL_NOW_PLAYING)
     suspend fun getNowPlayingMovies(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
+        @Query("page") page: Int
     ): Response<ResultForMovies>
 
     @GET(MyConstants.URL_UPCOMING)
     suspend fun getUpcomingMovies(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
+        @Query("page") page: Int
     ): Response<ResultForMovies>
 
     @GET(MyConstants.URL_MOVIE + "{movieId}")

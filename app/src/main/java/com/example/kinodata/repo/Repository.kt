@@ -22,44 +22,28 @@ import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTvSeries
 import com.example.kinodata.model.tv.tvDetails.TvDetails
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import javax.inject.Inject
 
 
 class Repository @Inject constructor(private val api: MovieDataApi) {
 
-//    suspend fun getPopularMovies(language: String, page: String): Flow<Response<ResultForMovies>> {
-//        return flow {
-//            var retryCount = 0
-//            while (true) {
-//                try {
-//                    emit(RetrofitInstance.api.getPopularMovies(language = language, page = page))
-//                    break
-//                } catch (e: Exception) {
-//                    retryCount++
-//                    if (retryCount >= 3) {
-//                        throw e
-//                    } else {
-//                        delay(1000L)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    suspend fun getPopularMovies(language: String, page: String): Response<ResultForMovies> {
+    suspend fun getPopularMovies(language: String, page: Int): Response<ResultForMovies> {
         return api.getPopularMovies(language = language, page = page)
     }
 
-    suspend fun getTopRatedMovies(language: String, page: String): Response<ResultForMovies> {
+    suspend fun getTopRatedMovies(language: String, page: Int): Response<ResultForMovies> {
         return api.getTopRatedMovies(language = language, page = page)
     }
 
-    suspend fun getNowPlayingMovies(language: String, page: String): Response<ResultForMovies> {
+    suspend fun getNowPlayingMovies(language: String, page: Int): Response<ResultForMovies> {
         return api.getNowPlayingMovies(language = language, page = page)
     }
 
-    suspend fun getUpcomingMovies(language: String, page: String): Response<ResultForMovies> {
+    suspend fun getUpcomingMovies(language: String, page: Int): Response<ResultForMovies> {
         return api.getUpcomingMovies(language = language, page = page)
     }
 
@@ -281,5 +265,22 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getTvWatchlist(accountId = accountId, session_id = session_id, page = page)
     }
 
-
+//    suspend fun getPopularMovies(language: String, page: Int): Flow<Response<ResultForMovies>> {
+//        return flow {
+//            var retryCount = 0
+//            while (true) {
+//                try {
+//                    emit(api.getPopularMovies(language = language, page = page))
+//                    break
+//                } catch (e: Exception) {
+//                    retryCount++
+//                    if (retryCount >= 3) {
+//                        throw e
+//                    } else {
+//                        delay(1000L)
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
