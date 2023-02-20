@@ -4,9 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.repo.Repository
-import javax.inject.Inject
 
-class FavoriteTvPagingSource @Inject constructor(
+class FavoriteTvPagingSource(
     private val repository: Repository,
     private val accountId: Int,
     private val sessionId: String

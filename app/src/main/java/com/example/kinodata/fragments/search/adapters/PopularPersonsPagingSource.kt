@@ -1,4 +1,4 @@
-package com.example.kinodata.paging
+package com.example.kinodata.fragments.search.adapters
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMoviesBinding
+import com.example.kinodata.fragments.movies.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,22 +35,28 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.svMovies.isSaveEnabled = true
         viewModel.apply {
-            // check if Success (has data) not reload everytime
+            // if Success it already has data, check not to reload everytime
             if (popularMovies.value !is NetworkResult.Success) {
                 getPopularMovies()
+            }
+            if (topMovies.value !is NetworkResult.Success) {
                 getTopRatedMovies()
+            }
+            if (nowPlayingMovies.value !is NetworkResult.Success) {
                 getNowPlayingMovies()
+            }
+            if (upcomingMovies.value !is NetworkResult.Success) {
                 getUpcomingMovies()
             }
         }
         setClickListeners()
-        getPopular()
-        getTopRated()
-        getNowPlaying()
-        getUpcoming()
+        observePopular()
+        observeTop()
+        observeNowPlaying()
+        observeUpcoming()
     }
 
-    private fun getPopular() {
+    private fun observePopular() {
         val mAdapter = MoviesHorizontalAdapter()
         binding.rvPopular.apply {
             adapter = mAdapter
@@ -58,6 +64,7 @@ class MoviesFragment : Fragment() {
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
             isSaveEnabled = true
+            isNestedScrollingEnabled = true
         }
 
         mAdapter.onItemClick = {
@@ -80,7 +87,7 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    private fun getTopRated() {
+    private fun observeTop() {
         val mAdapter = MoviesHorizontalAdapter()
         binding.rvTop.apply {
             adapter = mAdapter
@@ -88,6 +95,7 @@ class MoviesFragment : Fragment() {
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
             isSaveEnabled = true
+            isNestedScrollingEnabled = true
         }
 
         mAdapter.onItemClick = {
@@ -110,7 +118,7 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    private fun getNowPlaying() {
+    private fun observeNowPlaying() {
         val mAdapter = MoviesHorizontalAdapter()
         binding.rvNow.apply {
             adapter = mAdapter
@@ -118,6 +126,7 @@ class MoviesFragment : Fragment() {
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
             isSaveEnabled = true
+            isNestedScrollingEnabled = true
         }
 
         mAdapter.onItemClick = {
@@ -140,7 +149,7 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    private fun getUpcoming() {
+    private fun observeUpcoming() {
         val mAdapter = MoviesHorizontalAdapter()
         binding.rvUpcoming.apply {
             adapter = mAdapter
@@ -148,6 +157,7 @@ class MoviesFragment : Fragment() {
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
             isSaveEnabled = true
+            isNestedScrollingEnabled = true
         }
 
         mAdapter.onItemClick = {

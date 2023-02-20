@@ -37,9 +37,6 @@ class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
 
-    private var sessionId = ""
-    private var accountId = 0
-
     // DataStore which has isSignedIn pref. If true shows layout_profileInfo, else layout_signIn
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
@@ -73,8 +70,6 @@ class ProfileFragment : Fragment() {
                         signOut(id)
                     }
                 } else {
-                    Log.d(TAG, "showLayout: sessionId is blank")
-                    sessionId = id
                     showSignInLayout()
                 }
             }
@@ -139,7 +134,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getAccountDetails(sessionId: String) {
-        viewModel.getAccountDetails(sessionId)
+        if (viewModel.accountDetails.value !is NetworkResult.Success) {
+            viewModel.getAccountDetails(sessionId)
+        }
         viewModel.accountDetails.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Loading -> {
@@ -149,8 +146,6 @@ class ProfileFragment : Fragment() {
                     val accountDetails = it.data
                     binding.apply {
                         txtUsername.text = accountDetails.username
-                        Log.d(TAG, "accountId: ${accountDetails.id}")
-                        accountId = accountDetails.id
                         Glide.with(requireContext())
                             .load(MyConstants.IMG_BASE_URL + accountDetails.getAvatarPath())
                             .into(imgProfile)

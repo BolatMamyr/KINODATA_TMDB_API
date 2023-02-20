@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.databinding.FragmentAllPopularPersonsBinding
 import com.example.kinodata.fragments.search.SearchViewModel
-import com.example.kinodata.paging.PopularPersonsPagingAdapter
+import com.example.kinodata.fragments.search.adapters.PopularPersonsPagingAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

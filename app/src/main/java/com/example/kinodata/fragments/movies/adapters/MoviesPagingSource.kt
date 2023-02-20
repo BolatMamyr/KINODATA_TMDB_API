@@ -1,4 +1,4 @@
-package com.example.kinodata.paging
+package com.example.kinodata.fragments.movies.adapters
 
 import androidx.paging.*
 import com.example.kinodata.constants.MyConstants

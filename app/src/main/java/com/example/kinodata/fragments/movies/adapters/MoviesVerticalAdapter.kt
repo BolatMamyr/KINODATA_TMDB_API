@@ -1,4 +1,4 @@
-package com.example.kinodata.paging
+package com.example.kinodata.fragments.movies.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.tv.RTvSeries
+import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.utils.MyUtils
 
-class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewHolder>(diffUtil) {
+class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.MyViewHolder>(
+    diffUtil
+) {
 
-    var onItemClick: ((RTvSeries?) -> Unit)? = null
+    var onItemClick: ((RMovie?) -> Unit)? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView
@@ -35,22 +37,22 @@ class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewH
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<RTvSeries>() {
-            override fun areItemsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<RMovie>() {
+            override fun areItemsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: RTvSeries, newItem: RTvSeries): Boolean {
+            override fun areContentsTheSame(oldItem: RMovie, newItem: RMovie): Boolean {
                 return oldItem == newItem
             }
         }
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.title.text = getItem(position)?.name
+        holder.title.text = getItem(position)?.title
 
         // Date
-        val date = getItem(position)?.first_air_date
+        val date = getItem(position)?.release_date
         holder.releaseDate.text = date?.let { MyUtils.getFormattedDate(it, holder.itemView) }
 
         // Rating
@@ -62,8 +64,6 @@ class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewH
         val colorId = rating?.let { MyUtils.getRatingColorId(it, holder.itemView) }
         colorId?.let { holder.voteAve.setTextColor(it) }
 
-        // TODO: get genres, countries and runtime OR change layout item: Vote Ave to right top
-
         val img = getItem(position)?.poster_path
         Glide.with(holder.itemView.context)
             .load(MyConstants.IMG_BASE_URL + img).into(holder.img)
@@ -72,6 +72,7 @@ class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewH
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(getItem(position))
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -80,4 +81,7 @@ class TvVerticalAdapter : PagingDataAdapter<RTvSeries, TvVerticalAdapter.MyViewH
                 .from(parent.context).inflate(R.layout.item_vertical_list, parent, false)
         )
     }
+
+
+
 }

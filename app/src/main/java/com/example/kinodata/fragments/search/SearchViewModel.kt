@@ -11,7 +11,7 @@ import androidx.paging.cachedIn
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.multiSearch.SearchResult
 import com.example.kinodata.model.persons.popular.PopularPerson
-import com.example.kinodata.paging.PopularPersonsPagingSource
+import com.example.kinodata.fragments.search.adapters.PopularPersonsPagingSource
 import com.example.kinodata.repo.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

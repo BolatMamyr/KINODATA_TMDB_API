@@ -1,4 +1,4 @@
-package com.example.kinodata.fragments.people.all.adaptersVertical
+package com.example.kinodata.fragments.people.all.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.ItemVerticalListBinding
-import com.example.kinodata.model.persons.person.personTvSeries.PersonTvAsCrew
+import com.example.kinodata.model.persons.person.personMovies.PersonMoviesAsCrew
 import com.example.kinodata.utils.MyUtils
 
-class PersonTvAsCrewVerticalAdapter
-    : RecyclerView.Adapter<PersonTvAsCrewVerticalAdapter.MyViewHolder>() {
+class PersonMoviesAsCrewVerticalAdapter
+    : RecyclerView.Adapter<PersonMoviesAsCrewVerticalAdapter.MyViewHolder>() {
 
-    private var list: List<PersonTvAsCrew> = emptyList()
-    var onItemClick: ((PersonTvAsCrew?) -> Unit)? = null
+    private var list: List<PersonMoviesAsCrew> = emptyList()
+    var onItemClick: ((PersonMoviesAsCrew?) -> Unit)? = null
 
     inner class MyViewHolder(val binding: ItemVerticalListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -30,9 +30,8 @@ class PersonTvAsCrewVerticalAdapter
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = list[position]
         holder.binding.apply {
-            txtTitleVertical.text = item.name
-            txtReleaseDateVertical.text =
-                MyUtils.getFormattedDate(item.first_air_date, holder.itemView)
+            txtTitleVertical.text = item.title
+            txtReleaseDateVertical.text = MyUtils.getFormattedDate(item.release_date, holder.itemView)
 
             // Rating
             val rating = item.vote_average
@@ -57,10 +56,9 @@ class PersonTvAsCrewVerticalAdapter
 
     override fun getItemCount(): Int = list.size
 
-
     private class MyDiffCallBack(
-        private val oldList: List<PersonTvAsCrew>,
-        private val newList: List<PersonTvAsCrew>
+        private val oldList: List<PersonMoviesAsCrew>,
+        private val newList: List<PersonMoviesAsCrew>
     ) : DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldList.size
@@ -79,13 +77,15 @@ class PersonTvAsCrewVerticalAdapter
         }
     }
 
-    fun updateData(newList: List<PersonTvAsCrew>) {
+    fun updateData(newList: List<PersonMoviesAsCrew>) {
         val oldList = list
         val diffResult = DiffUtil.calculateDiff(
-            MyDiffCallBack(oldList, newList)
+            MyDiffCallBack(
+                oldList,
+                newList
+            )
         )
         list = newList
         diffResult.dispatchUpdatesTo(this)
     }
-
 }

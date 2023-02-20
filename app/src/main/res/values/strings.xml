@@ -100,4 +100,10 @@
     <string name="errorGettingTopMovies">Error getting top rated movies</string>
     <string name="errorGettingNowPlayingMovies">Error getting now playing movies</string>
     <string name="errorGettingUpcomingMovies">Error getting upcoming movies</string>
+    <string name="errorGettingPopularTv">Error getting popular TV</string>
+    <string name="errorGettingTopRatedTv">Error getting top-rated TV</string>
+    <string name="errorGettingAiringTv">Error getting airing TV</string>
+    <string name="errorGettingMovieDetails">Error getting movie details</string>
+    <string name="errorGettingMovieImages">Error getting movie images</string>
+    <string name="images">Images</string>
 </resources>

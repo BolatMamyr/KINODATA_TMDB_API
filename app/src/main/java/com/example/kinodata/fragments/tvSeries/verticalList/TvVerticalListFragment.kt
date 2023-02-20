@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.databinding.FragmentTvVerticalListBinding
-import com.example.kinodata.paging.TvVerticalAdapter
+import com.example.kinodata.fragments.tvSeries.adapters.TvVerticalAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

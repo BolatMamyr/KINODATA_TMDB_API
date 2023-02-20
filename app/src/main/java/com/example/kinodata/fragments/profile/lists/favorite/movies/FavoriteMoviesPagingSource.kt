@@ -4,13 +4,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.repo.Repository
-import javax.inject.Inject
 
-class FavoriteMoviesPagingSource @Inject constructor(
+class FavoriteMoviesPagingSource(
     private val repository: Repository,
     private val accountId: Int,
     private val sessionId: String
 ) : PagingSource<Int, RMovie>() {
+
     override fun getRefreshKey(state: PagingState<Int, RMovie>): Int? {
         return state.anchorPosition?.let {
             val anchorPage = state.closestPageToPosition(it)

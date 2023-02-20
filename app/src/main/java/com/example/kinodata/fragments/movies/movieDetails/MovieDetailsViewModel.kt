@@ -9,6 +9,7 @@ import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.images.ImageResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
@@ -58,15 +59,18 @@ class MovieDetailsViewModel @Inject constructor(
     private val _reviews = MutableLiveData<NetworkResult<List<Review>>>(NetworkResult.Loading)
     val reviews: LiveData<NetworkResult<List<Review>>> = _reviews
 
+    private val _images = MutableLiveData<NetworkResult<ImageResult>>(NetworkResult.Loading)
+    val images: LiveData<NetworkResult<ImageResult>> = _images
+
     private val _isFavorite = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
     val isFavorite: LiveData<NetworkResult<Boolean>> = _isFavorite
 
     private val _isInWatchlist = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
-    val isInWatchlist:LiveData<NetworkResult<Boolean>> = _isInWatchlist
+    val isInWatchlist: LiveData<NetworkResult<Boolean>> = _isInWatchlist
 
     // current rating by user. If 0 then not rated by user
     private val _ratingByUser = MutableLiveData(.0)
-    val ratingByUser:LiveData<Double> = _ratingByUser
+    val ratingByUser: LiveData<Double> = _ratingByUser
 
     // ***********************************Actions***************************************
 
@@ -91,35 +95,25 @@ class MovieDetailsViewModel @Inject constructor(
     val deleteRating = _deleteRating.asSharedFlow()
 
     fun getMovieDetails(id: Int) {
-        Log.d(TAG, "getMovieDetails: id = $id")
         _movieDetails.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
-                Log.d(TAG, "getMovieDetails: before calling func")
                 val response = repository.getMovieDetails(id, MyConstants.LANGUAGE)
-                Log.d(TAG, "getMovieDetails: ${response.code()}")
-                if (response.isSuccessful) {
-                    val movie = response.body()
-                    if (movie != null) {
-                        Log.d(TAG, "getMovieDetails: movie not null")
-                        _movieDetails.value = NetworkResult.Success(movie)
-                    } else {
-                        Log.d(TAG, "getMovieDetails: movie is null")
-                        _movieDetails.value = throwError(mContext.getString(R.string.something_went_wrong))
-                    }
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _movieDetails.value = NetworkResult.Success(data)
                 } else {
-                    _movieDetails.value = throwError(mContext.getString(R.string.something_went_wrong))
+                    _movieDetails.value =
+                        throwError(mContext.getString(R.string.errorGettingMovieDetails))
                 }
             } catch (e: Exception) {
                 _movieDetails.value = NetworkResult.Error(e)
-                Log.d(TAG, "getMovieDetails: error = ${e.message}")
             }
         }
     }
 
 
     fun getMovieCredits(id: Int) {
-        println("movieId in getMovieCredits = ${_movieId.value}")
         _credits.value = NetworkResult.Loading
         viewModelScope.launch {
             try {
@@ -129,7 +123,8 @@ class MovieDetailsViewModel @Inject constructor(
                     if (data != null) {
                         _credits.value = NetworkResult.Success(data)
                     } else {
-                        _credits.value = throwError(mContext.getString(R.string.something_went_wrong))
+                        _credits.value =
+                            throwError(mContext.getString(R.string.something_went_wrong))
                     }
                 } else {
                     _credits.value = throwError(mContext.getString(R.string.something_went_wrong))
@@ -161,6 +156,23 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun getMovieImages(id: Int) {
+        _images.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getMovieImages(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _images.value = NetworkResult.Success(data)
+                } else {
+                    _images.value = throwError(mContext.getString(R.string.errorGettingMovieImages))
+                }
+            } catch (e: Exception) {
+                _images.value = NetworkResult.Error(e)
+            }
+        }
     }
 
     fun getMovieAccountStates(id: Int) {
@@ -375,7 +387,8 @@ class MovieDetailsViewModel @Inject constructor(
             _deleteRating.emit(NetworkResult.Loading)
             try {
                 dataStoreRepository.sessionId.collectLatest { sessionId ->
-                    val response = repository.deleteMovieRating(_movieId.value.toString(), sessionId)
+                    val response =
+                        repository.deleteMovieRating(_movieId.value.toString(), sessionId)
                     if (response.isSuccessful) {
                         val data = response.body()
                         if (data != null) {

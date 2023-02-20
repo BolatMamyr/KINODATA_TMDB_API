@@ -15,6 +15,7 @@
         app:title="@string/tv_series" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/sv_tvSeries"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tb_tvSeries">

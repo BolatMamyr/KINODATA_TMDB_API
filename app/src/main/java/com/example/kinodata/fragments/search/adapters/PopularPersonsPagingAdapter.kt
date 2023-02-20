@@ -1,4 +1,4 @@
-package com.example.kinodata.paging
+package com.example.kinodata.fragments.search.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

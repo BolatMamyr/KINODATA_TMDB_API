@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.adapters.reviews
 
 import android.view.LayoutInflater
 import android.view.View

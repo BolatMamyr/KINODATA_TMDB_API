@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.fragments.search.adapters
 
 import android.content.Context
 import android.view.LayoutInflater

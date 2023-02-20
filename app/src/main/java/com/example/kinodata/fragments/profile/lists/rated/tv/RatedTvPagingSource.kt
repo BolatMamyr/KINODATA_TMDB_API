@@ -6,7 +6,7 @@ import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.repo.Repository
 import javax.inject.Inject
 
-class RatedTvPagingSource @Inject constructor(
+class RatedTvPagingSource(
     private val repository: Repository,
     private val accountId: Int,
     private val sessionId: String

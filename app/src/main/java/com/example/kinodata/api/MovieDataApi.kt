@@ -16,11 +16,12 @@ import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
 import com.example.kinodata.model.persons.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
+import com.example.kinodata.model.images.ImageResult
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
-import com.example.kinodata.model.tv.ResultForTvSeries
+import com.example.kinodata.model.tv.ResultForTv
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import retrofit2.Response
 import retrofit2.http.Body
@@ -106,27 +107,33 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String
     ): Response<SuccessResponse>
+
+    @GET(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_IMAGES)
+    suspend fun getMovieImages(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<ImageResult>
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)
-    suspend fun getPopularTvSeries(
+    suspend fun getPopularTv(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
-    ): Response<ResultForTvSeries>
+        @Query("page") page: Int
+    ): Response<ResultForTv>
 
     @GET(MyConstants.URL_TV_TOP_RATED)
-    suspend fun getTopRatedTvSeries(
+    suspend fun getTopTv(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
-    ): Response<ResultForTvSeries>
+        @Query("page") page: Int
+    ): Response<ResultForTv>
 
     @GET(MyConstants.URL_TV_AIRING)
-    suspend fun getAiringTvSeries(
+    suspend fun getAiringTv(
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("language") language: String,
-        @Query("page") page: String
-    ): Response<ResultForTvSeries>
+        @Query("page") page: Int
+    ): Response<ResultForTv>
 
     @GET(MyConstants.URL_TV + "{tvId}")
     suspend fun getTvDetails(
@@ -171,6 +178,13 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String
     ): Response<SuccessResponse>
+
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_IMAGES)
+    suspend fun getTvImages(
+        @Path("tvId") tvId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<ImageResult>
+
     // *******************************Person**************************************
 
     @GET(MyConstants.URL_PERSON + "{personId}")
@@ -263,7 +277,7 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
         @Query("page") page: Int
-    ): Response<ResultForTvSeries>
+    ): Response<ResultForTv>
 
     @POST(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_WATCHLIST)
     suspend fun addToWatchlist(
@@ -287,7 +301,7 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
         @Query("page") page: Int
-    ): Response<ResultForTvSeries>
+    ): Response<ResultForTv>
 
     @GET(MyConstants.URL_ACCOUNT + "/{accountId}" + MyConstants.URL_RATED_MOVIES)
     suspend fun getRatedMovies(
@@ -303,5 +317,7 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY,
         @Query("session_id") session_id: String,
         @Query("page") page: Int
-    ): Response<ResultForTvSeries>
+    ): Response<ResultForTv>
+
+
 }

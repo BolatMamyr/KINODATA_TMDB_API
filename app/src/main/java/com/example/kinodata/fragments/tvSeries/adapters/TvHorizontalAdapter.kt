@@ -1,4 +1,4 @@
-package com.example.kinodata.adapters
+package com.example.kinodata.fragments.tvSeries.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.tv.RTvSeries
 import com.example.kinodata.utils.MyUtils
 
-class TvSeriesHorizontalAdapter : RecyclerView.Adapter<TvSeriesHorizontalAdapter.MyViewHolder>() {
+class TvHorizontalAdapter : RecyclerView.Adapter<TvHorizontalAdapter.MyViewHolder>() {
 
     private var tvSeries = emptyList<RTvSeries>()
     var tvSeriesId: Int? = null

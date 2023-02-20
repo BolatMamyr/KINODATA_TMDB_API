@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.fragments.people.all.adaptersVertical.PersonTvAsCrewVerticalAdapter
+import com.example.kinodata.fragments.people.all.adapters.PersonTvAsCrewVerticalAdapter
 import com.example.kinodata.databinding.FragmentPersonAllTvAsCrewBinding
 import com.example.kinodata.fragments.people.PersonViewModel
 import com.example.kinodata.utils.NetworkResult

@@ -1,10 +1,12 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +19,8 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.adapters.credits.CastHorizontalAdapter
 import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
-import com.example.kinodata.adapters.ReviewHorizontalAdapter
+import com.example.kinodata.adapters.images.ImagesAdapter
+import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
 import com.example.kinodata.repo.DataStoreRepository
@@ -68,6 +71,7 @@ class MovieDetailsFragment : Fragment() {
             viewModel.getMovieCredits(args.movieId)
             viewModel.getMovieReviews(args.movieId)
             viewModel.getMovieAccountStates(args.movieId)
+            viewModel.getMovieImages(args.movieId)
             viewModel.setMovieId(args.movieId)
         }
 
@@ -77,6 +81,7 @@ class MovieDetailsFragment : Fragment() {
         observeIsFavorite()
         observeIsInWatchlist()
         observeRatingByUser()
+        observeImages()
 
         addToFavorite()
         addToWatchlist()
@@ -84,6 +89,42 @@ class MovieDetailsFragment : Fragment() {
         collectRateResult()
         collectDeleteRatingResult()
 
+    }
+
+    private fun observeImages() {
+        val mAdapter = ImagesAdapter()
+        binding.rvMovieDetailsImages.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.HORIZONTAL,
+                false
+            )
+            isSaveEnabled = true
+            isNestedScrollingEnabled = true
+        }
+        mAdapter.onItemClick = {
+            // TODO: open full img
+        }
+        viewModel.images.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.layoutMovieDetailsImages.visibility = View.GONE
+                }
+                is NetworkResult.Success -> {
+                    if (it.data.backdrops.isEmpty()) {
+                        binding.layoutMovieDetailsImages.visibility = View.GONE
+                    } else {
+                        mAdapter.updateData(it.data.backdrops.take(20))
+                        binding.layoutMovieDetailsImages.visibility = View.VISIBLE
+                    }
+
+                }
+                is NetworkResult.Error -> {
+                    binding.layoutMovieDetailsImages.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun collectDeleteRatingResult() {

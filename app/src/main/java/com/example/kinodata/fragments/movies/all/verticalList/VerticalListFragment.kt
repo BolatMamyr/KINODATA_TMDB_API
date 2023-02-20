@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.paging.MoviesVerticalAdapter
+import com.example.kinodata.fragments.movies.adapters.MoviesVerticalAdapter
 import com.example.kinodata.databinding.FragmentVerticalListBinding
 import com.example.kinodata.repo.Repository
 import dagger.hilt.android.AndroidEntryPoint

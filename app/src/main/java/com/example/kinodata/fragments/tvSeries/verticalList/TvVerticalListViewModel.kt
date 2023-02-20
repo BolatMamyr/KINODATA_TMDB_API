@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.example.kinodata.paging.TvPagingSource
+import com.example.kinodata.fragments.tvSeries.adapters.TvPagingSource
 import com.example.kinodata.repo.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -2,6 +2,7 @@ package com.example.kinodata.constants
 
 object MyConstants {
 
+    const val FIRST_PAGE = 1
 
     const val API_KEY = "f2d6d5225e43110cc809522d5ae31922"
 
@@ -22,6 +23,7 @@ object MyConstants {
     const val URL_ACCOUNT_STATES = "/account_states"
 
     const val URL_RATING = "/rating"
+    const val URL_IMAGES = "/images"
 
     const val URL_FAVORITE = "/favorite"
     const val URL_FAVORITE_MOVIES = "/favorite/movies"

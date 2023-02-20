@@ -6,7 +6,7 @@ import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.repo.Repository
 import javax.inject.Inject
 
-class MoviesWatchlistPagingSource @Inject constructor(
+class MoviesWatchlistPagingSource(
     private val repository: Repository,
     private val accountId: Int,
     private val sessionId: String
@@ -23,11 +23,11 @@ class MoviesWatchlistPagingSource @Inject constructor(
 
         return try {
             val response = repository.getMoviesWatchlist(accountId, sessionId, page)
-            val data = response.body()?.results
+            val data = response.body()?.results ?: emptyList()
             LoadResult.Page(
-                data = data ?: emptyList(),
+                data = data,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = if (data?.isEmpty()!!) null else page + 1
+                nextKey = if (data.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

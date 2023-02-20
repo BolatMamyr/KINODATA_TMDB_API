@@ -1,6 +1,5 @@
 package com.example.kinodata.fragments.profile.lists.favorite
 
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -38,7 +37,6 @@ class FavoriteViewModel @Inject constructor(
                     FavoriteMoviesPagingSource(repository, accountId, sessionId)
                 }
                 _favoriteMovies.value = movies
-                Log.d(TAG, "accountId: $accountId\nsessionId: $sessionId")
             }
         }
     }
@@ -55,6 +53,5 @@ class FavoriteViewModel @Inject constructor(
             }
         }
     }
-
 
 }

@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.adapters.credits.CastHorizontalAdapter
 import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
-import com.example.kinodata.adapters.ReviewHorizontalAdapter
+import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.repo.DataStoreRepository

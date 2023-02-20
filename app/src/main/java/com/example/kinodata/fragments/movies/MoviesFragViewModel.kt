@@ -2,26 +2,16 @@ package com.example.kinodata.fragments.movies
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.liveData
 import com.example.kinodata.R
-import com.example.kinodata.constants.MyConstants
-import com.example.kinodata.model.movie.RMovie
 import com.example.kinodata.model.movie.ResultForMovies
-import com.example.kinodata.paging.MoviesPagingSource
 import com.example.kinodata.repo.Repository
-import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.throwError
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

@@ -11,6 +11,7 @@ import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.images.ImageResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -20,11 +21,8 @@ import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
-import com.example.kinodata.model.tv.ResultForTvSeries
+import com.example.kinodata.model.tv.ResultForTv
 import com.example.kinodata.model.tv.tvDetails.TvDetails
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -68,16 +66,22 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getMovieAccountStates(movieId = movieId, session_id = session_id)
     }
 
-    suspend fun getPopularTvSeries(language: String, page: String): Response<ResultForTvSeries> {
-        return api.getPopularTvSeries(language = language, page = page)
+    suspend fun getMovieImages(
+        movieId: Int
+    ): Response<ImageResult> {
+        return api.getMovieImages(movieId = movieId)
     }
 
-    suspend fun getTopRatedTvSeries(language: String, page: String): Response<ResultForTvSeries> {
-        return api.getTopRatedTvSeries(language = language, page = page)
+    suspend fun getPopularTv(language: String, page: Int): Response<ResultForTv> {
+        return api.getPopularTv(language = language, page = page)
     }
 
-    suspend fun getAiringTvSeries(language: String, page: String): Response<ResultForTvSeries> {
-        return api.getAiringTvSeries(language = language, page = page)
+    suspend fun getTopTv(language: String, page: Int): Response<ResultForTv> {
+        return api.getTopTv(language = language, page = page)
+    }
+
+    suspend fun getAiringTv(language: String, page: Int): Response<ResultForTv> {
+        return api.getAiringTv(language = language, page = page)
     }
 
     suspend fun getPersonInfo(personId: String, language: String): Response<Person> {
@@ -125,6 +129,12 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
 
     suspend fun getTvAccountStates(tvId: Int, session_id: String): Response<AccountStates> {
         return api.getTvAccountStates(tvId = tvId, session_id = session_id)
+    }
+
+    suspend fun getTvImages(
+        tvId: Int
+    ): Response<ImageResult> {
+        return api.getTvImages(tvId = tvId)
     }
 
     suspend fun getMultiSearchResults(
@@ -190,7 +200,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         accountId: Int,
         session_id: String,
         page: Int
-    ): Response<ResultForTvSeries> {
+    ): Response<ResultForTv> {
         return api.getFavoriteTv(accountId = accountId, session_id = session_id, page = page)
     }
 
@@ -246,7 +256,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         accountId: Int,
         session_id: String,
         page: Int
-    ): Response<ResultForTvSeries> {
+    ): Response<ResultForTv> {
         return api.getRatedTv(accountId = accountId, session_id = session_id, page = page)
     }
     suspend fun getMoviesWatchlist(
@@ -261,7 +271,7 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         accountId: Int,
         session_id: String,
         page: Int
-    ): Response<ResultForTvSeries> {
+    ): Response<ResultForTv> {
         return api.getTvWatchlist(accountId = accountId, session_id = session_id, page = page)
     }
 

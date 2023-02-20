@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kinodata.R
-import com.example.kinodata.adapters.TvSeriesHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvSeriesBinding
+import com.example.kinodata.fragments.tvSeries.adapters.TvHorizontalAdapter
+import com.example.kinodata.model.tv.RTvSeries
+import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,10 +25,6 @@ class TvSeriesFragment : Fragment() {
 
     private val viewModel: TvSeriesViewModel by viewModels()
 
-    private lateinit var popularAdapter: TvSeriesHorizontalAdapter
-    private lateinit var topAdapter: TvSeriesHorizontalAdapter
-    private lateinit var airingAdapter: TvSeriesHorizontalAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,135 +35,137 @@ class TvSeriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        popularAdapter = TvSeriesHorizontalAdapter()
-        topAdapter = TvSeriesHorizontalAdapter()
-        airingAdapter = TvSeriesHorizontalAdapter()
-
-        setUpRVs()
-        getPopular()
-        getTopRated()
-        getAiring()
+        binding.svTvSeries.isSaveEnabled = true
+        viewModel.apply {
+            // if Success it already has data, check not to reload everytime
+            if (popularTv.value !is NetworkResult.Success) {
+                getPopularTv()
+            }
+            if (topTv.value !is NetworkResult.Success) {
+                getTopTv()
+            }
+            if (airingTv.value !is NetworkResult.Success) {
+                getAiringTv()
+            }
+        }
+        observePopular()
+        observeTop()
+        observeAiring()
         setClickListeners()
     }
 
-    private fun setUpRVs() {
-        // using binding directly not working while setting it up
-        val rvPopular = binding.rvTvPopular
-        rvPopular.apply {
-            this.adapter = popularAdapter
-            val manager = LinearLayoutManager(this@TvSeriesFragment.context)
-            manager.orientation = LinearLayoutManager.HORIZONTAL
-            layoutManager = manager
+    private fun observePopular() {
+        val mAdapter = TvHorizontalAdapter()
+        binding.rvTvPopular.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
             isNestedScrollingEnabled = true
         }
-
-        val rvTop = binding.rvTvTop
-        rvTop.apply {
-            this.adapter = topAdapter
-            val manager = LinearLayoutManager(this@TvSeriesFragment.context)
-            manager.orientation = LinearLayoutManager.HORIZONTAL
-            layoutManager = manager
-            isNestedScrollingEnabled = true
+        mAdapter.onItemClick = {
+            navigateToTvDetails(it)
         }
+        viewModel.popularTv.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbTvPopular.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbTvPopular.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
 
-        val rvAiring = binding.rvTvAiring
-        rvAiring.apply {
-            this.adapter = airingAdapter
-            val manager = LinearLayoutManager(this@TvSeriesFragment.context)
-            manager.orientation = LinearLayoutManager.HORIZONTAL
-            layoutManager = manager
-            isNestedScrollingEnabled = true
-        }
-    }
-
-    private fun getPopular() {
-        viewModel.getPopularTvSeries(language = getString(R.string.language), page = "1")
-        binding.pbTvPopular.visibility = View.VISIBLE
-        viewModel.popularTvSeries.observe(viewLifecycleOwner) {
-            popularAdapter.updateData(it)
-            binding.pbTvPopular.visibility = View.GONE
-        }
-
-    }
-
-    private fun getTopRated() {
-        viewModel.getTopRatedTvSeries(language = getString(R.string.language), page = "1")
-        binding.pbTvTop.visibility = View.VISIBLE
-        viewModel.topRatedTvSeries.observe(viewLifecycleOwner) {
-            topAdapter.updateData(it)
-            binding.pbTvTop.visibility = View.GONE
-        }
-        topAdapter.onItemClick = {
-            it?.id?.let {
-                val action = TvSeriesFragmentDirections
-                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
-                findNavController().navigate(action)
+                }
             }
         }
     }
 
-    private fun getAiring() {
-        viewModel.getAiringTvSeries(language = getString(R.string.language), page = "1")
-        binding.pbTvAiring.visibility = View.VISIBLE
-        viewModel.airingTvSeries.observe(viewLifecycleOwner) {
-            airingAdapter.updateData(it)
-            binding.pbTvAiring.visibility = View.GONE
+    private fun observeTop() {
+        val mAdapter = TvHorizontalAdapter()
+        binding.rvTvTop.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
+            isNestedScrollingEnabled = true
         }
-        airingAdapter.onItemClick = {
-            it?.id?.let {
-                val action = TvSeriesFragmentDirections
-                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
-                findNavController().navigate(action)
+        mAdapter.onItemClick = {
+            navigateToTvDetails(it)
+        }
+        viewModel.topTv.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbTvTop.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbTvTop.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
+
+                }
             }
         }
+    }
 
+    private fun observeAiring() {
+        val mAdapter = TvHorizontalAdapter()
+        binding.rvTvAiring.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            isSaveEnabled = true
+            isNestedScrollingEnabled = true
+        }
+        mAdapter.onItemClick = {
+            navigateToTvDetails(it)
+        }
+        viewModel.airingTv.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.pbTvAiring.visibility = View.VISIBLE
+                }
+                is NetworkResult.Success -> {
+                    mAdapter.updateData(it.data.results)
+                    binding.pbTvAiring.visibility = View.GONE
+                }
+                is NetworkResult.Error -> {
+
+                }
+            }
+        }
     }
 
     private fun setClickListeners() {
-
-        popularAdapter.onItemClick = {
-            it?.id?.let {
-                val action = TvSeriesFragmentDirections
-                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
-                findNavController().navigate(action)
-            }
-        }
-
-        topAdapter.onItemClick = {
-            it?.id?.let {
-                val action = TvSeriesFragmentDirections
-                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
-                findNavController().navigate(action)
-            }
-        }
-
-        airingAdapter.onItemClick = {
-            it?.id?.let {
-                val action = TvSeriesFragmentDirections
-                    .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
-                findNavController().navigate(action)
-            }
-        }
-
         binding.btnTvSeeAllPopular.setOnClickListener {
-            val action = TvSeriesFragmentDirections
-                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.POPULAR)
-            findNavController().navigate(action)
+            navigateToVerticalList(MyConstants.POPULAR)
         }
 
         binding.btnTvSeeAllTop.setOnClickListener {
-            val action = TvSeriesFragmentDirections
-                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.TOP_RATED)
-            findNavController().navigate(action)
+            navigateToVerticalList(MyConstants.TOP_RATED)
         }
 
         binding.btnTvSeeAllAiring.setOnClickListener {
+            navigateToVerticalList(MyConstants.NOW_PLAYING)
+        }
+    }
+
+    private fun navigateToTvDetails(tv: RTvSeries?) {
+        tv?.id?.let {
             val action = TvSeriesFragmentDirections
-                .actionTvSeriesFragmentToTvVerticalListFragment(MyConstants.NOW_PLAYING)
+                .actionTvSeriesFragmentToTvSeriesDetailsFragment(it)
             findNavController().navigate(action)
         }
     }
 
-
-
+    private fun navigateToVerticalList(category: String) {
+            val action = TvSeriesFragmentDirections
+                .actionTvSeriesFragmentToTvVerticalListFragment(category)
+            findNavController().navigate(action)
+    }
 }

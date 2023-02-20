@@ -13,9 +13,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.R
-import com.example.kinodata.adapters.SearchAdapter
+import com.example.kinodata.fragments.search.adapters.SearchAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentSearchBinding
+import com.example.kinodata.fragments.search.adapters.PopularPersonHorizontalAdapter
 import com.example.kinodata.model.multiSearch.SearchResult
 import dagger.hilt.android.AndroidEntryPoint
 
