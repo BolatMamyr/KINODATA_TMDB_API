@@ -10,6 +10,7 @@ import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.images.ImageResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.model.tv.tvDetails.TvDetails
@@ -54,6 +55,9 @@ class TvDetailsViewModel @Inject constructor(
 
     private val _reviews = MutableLiveData<NetworkResult<List<Review>>>(NetworkResult.Loading)
     val reviews: LiveData<NetworkResult<List<Review>>> = _reviews
+
+    private val _images = MutableLiveData<NetworkResult<ImageResult>>(NetworkResult.Loading)
+    val images: LiveData<NetworkResult<ImageResult>> = _images
 
     private val _isFavorite = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
     val isFavorite: LiveData<NetworkResult<Boolean>> = _isFavorite
@@ -147,6 +151,23 @@ class TvDetailsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _reviews.value = NetworkResult.Error(e)
+            }
+        }
+    }
+
+    fun getTvImages(id: Int) {
+        _images.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getTvImages(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _images.value = NetworkResult.Success(data)
+                } else {
+                    _images.value = throwError(mContext.getString(R.string.errorGettingTvImages))
+                }
+            } catch (e: Exception) {
+                _images.value = NetworkResult.Error(e)
             }
         }
     }

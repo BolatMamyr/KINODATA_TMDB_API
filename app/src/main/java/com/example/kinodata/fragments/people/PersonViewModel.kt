@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.kinodata.R
 import com.example.kinodata.constants.MyConstants
+import com.example.kinodata.model.images.ImageResult
+import com.example.kinodata.model.images.PersonImageResult
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonActingMovies
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -38,6 +40,9 @@ class PersonViewModel @Inject constructor(
     private val _person = MutableLiveData<NetworkResult<Person>>(NetworkResult.Loading)
     val person: LiveData<NetworkResult<Person>> = _person
 
+    private val _images = MutableLiveData<NetworkResult<PersonImageResult>>(NetworkResult.Loading)
+    val images: LiveData<NetworkResult<PersonImageResult>> = _images
+
     private val _movies = MutableLiveData<NetworkResult<PersonMovieCredits>>(NetworkResult.Loading)
     val movies: LiveData<NetworkResult<PersonMovieCredits>> = _movies
 
@@ -59,6 +64,25 @@ class PersonViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _person.value = NetworkResult.Error(e)
+            }
+        }
+    }
+
+    fun getPersonImages(id: Int) {
+        _images.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getPersonImages(id)
+                Log.d(TAG, "getPersonImages: ${response.code()}")
+                val data = response.body()
+                Log.d(TAG, "getPersonImages: size = ${data?.profiles?.size}")
+                if (response.isSuccessful && data != null) {
+                    _images.value = NetworkResult.Success(data)
+                } else {
+                    _images.value = throwError(mContext.getString(R.string.errorGettingPersonImages))
+                }
+            } catch (e: Exception) {
+                _images.value = NetworkResult.Error(e)
             }
         }
     }

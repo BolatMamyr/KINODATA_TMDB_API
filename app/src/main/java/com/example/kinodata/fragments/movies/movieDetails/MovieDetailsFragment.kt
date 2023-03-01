@@ -1,12 +1,10 @@
 package com.example.kinodata.fragments.movies.movieDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.adapters.credits.CastHorizontalAdapter
 import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
-import com.example.kinodata.adapters.images.ImagesAdapter
+import com.example.kinodata.fragments.image.adapters.ImagesAdapter
 import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
@@ -47,6 +45,8 @@ class MovieDetailsFragment : Fragment() {
 
     // argument of RateFragment to rate movie
     private var posterPath = ""
+
+    private var title = ""
 
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
@@ -78,10 +78,10 @@ class MovieDetailsFragment : Fragment() {
         observeMovieDetails(view)
         observeMovieCredits(view)
         observeReviews()
+        observeImages()
         observeIsFavorite()
         observeIsInWatchlist()
         observeRatingByUser()
-        observeImages()
 
         addToFavorite()
         addToWatchlist()
@@ -93,6 +93,7 @@ class MovieDetailsFragment : Fragment() {
 
     private fun observeImages() {
         val mAdapter = ImagesAdapter()
+
         binding.rvMovieDetailsImages.apply {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(
@@ -104,7 +105,11 @@ class MovieDetailsFragment : Fragment() {
             isNestedScrollingEnabled = true
         }
         mAdapter.onItemClick = {
-            // TODO: open full img
+            it?.let { imgNumber ->
+                val action = MovieDetailsFragmentDirections
+                    .actionMovieDetailsFragmentToMovieFullImageFragment(imgNumber)
+                findNavController().navigate(action)
+            }
         }
         viewModel.images.observe(viewLifecycleOwner) {
             when (it) {
@@ -115,7 +120,8 @@ class MovieDetailsFragment : Fragment() {
                     if (it.data.backdrops.isEmpty()) {
                         binding.layoutMovieDetailsImages.visibility = View.GONE
                     } else {
-                        mAdapter.updateData(it.data.backdrops.take(20))
+                        val data = it.data.backdrops.map { it.file_path }.take(10)
+                        mAdapter.updateData(data)
                         binding.layoutMovieDetailsImages.visibility = View.VISIBLE
                     }
 
@@ -124,6 +130,12 @@ class MovieDetailsFragment : Fragment() {
                     binding.layoutMovieDetailsImages.visibility = View.GONE
                 }
             }
+        }
+
+        binding.btnDetailsSeeAllImages.setOnClickListener {
+            val action = MovieDetailsFragmentDirections
+                .actionMovieDetailsFragmentToAllMovieImagesFragment()
+            findNavController().navigate(action)
         }
     }
 
@@ -435,6 +447,7 @@ class MovieDetailsFragment : Fragment() {
                 is NetworkResult.Success -> {
                     val movie = it.data
                     posterPath = movie.poster_path
+                    title = movie.title
 
                     binding.tbMovieDetails.title = movie.title
                     binding.txtDetailsTitle.text = movie.title

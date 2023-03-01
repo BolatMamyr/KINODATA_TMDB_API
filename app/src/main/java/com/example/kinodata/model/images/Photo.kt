@@ -1,6 +1,6 @@
 package com.example.kinodata.model.images
 
-data class Logo(
+data class Photo(
     val aspect_ratio: Double,
     val file_path: String,
     val height: Int,

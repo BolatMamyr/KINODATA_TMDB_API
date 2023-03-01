@@ -14,4 +14,11 @@
     <color name="light_gray2">#979797</color>
     <color name="super_light_gray">#F2F2F2</color>
     <color name="orange">#FF6600</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="light_black">#080E0E</color>
+    <color name="super_light_black">#0F1414</color>
 </resources>

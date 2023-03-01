@@ -80,6 +80,12 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_rateFragment"
             app:destination="@id/rateFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_allMovieImagesFragment"
+            app:destination="@id/allMovieImagesFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_movieFullImageFragment"
+            app:destination="@id/movieFullImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -158,6 +164,12 @@
         <action
             android:id="@+id/action_personFragment_to_personAllMoviesAsCrewFragment"
             app:destination="@id/personAllMoviesAsCrewFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_personFullImageFragment"
+            app:destination="@id/personFullImageFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_allPersonImagesFragment"
+            app:destination="@id/allPersonImagesFragment" />
     </fragment>
     <fragment
         android:id="@+id/personAllFilmographyFragment"
@@ -203,6 +215,12 @@
         <action
             android:id="@+id/action_tvDetailsFragment_to_rateTvFragment"
             app:destination="@id/rateTvFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_allTvImagesFragment"
+            app:destination="@id/allTvImagesFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_tvFullImageFragment"
+            app:destination="@id/tvFullImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"
@@ -357,5 +375,59 @@
         <action
             android:id="@+id/action_ratedListFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allMovieImagesFragment"
+        android:name="com.example.kinodata.fragments.image.AllMovieImagesFragment"
+        android:label="fragment_all_movie_images"
+        tools:layout="@layout/fragment_all_movie_images" >
+        <action
+            android:id="@+id/action_allMovieImagesFragment_to_movieFullImageFragment"
+            app:destination="@id/movieFullImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allTvImagesFragment"
+        android:name="com.example.kinodata.fragments.image.AllTvImagesFragment"
+        android:label="AllTvImagesFragment"
+        tools:layout="@layout/fragment_all_tv_images" >
+        <action
+            android:id="@+id/action_allTvImagesFragment_to_tvFullImageFragment"
+            app:destination="@id/tvFullImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieFullImageFragment"
+        android:name="com.example.kinodata.fragments.image.MovieFullImageFragment"
+        android:label="fragment_movie_full_image"
+        tools:layout="@layout/fragment_movie_full_image" >
+        <argument
+            android:name="imageNumber"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvFullImageFragment"
+        android:name="com.example.kinodata.fragments.image.TvFullImageFragment"
+        android:label="fragment_tv_full_image"
+        tools:layout="@layout/fragment_tv_full_image" >
+        <argument
+            android:name="imageNumber"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/personFullImageFragment"
+        android:name="com.example.kinodata.fragments.people.PersonFullImageFragment"
+        android:label="fragment_person_full_image"
+        tools:layout="@layout/fragment_person_full_image" >
+        <argument
+            android:name="imageNumber"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/allPersonImagesFragment"
+        android:name="com.example.kinodata.fragments.people.all.AllPersonImagesFragment"
+        android:label="fragment_all_person_images"
+        tools:layout="@layout/fragment_all_person_images" >
+        <action
+            android:id="@+id/action_allPersonImagesFragment_to_personFullImageFragment"
+            app:destination="@id/personFullImageFragment" />
     </fragment>
 </navigation>

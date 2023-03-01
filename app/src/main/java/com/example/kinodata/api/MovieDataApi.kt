@@ -17,6 +17,7 @@ import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
 import com.example.kinodata.model.persons.person.personTvSeries.PersonTvSeriesCredits
 import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.images.ImageResult
+import com.example.kinodata.model.images.PersonImageResult
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.persons.popular.ResultForPopularPersons
@@ -215,6 +216,11 @@ interface MovieDataApi {
         @Query("page") page: String
     ): Response<ResultForPopularPersons>
 
+    @GET(MyConstants.URL_PERSON + "{personId}" + MyConstants.URL_IMAGES)
+    suspend fun getPersonImages(
+        @Path("personId") personId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<PersonImageResult>
     // ***********************Search********************************************
     @GET(MyConstants.URL_SEARCH_MULTI)
     suspend fun getMultiSearchResults(

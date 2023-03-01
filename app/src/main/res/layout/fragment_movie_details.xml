@@ -376,6 +376,8 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!--**********************Images*****************************-->
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_movieDetails_images"
                 android:layout_width="match_parent"

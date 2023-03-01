@@ -12,6 +12,7 @@ import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.images.ImageResult
+import com.example.kinodata.model.images.PersonImageResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -103,6 +104,11 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         )
     }
 
+    suspend fun getPersonImages(
+        personId: Int
+    ): Response<PersonImageResult> {
+        return api.getPersonImages(personId = personId)
+    }
     suspend fun getPopularPersons(
         language: String, page: String
     ): Response<ResultForPopularPersons> {

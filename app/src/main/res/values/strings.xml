@@ -105,5 +105,9 @@
     <string name="errorGettingAiringTv">Error getting airing TV</string>
     <string name="errorGettingMovieDetails">Error getting movie details</string>
     <string name="errorGettingMovieImages">Error getting movie images</string>
+    <string name="errorGettingTvImages">Error getting TV images</string>
+    <string name="errorGettingPersonImages">Error getting person images</string>
     <string name="images">Images</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

@@ -60,6 +60,7 @@ object MyConstants {
     const val URL_SEARCH_MULTI = "search/multi"
 
     const val IMG_BASE_URL = "https://image.tmdb.org/t/p/w500"
+    const val IMG_FULL_BASE_URL = "https://image.tmdb.org/t/p/original"
     const val LANGUAGE = "en-US"
 
     const val MOVIE = "Movie"

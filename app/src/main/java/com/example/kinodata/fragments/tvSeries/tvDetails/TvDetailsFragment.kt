@@ -19,6 +19,7 @@ import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
 import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
+import com.example.kinodata.fragments.image.adapters.ImagesAdapter
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.toast
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "TvDetailsFragment"
 @AndroidEntryPoint
 class TvDetailsFragment : Fragment() {
 
@@ -40,6 +42,8 @@ class TvDetailsFragment : Fragment() {
 
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
+
+    private var imgPosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +63,7 @@ class TvDetailsFragment : Fragment() {
             viewModel.getTvDetails(args.tvSeriesId)
             viewModel.getTvCredits(args.tvSeriesId.toString())
             viewModel.getTvReviews(args.tvSeriesId.toString())
+            viewModel.getTvImages(args.tvSeriesId)
             viewModel.getTvAccountStates(args.tvSeriesId)
             viewModel.setTvId(args.tvSeriesId)
         }
@@ -67,14 +72,64 @@ class TvDetailsFragment : Fragment() {
         getTvDetails(view)
         getCredits(view)
         getReviews(view)
+        observeImages()
         addToFavorite()
         addToWatchlist()
         observeIsFavorite()
         observeIsInWatchlist()
+
         rateTv()
         collectRateResult()
         collectDeleteRatingResult()
         observeRatingByUser()
+    }
+
+    private fun observeImages() {
+        val mAdapter = ImagesAdapter()
+
+        binding.rvTvDetailsImages.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.HORIZONTAL,
+                false
+            )
+            isSaveEnabled = true
+            isNestedScrollingEnabled = true
+        }
+
+        mAdapter.onItemClick = {
+            it?.let { imgNumber ->
+                val action = TvDetailsFragmentDirections
+                    .actionTvDetailsFragmentToTvFullImageFragment(imgNumber)
+                findNavController().navigate(action)
+            }
+        }
+        viewModel.images.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.layoutTvDetailsImages.visibility = View.GONE
+                }
+                is NetworkResult.Success -> {
+                    if (it.data.backdrops.isEmpty()) {
+                        binding.layoutTvDetailsImages.visibility = View.GONE
+                    } else {
+                        val data = it.data.backdrops.map { it.file_path }.take(10)
+                        mAdapter.updateData(data)
+                        binding.layoutTvDetailsImages.visibility = View.VISIBLE
+                    }
+                }
+                is NetworkResult.Error -> {
+                    binding.layoutTvDetailsImages.visibility = View.GONE
+                }
+            }
+        }
+
+        binding.btnTvDetailsSeeAllImages.setOnClickListener {
+            val action = TvDetailsFragmentDirections
+                .actionTvDetailsFragmentToAllTvImagesFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun collectDeleteRatingResult() {

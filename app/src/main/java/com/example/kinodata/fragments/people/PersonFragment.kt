@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.people
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kinodata.R
 import com.example.kinodata.fragments.people.adaptersHorizontal.PersonActingMoviesHorizontalAdapter
@@ -17,6 +19,8 @@ import com.example.kinodata.fragments.people.adaptersHorizontal.PersonMoviesAsCr
 import com.example.kinodata.fragments.people.adaptersHorizontal.PersonTvAsCrewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentPersonBinding
+import com.example.kinodata.fragments.image.adapters.ImagesAdapter
+import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsFragmentDirections
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +29,7 @@ private const val TAG = "PersonFragment"
 
 @AndroidEntryPoint
 class PersonFragment : Fragment() {
-    // TODO: After navigating back to PersonFragment crew member Lists Not Showing anything!!!!!!!!!!!!!!
+    // TODO: If 2 PersonFragments are open (Person A and B) it loads images of A in B and vice versa
     // TODO: Crew Members are being repeated if director and producer at the same time.
     private val args: PersonFragmentArgs by navArgs()
 
@@ -53,14 +57,66 @@ class PersonFragment : Fragment() {
             viewModel.getPersonInfo(args.personId)
             viewModel.getPersonMovieCredits(args.personId)
             viewModel.getPersonTvSeriesCredits(args.personId)
+            viewModel.getPersonImages(args.personId)
             viewModel.setPersonId(args.personId)
         }
 
         observePersonInfo()
         observePersonMovies(view)
         observePersonTvSeries(view)
-
+        observePersonImages()
         setClickListeners()
+    }
+
+    private fun observePersonImages() {
+        val mAdapter = ImagesAdapter()
+
+        binding.rvPersonPhotos.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.HORIZONTAL,
+                false
+            )
+            isSaveEnabled = true
+            isNestedScrollingEnabled = true
+        }
+        mAdapter.onItemClick = {
+            it?.let { imgNumber ->
+                val action = PersonFragmentDirections
+                    .actionPersonFragmentToPersonFullImageFragment(imgNumber)
+                findNavController().navigate(action)
+            }
+        }
+        viewModel.images.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    binding.layoutPersonPhotos.visibility = View.GONE
+                }
+                is NetworkResult.Success -> {
+                    it.data.profiles.size.apply {
+                        Log.d(TAG, "observePersonImages: size = $this")
+                    }
+                    if (it.data.profiles.isEmpty()) {
+                        binding.layoutPersonPhotos.visibility = View.GONE
+                    } else {
+                        val data = it.data.profiles.map { it.file_path }.take(10)
+                        mAdapter.updateData(data)
+                        binding.layoutPersonPhotos.visibility = View.VISIBLE
+                    }
+
+                }
+                is NetworkResult.Error -> {
+                    binding.layoutPersonPhotos.visibility = View.GONE
+                }
+            }
+        }
+
+        binding.btnPersonSeeAllPhotos.setOnClickListener {
+            val action = PersonFragmentDirections
+                .actionPersonFragmentToAllPersonImagesFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun setClickListeners() {
