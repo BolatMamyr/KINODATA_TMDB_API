@@ -11,6 +11,7 @@ import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.collection.CollectionResult
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.persons.person.Person
 import com.example.kinodata.model.persons.person.personMovies.PersonMovieCredits
@@ -114,6 +115,13 @@ interface MovieDataApi {
         @Path("movieId") movieId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY
     ): Response<ImageResult>
+
+    @GET(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_RECOMMENDATIONS)
+    suspend fun getMovieRecommendations(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<ResultForMovies>
+
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)
     suspend fun getPopularTv(
@@ -185,6 +193,20 @@ interface MovieDataApi {
         @Path("tvId") tvId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY
     ): Response<ImageResult>
+
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_RECOMMENDATIONS)
+    suspend fun getTvRecommendations(
+        @Path("tvId") tvId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<ResultForTv>
+
+    // ******************************Other****************************************
+
+    @GET(MyConstants.URL_COLLECTION + "{collectionId}")
+    suspend fun getCollection(
+        @Path("collectionId") collectionId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<CollectionResult>
 
     // *******************************Person**************************************
 

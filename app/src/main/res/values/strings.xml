@@ -105,9 +105,20 @@
     <string name="errorGettingAiringTv">Error getting airing TV</string>
     <string name="errorGettingMovieDetails">Error getting movie details</string>
     <string name="errorGettingMovieImages">Error getting movie images</string>
+    <string name="errorGettingMovieCollection">Error getting movie collection</string>
+    <string name="errorGettingMovieRecommendations">Error getting movie recommendations</string>
+    <string name="errorGettingTvRecommendations">Error getting TV recommendations</string>
+    <string name="errorGettingTvCollection">Error getting TV collection</string>
     <string name="errorGettingTvImages">Error getting TV images</string>
     <string name="errorGettingPersonImages">Error getting person images</string>
     <string name="images">Images</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="sequels_and_prequels">Sequels and Prequels</string>
+    <string name="see_also">See Also</string>
+    <string name="season">season</string>
+    <string name="seasons">seasons</string>
+    <string name="minutes">min</string>
+    <string name="united_states_of_america">United States of America</string>
+    <string name="usa">USA</string>
 </resources>

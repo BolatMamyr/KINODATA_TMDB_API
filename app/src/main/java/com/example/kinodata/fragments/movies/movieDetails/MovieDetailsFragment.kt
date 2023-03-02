@@ -21,6 +21,7 @@ import com.example.kinodata.fragments.image.adapters.ImagesAdapter
 import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
+import com.example.kinodata.fragments.movies.adapters.MoviesHorizontalAdapter
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.toast
@@ -72,6 +73,7 @@ class MovieDetailsFragment : Fragment() {
             viewModel.getMovieReviews(args.movieId)
             viewModel.getMovieAccountStates(args.movieId)
             viewModel.getMovieImages(args.movieId)
+            viewModel.getMovieRecommendations(args.movieId)
             viewModel.setMovieId(args.movieId)
         }
 
@@ -79,6 +81,8 @@ class MovieDetailsFragment : Fragment() {
         observeMovieCredits(view)
         observeReviews()
         observeImages()
+        observeCollection()
+        observeRecommendations()
         observeIsFavorite()
         observeIsInWatchlist()
         observeRatingByUser()
@@ -89,6 +93,82 @@ class MovieDetailsFragment : Fragment() {
         collectRateResult()
         collectDeleteRatingResult()
 
+    }
+
+    private fun observeRecommendations() {
+        viewModel.recommendations.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Loading ->
+                    binding.layoutMovieDetailsRecommendations.visibility = View.GONE
+
+                is NetworkResult.Success -> {
+                    if (it.data.results.isEmpty()) {
+                        binding.layoutMovieDetailsRecommendations.visibility = View.GONE
+                    } else {
+                        binding.layoutMovieDetailsRecommendations.visibility = View.VISIBLE
+                        val mAdapter = MoviesHorizontalAdapter()
+                        binding.rvMovieDetailsRecommendations.apply {
+                            adapter = mAdapter
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                RecyclerView.HORIZONTAL,
+                                false
+                            )
+                            isSaveEnabled = true
+                            isNestedScrollingEnabled = true
+                        }
+                        mAdapter.onItemClick = {
+                            it?.id?.let { id ->
+                                val action = MovieDetailsFragmentDirections
+                                    .actionMovieDetailsFragmentSelf(id)
+                                findNavController().navigate(action)
+                            }
+                        }
+                        mAdapter.updateData(it.data.results)
+                    }
+                }
+                is NetworkResult.Error ->
+                    binding.layoutMovieDetailsRecommendations.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun observeCollection() {
+        viewModel.collection.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Loading ->
+                    binding.layoutMovieDetailsCollection.visibility = View.GONE
+
+                is NetworkResult.Success -> {
+                    val mAdapter = MoviesHorizontalAdapter()
+                    binding.rvMovieDetailsCollection.apply {
+                        adapter = mAdapter
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            RecyclerView.HORIZONTAL,
+                            false
+                        )
+                        isSaveEnabled = true
+                        isNestedScrollingEnabled = true
+                    }
+                    mAdapter.onItemClick = {
+                        it?.id?.let { id ->
+                            val action = MovieDetailsFragmentDirections
+                                .actionMovieDetailsFragmentSelf(id)
+                            findNavController().navigate(action)
+                        }
+                    }
+                    // not to show this movie itself
+                    val data = it.data.parts.filterNot {
+                        it.id == args.movieId
+                    }
+                    mAdapter.updateData(data)
+                    binding.layoutMovieDetailsCollection.visibility = View.VISIBLE
+                }
+                is NetworkResult.Error ->
+                    binding.layoutMovieDetailsCollection.visibility = View.GONE
+            }
+        }
     }
 
     private fun observeImages() {
@@ -445,41 +525,60 @@ class MovieDetailsFragment : Fragment() {
                     hideUi()
                 }
                 is NetworkResult.Success -> {
-                    val movie = it.data
-                    posterPath = movie.poster_path
-                    title = movie.title
+                    binding.apply {
+                        val movie = it.data
 
-                    binding.tbMovieDetails.title = movie.title
-                    binding.txtDetailsTitle.text = movie.title
+                        // if belongs to collection get collection. Null if doesn't belong
+                        if(movie.belongs_to_collection != null) {
+                            viewModel.getCollection(movie.belongs_to_collection.id)
+                        } else {
+                            viewModel.setCollectionToNull()
+                        }
 
-                    val rating = movie.vote_average
-                    binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
+                        posterPath = movie.poster_path
+                        title = movie.title
 
-                    val colorId = MyUtils.getRatingColorId(rating, view)
-                    binding.txtDetailsVoteAve.setTextColor(colorId)
+                        tbMovieDetails.title = movie.title
+                        txtDetailsTitle.text = movie.title
 
-                    val voteCount = if (movie.vote_count < 1000) {
-                        movie.vote_count.toString()
-                    } else {
-                        "${(movie.vote_count / 1000)}K"
+                        val rating = movie.vote_average
+                        binding.txtDetailsVoteAve.text = String.format("%.1f", rating)
+
+                        val colorId = MyUtils.getRatingColorId(rating, view)
+                        binding.txtDetailsVoteAve.setTextColor(colorId)
+
+                        val voteCount = if (movie.vote_count < 1000) {
+                            movie.vote_count.toString()
+                        } else {
+                            "${(movie.vote_count / 1000)}K"
+                        }
+                        txtDetailsVoteCount.text = voteCount
+                        txtDetailsTitleOriginal.text = movie.original_title
+
+                        // short details on top
+                        val year = movie.release_date.take(4)
+                        val genres = movie.getGenres()
+                        val countries = movie.getCountries(requireContext())
+
+                        val minutes = getString(R.string.minutes)
+                        val episodeRuntime = "${movie.runtime} $minutes"
+                        val shortDetails = "$year, $genres, $countries, $episodeRuntime"
+
+                        txtMovieDetailsDetailsOnTop.text = shortDetails
+
+                        txtDetailsDescription.text = movie.overview
+                        txtDetailsVoteAveBig.text = String.format("%.1f", rating)
+                        txtDetailsVoteAveBig.setTextColor(colorId)
+
+                        txtDetailsVoteCountBig.text = movie.vote_count.toString()
+
+                        Glide.with(view)
+                            .load(MyConstants.IMG_BASE_URL + movie.poster_path)
+                            .into(binding.imgMovieDetailsPoster)
+
+                        showUi()
                     }
-                    binding.txtDetailsVoteCount.text = voteCount
-                    binding.txtDetailsTitleOriginal.text = movie.original_title
-                    // TODO: trailing commas are wrong if there is only 1 item or no item
-                    binding.txtDetailsYear.text = movie.release_date.take(4) + ","
-                    binding.txtDetailsGenres.text = movie.getGenres()
-                    binding.txtDetailsCountry.text = movie.getCountries() + ","
-                    binding.txtDetailsDescription.text = movie.overview
-                    binding.txtDetailsVoteAveBig.text = String.format("%.1f", rating)
-                    binding.txtDetailsVoteAveBig.setTextColor(colorId)
 
-                    binding.txtDetailsVoteCountBig.text = movie.vote_count.toString()
-
-                    Glide.with(view)
-                        .load(MyConstants.IMG_BASE_URL + movie.poster_path)
-                        .into(binding.imgMovieDetailsPoster)
-
-                    showUi()
                 }
                 is NetworkResult.Error -> {
                     // TODO: if error show reload page button

@@ -149,73 +149,32 @@
                         tools:text="Puss in Boots: The Last Wish" />
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_movieDetails_detailsOnTop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:textAlignment="center"
+                    android:textColor="@color/light_gray2"
+                    tools:text="2021, Animation, Sci-Fi and Fantasy, Action and Adventure, Drama, France, United States of America, Kazakhstan,  2 seasons, 40 min"/>
 
-                    <TextView
-                        android:id="@+id/txt_details_year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                    <TextView
-                        android:id="@+id/txt_details_genres"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txt_details_country"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                    <TextView
-                        android:id="@+id/txt_details_runtime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-                </LinearLayout>
 
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/txt_details_stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="48dp"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
                 android:layout_marginTop="48dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txt_details_stars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/light_gray2"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_weight="1"
+                android:textColor="@color/light_gray2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -376,6 +335,36 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!--**********************Collection*****************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_movieDetails_collection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
+
+                <TextView
+                    android:id="@+id/txt_movie_sequels_and_prequels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/sequels_and_prequels"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movieDetails_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_movie_sequels_and_prequels" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <!--**********************Images*****************************-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -515,6 +504,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal" />
+
+            <!--**********************Recommendations*****************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_movieDetails_recommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
+
+                <TextView
+                    android:id="@+id/txt_movie_recommendations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/see_also"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movieDetails_recommendations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_movie_recommendations" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </LinearLayout>

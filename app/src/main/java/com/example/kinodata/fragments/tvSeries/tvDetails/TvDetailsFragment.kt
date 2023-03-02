@@ -20,6 +20,7 @@ import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.fragments.image.adapters.ImagesAdapter
+import com.example.kinodata.fragments.tvSeries.adapters.TvHorizontalAdapter
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.toast
@@ -43,8 +44,6 @@ class TvDetailsFragment : Fragment() {
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
 
-    private var imgPosition = 0
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,23 +64,65 @@ class TvDetailsFragment : Fragment() {
             viewModel.getTvReviews(args.tvSeriesId.toString())
             viewModel.getTvImages(args.tvSeriesId)
             viewModel.getTvAccountStates(args.tvSeriesId)
+            viewModel.getTvRecommendations(args.tvSeriesId)
             viewModel.setTvId(args.tvSeriesId)
         }
 
         binding.svTvDetails.isSaveEnabled = true
-        getTvDetails(view)
-        getCredits(view)
-        getReviews(view)
+        observeTvDetails(view)
+        observeCredits(view)
+        observeReviews(view)
         observeImages()
-        addToFavorite()
-        addToWatchlist()
+        observeRecommendations()
         observeIsFavorite()
         observeIsInWatchlist()
+        observeRatingByUser()
 
         rateTv()
+        addToFavorite()
+        addToWatchlist()
         collectRateResult()
         collectDeleteRatingResult()
-        observeRatingByUser()
+
+    }
+
+    private fun observeRecommendations() {
+        viewModel.recommendations.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Loading ->
+                    binding.layoutTvDetailsRecommendations.visibility = View.GONE
+
+                is NetworkResult.Success -> {
+                    if (it.data.results.isEmpty()) {
+                        binding.layoutTvDetailsRecommendations.visibility = View.GONE
+                    } else {
+                        binding.layoutTvDetailsRecommendations.visibility = View.VISIBLE
+                        val mAdapter = TvHorizontalAdapter()
+                        binding.rvTvDetailsRecommendations.apply {
+                            adapter = mAdapter
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                RecyclerView.HORIZONTAL,
+                                false
+                            )
+                            isSaveEnabled = true
+                            isNestedScrollingEnabled = true
+                        }
+                        mAdapter.onItemClick = {
+                            it?.id?.let { id ->
+                                val action = TvDetailsFragmentDirections
+                                    .actionTvDetailsFragmentSelf(id)
+                                findNavController().navigate(action)
+                            }
+                        }
+                        mAdapter.updateData(it.data.results)
+                    }
+
+                }
+                is NetworkResult.Error ->
+                    binding.layoutTvDetailsRecommendations.visibility = View.GONE
+            }
+        }
     }
 
     private fun observeImages() {
@@ -271,7 +312,8 @@ class TvDetailsFragment : Fragment() {
                         toast(message)
                     }
                     is NetworkResult.Error -> {
-                        toast(getString(R.string.something_went_wrong))
+                        val msg = it.throwable.message ?: getString(R.string.couldntMarkAsFavorite)
+                        toast(msg)
                     }
                     else -> {}
                 }
@@ -295,7 +337,8 @@ class TvDetailsFragment : Fragment() {
                         toast(message)
                     }
                     is NetworkResult.Error -> {
-                        toast(getString(R.string.something_went_wrong))
+                        val msg = it.throwable.message ?: getString(R.string.couldntAddToWatchlist)
+                        toast(msg)
                     }
                     else -> {}
                 }
@@ -303,7 +346,7 @@ class TvDetailsFragment : Fragment() {
         }
     }
 
-    private fun getCredits(view: View) {
+    private fun observeCredits(view: View) {
         val castHorizontalAdapter = CastHorizontalAdapter()
         val crewHorizontalAdapter = CrewHorizontalAdapter()
 
@@ -380,41 +423,65 @@ class TvDetailsFragment : Fragment() {
         }
     }
 
-    private fun getTvDetails(view: View) {
+    private fun observeTvDetails(view: View) {
         viewModel.tvDetails.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
-                    showUi()
-                    val tvDetails = it.data
-                    binding.tbTvDetails.title = tvDetails.name
-                    binding.txtTvDetailsTitle.text = tvDetails.name
+                    binding.apply {
+                        val tvDetails = it.data
+                        tbTvDetails.title = tvDetails.name
+                        txtTvDetailsTitle.text = tvDetails.name
 
-                    val rating = tvDetails.vote_average
-                    val colorId = MyUtils.getRatingColorId(rating, view)
+                        val rating = tvDetails.vote_average
+                        val colorId = MyUtils.getRatingColorId(rating, view)
 
-                    binding.txtTvDetailsVoteAve.text = String.format("%.1f", rating)
-                    binding.txtTvDetailsVoteAve.setTextColor(colorId)
+                        txtTvDetailsVoteAve.text = String.format("%.1f", rating)
+                        txtTvDetailsVoteAve.setTextColor(colorId)
 
-                    val voteCount = if (tvDetails.vote_count < 1000) {
-                        tvDetails.vote_count.toString()
-                    } else {
-                        "${(tvDetails.vote_count / 1000)}K"
+                        val voteCount = if (tvDetails.vote_count < 1000) {
+                            tvDetails.vote_count.toString()
+                        } else {
+                            "${(tvDetails.vote_count / 1000)}K"
+                        }
+                        txtTvDetailsVoteCount.text = voteCount
+                        txtTvDetailsTitleOriginal.text = tvDetails.original_name
+
+                        // short details on top
+                        val year = tvDetails.first_air_date.take(4)
+                        val genres = tvDetails.getGenres()
+                        val countries = tvDetails.getCountries(requireContext())
+                        val seasons = if (tvDetails.number_of_seasons > 1) {
+                            getString(R.string.seasons)
+                        } else {
+                            getString(R.string.season)
+                        }
+                        val numberOfSeasons = ", ${tvDetails.number_of_seasons} $seasons"
+                        val minutes = getString(R.string.minutes)
+                        val episodeRuntime = if(tvDetails.episode_run_time.isNotEmpty()) {
+                            ", ${tvDetails.episode_run_time.average().toInt()} $minutes"
+                        } else {
+                            ""
+                        }
+                        val shortDetails = "$year, $genres, $countries$numberOfSeasons$episodeRuntime"
+
+                        txtTvDetailsDetailsOnTop.text = shortDetails
+
+                        txtTvDetailsDescription.text = tvDetails.overview
+
+                        txtTvDetailsVoteAveBig.text = String.format("%.1f", rating)
+                        txtTvDetailsVoteAveBig.setTextColor(colorId)
+
+                        txtTvDetailsVoteCountBig.text = tvDetails.vote_count.toString()
+
+                        Glide.with(view)
+                            .load(MyConstants.IMG_BASE_URL + tvDetails.poster_path)
+                            .into(binding.imgTvDetailsPoster)
+
+                        showUi()
                     }
-                    binding.txtTvDetailsVoteCount.text = voteCount
-                    binding.txtTvDetailsTitleOriginal.text = tvDetails.original_name
-                    binding.txtTvDetailsYear.text = tvDetails.first_air_date.take(4) + ","
-                    binding.txtTvDetailsGenres.text = tvDetails.getGenres()
-                    binding.txtTvDetailsCountry.text = tvDetails.getCountries() + ","
-                    binding.txtTvDetailsDescription.text = tvDetails.overview
 
-                    binding.txtTvDetailsVoteAveBig.text = String.format("%.1f", rating)
-                    binding.txtTvDetailsVoteAveBig.setTextColor(colorId)
 
-                    binding.txtTvDetailsVoteCountBig.text = tvDetails.vote_count.toString()
 
-                    Glide.with(view)
-                        .load(MyConstants.IMG_BASE_URL + tvDetails.poster_path)
-                        .into(binding.imgTvDetailsPoster)
                 }
                 is NetworkResult.Error -> {
                     hideUi()
@@ -429,7 +496,7 @@ class TvDetailsFragment : Fragment() {
 
     }
 
-    private fun getReviews(view: View) {
+    private fun observeReviews(view: View) {
         val reviewHorizontalAdapter = ReviewHorizontalAdapter()
         binding.rvTvDetailsReviews.apply {
             adapter = reviewHorizontalAdapter

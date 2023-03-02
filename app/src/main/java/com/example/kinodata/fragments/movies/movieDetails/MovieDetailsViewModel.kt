@@ -9,7 +9,9 @@ import com.example.kinodata.model.auth.SuccessResponse
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.collection.CollectionResult
 import com.example.kinodata.model.images.ImageResult
+import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
@@ -61,6 +63,12 @@ class MovieDetailsViewModel @Inject constructor(
 
     private val _images = MutableLiveData<NetworkResult<ImageResult>>(NetworkResult.Loading)
     val images: LiveData<NetworkResult<ImageResult>> = _images
+
+    private val _collection = MutableLiveData<NetworkResult<CollectionResult>>(NetworkResult.Loading)
+    val collection: LiveData<NetworkResult<CollectionResult>> = _collection
+
+    private val _recommendations = MutableLiveData<NetworkResult<ResultForMovies>>(NetworkResult.Loading)
+    val recommendations: LiveData<NetworkResult<ResultForMovies>> = _recommendations
 
     private val _isFavorite = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
     val isFavorite: LiveData<NetworkResult<Boolean>> = _isFavorite
@@ -171,6 +179,49 @@ class MovieDetailsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _images.value = NetworkResult.Error(e)
+            }
+        }
+    }
+
+    fun getCollection(id: Int) {
+        _collection.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getCollection(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _collection.value = NetworkResult.Success(data)
+                } else {
+                    _collection.value = throwError(
+                        mContext.getString(R.string.errorGettingMovieCollection)
+                    )
+                }
+            } catch (e: Exception) {
+                _collection.value = NetworkResult.Error(e)
+            }
+        }
+    }
+
+    // not to show collection of prev movie even if doesn't belong to any collection
+    fun setCollectionToNull() {
+        _collection.value = NetworkResult.Error(Exception("Doesn't belong to any collection"))
+    }
+
+    fun getMovieRecommendations(id: Int) {
+        _recommendations.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getMovieRecommendations(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _recommendations.value = NetworkResult.Success(data)
+                } else {
+                    _recommendations.value = throwError(
+                        mContext.getString(R.string.errorGettingMovieRecommendations)
+                    )
+                }
+            } catch (e: Exception) {
+                _recommendations.value = NetworkResult.Error(e)
             }
         }
     }

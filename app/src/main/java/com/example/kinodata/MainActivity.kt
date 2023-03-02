@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    // TODO: Sometimes not loadin PersonInfo in PersonFragment
     // TODO: Change height of images in AllImages frags
     // TODO: SearchFrag navigate to another frag when clicking on EditText !!!!!!!!!!!!
     // TODO: photos(clickable) and videos. Photos of persons !!!!!!!!!!!
@@ -50,19 +51,21 @@ class MainActivity : AppCompatActivity() {
                     hideBottomNav()
                     //TODO: change System color (on top) to dark
                 }
+                else -> showBottomNav()
             }
-            else -> showBottomNav()
+
         }
+    }
+
+    private fun hideBottomNav() {
+        binding.bottomNav.visibility = View.GONE
+    }
+
+
+    private fun showBottomNav() {
+        binding.bottomNav.visibility = View.VISIBLE
     }
 
 }
 
-private fun hideBottomNav() {
-    binding.bottomNav.visibility = View.GONE
-}
 
-
-private fun showBottomNav() {
-    binding.bottomNav.visibility = View.VISIBLE
-}
-}

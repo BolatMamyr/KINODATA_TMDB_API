@@ -86,6 +86,10 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_movieFullImageFragment"
             app:destination="@id/movieFullImageFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_self"
+            app:destination="@id/movieDetailsFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -221,6 +225,9 @@
         <action
             android:id="@+id/action_tvDetailsFragment_to_tvFullImageFragment"
             app:destination="@id/tvFullImageFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_self"
+            app:destination="@id/tvDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"

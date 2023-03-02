@@ -1,10 +1,14 @@
 package com.example.kinodata.model.tv.tvDetails
 
+import android.content.Context
+import android.util.Log
+import com.example.kinodata.R
+
 data class TvDetails(
     val adult: Boolean,
     val backdrop_path: String,
     val created_by: List<CreatedBy>,
-    val episode_run_time: List<Any>,
+    val episode_run_time: List<Int>,
     val first_air_date: String,
     val genres: List<Genre>,
     val homepage: String,
@@ -47,14 +51,19 @@ data class TvDetails(
         return result
     }
 
-    fun getCountries(): String {
+    fun getCountries(context: Context): String {
         val list = production_countries.map { it.name }
         var result = ""
         for ((index, s) in list.withIndex()) {
+            val country = if (s == context.getString(R.string.united_states_of_america)) {
+                context.getString(R.string.usa)
+            } else {
+                s
+            }
             if (index == 0) {
                 result += s
             } else {
-                result += ", $s"
+                result += ", $country"
             }
         }
         return result

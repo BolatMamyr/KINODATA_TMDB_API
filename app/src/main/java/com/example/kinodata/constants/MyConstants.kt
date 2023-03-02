@@ -24,6 +24,7 @@ object MyConstants {
 
     const val URL_RATING = "/rating"
     const val URL_IMAGES = "/images"
+    const val URL_RECOMMENDATIONS = "/recommendations"
 
     const val URL_FAVORITE = "/favorite"
     const val URL_FAVORITE_MOVIES = "/favorite/movies"
@@ -56,6 +57,8 @@ object MyConstants {
     const val URL_PERSON_TV_CREDITS = "/tv_credits"
 
     const val URL_PERSON_POPULAR = "person/popular"
+
+    const val URL_COLLECTION = "collection/"
 
     const val URL_SEARCH_MULTI = "search/multi"
 

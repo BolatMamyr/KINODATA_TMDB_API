@@ -69,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="The Last Of Us" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout2"
@@ -88,7 +89,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
                         android:textColor="@color/gray"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="7.5" />
 
                     <TextView
                         android:id="@+id/txt_tvDetails_voteCount"
@@ -96,7 +98,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
                         android:textColor="@color/light_gray2"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:text="5k" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/card_tv_ratingByUser"
@@ -135,73 +138,36 @@
                     <TextView
                         android:id="@+id/txt_tvDetails_titleOriginal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        tools:text="The Last of Us" />
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_tvDetails_detailsOnTop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:textAlignment="center"
+                    android:textColor="@color/light_gray2"
+                    tools:text="2021, Animation, Sci-Fi and Fantasy, Action and Adventure, Drama, France, United States of America, Kazakhstan,  2 seasons, 40 min" />
 
-                    <TextView
-                        android:id="@+id/txt_tvDetails_year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                    <TextView
-                        android:id="@+id/txt_tvDetails_genres"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txt_tvDetails_country"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-
-                    <TextView
-                        android:id="@+id/txt_tvDetails_runtime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/light_gray2" />
-                </LinearLayout>
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/txt_tvDetails_stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="48dp"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
                 android:layout_marginTop="48dp"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:textColor="@color/light_gray2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/txt_tvDetails_stars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/light_gray2"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -286,13 +252,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/orange"
                         android:layout_marginVertical="16dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless">
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:cardBackgroundColor="@color/orange"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="136dp"
@@ -320,8 +286,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="6dp"
                                 android:backgroundTint="@color/green"
-                                app:cardCornerRadius="8dp"
                                 android:visibility="gone"
+                                app:cardCornerRadius="8dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent">
@@ -501,6 +467,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal" />
+
+            <!--**********************Recommendations*****************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_tvDetails_recommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
+
+                <TextView
+                    android:id="@+id/txt_tvDetails_recommendations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/see_also"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tvDetails_recommendations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_tvDetails_recommendations" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </LinearLayout>

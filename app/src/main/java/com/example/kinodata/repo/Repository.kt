@@ -1,6 +1,7 @@
 package com.example.kinodata.repo
 
 import com.example.kinodata.api.MovieDataApi
+import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.model.account.accountDetails.AccountDetails
 import com.example.kinodata.model.account.accountStates.AccountStates
 import com.example.kinodata.model.auth.SuccessResponse
@@ -11,6 +12,7 @@ import com.example.kinodata.model.auth.requestBodies.ValidateTokenRequestBody
 import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
+import com.example.kinodata.model.collection.CollectionResult
 import com.example.kinodata.model.images.ImageResult
 import com.example.kinodata.model.images.PersonImageResult
 import com.example.kinodata.model.persons.media_credits.Credits
@@ -25,6 +27,8 @@ import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTv
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import retrofit2.Response
+import retrofit2.http.Path
+import retrofit2.http.Query
 import javax.inject.Inject
 
 
@@ -71,6 +75,10 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         movieId: Int
     ): Response<ImageResult> {
         return api.getMovieImages(movieId = movieId)
+    }
+
+    suspend fun getMovieRecommendations(movieId: Int): Response<ResultForMovies> {
+        return api.getMovieRecommendations(movieId = movieId)
     }
 
     suspend fun getPopularTv(language: String, page: Int): Response<ResultForTv> {
@@ -141,6 +149,14 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         tvId: Int
     ): Response<ImageResult> {
         return api.getTvImages(tvId = tvId)
+    }
+
+    suspend fun getTvRecommendations(tvId: Int): Response<ResultForTv> {
+        return api.getTvRecommendations(tvId = tvId)
+    }
+
+    suspend fun getCollection(collectionId: Int): Response<CollectionResult> {
+        return api.getCollection(collectionId = collectionId)
     }
 
     suspend fun getMultiSearchResults(

@@ -11,8 +11,10 @@ import com.example.kinodata.model.account.favorite.AddToFavoriteRequestBody
 import com.example.kinodata.model.account.rate.RateRequestBody
 import com.example.kinodata.model.account.watchlist.AddToWatchlistRequestBody
 import com.example.kinodata.model.images.ImageResult
+import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.review.Review
+import com.example.kinodata.model.tv.ResultForTv
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
@@ -59,6 +61,9 @@ class TvDetailsViewModel @Inject constructor(
     private val _images = MutableLiveData<NetworkResult<ImageResult>>(NetworkResult.Loading)
     val images: LiveData<NetworkResult<ImageResult>> = _images
 
+    private val _recommendations = MutableLiveData<NetworkResult<ResultForTv>>(NetworkResult.Loading)
+    val recommendations: LiveData<NetworkResult<ResultForTv>> = _recommendations
+
     private val _isFavorite = MutableLiveData<NetworkResult<Boolean>>(NetworkResult.Loading)
     val isFavorite: LiveData<NetworkResult<Boolean>> = _isFavorite
 
@@ -90,6 +95,25 @@ class TvDetailsViewModel @Inject constructor(
 
     private val _deleteRating = MutableSharedFlow<NetworkResult<SuccessResponse>>()
     val deleteRating = _deleteRating.asSharedFlow()
+
+    fun getTvRecommendations(id: Int) {
+        _recommendations.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getTvRecommendations(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _recommendations.value = NetworkResult.Success(data)
+                } else {
+                    _recommendations.value = throwError(
+                        mContext.getString(R.string.errorGettingTvRecommendations)
+                    )
+                }
+            } catch (e: Exception) {
+                _recommendations.value = NetworkResult.Error(e)
+            }
+        }
+    }
 
     fun getTvDetails(id: Int) {
         _tvDetails.value = NetworkResult.Loading
