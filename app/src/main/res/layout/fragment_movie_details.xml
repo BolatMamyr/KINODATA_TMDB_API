@@ -156,7 +156,7 @@
                     android:layout_gravity="center_horizontal"
                     android:textAlignment="center"
                     android:textColor="@color/light_gray2"
-                    tools:text="2021, Animation, Sci-Fi and Fantasy, Action and Adventure, Drama, France, United States of America, Kazakhstan,  2 seasons, 40 min"/>
+                    tools:text="2021, Animation, Sci-Fi and Fantasy, Action and Adventure, Drama, France, United States of America, Kazakhstan,  2 seasons, 40 min" />
 
 
             </LinearLayout>
@@ -165,11 +165,11 @@
                 android:id="@+id/txt_details_stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="48dp"
                 android:layout_gravity="center_horizontal"
-                android:textAlignment="center"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="48dp"
                 android:layout_weight="1"
+                android:textAlignment="center"
                 android:textColor="@color/light_gray2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -261,13 +261,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/orange"
                         android:layout_marginVertical="16dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless">
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:cardBackgroundColor="@color/orange"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="136dp"
@@ -295,8 +295,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="6dp"
                                 android:backgroundTint="@color/green"
-                                app:cardCornerRadius="8dp"
                                 android:visibility="gone"
+                                app:cardCornerRadius="8dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent">
@@ -404,6 +404,37 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_details_seeAllImages" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--**********************Videos*****************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_movieDetails_videos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
+
+                <TextView
+                    android:id="@+id/txt_movieDetails_videos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/videos"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movieDetails_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_movieDetails_videos" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!-- ***********************Cast**************-->
 

@@ -19,6 +19,7 @@ import com.example.kinodata.adapters.credits.CastHorizontalAdapter
 import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
 import com.example.kinodata.fragments.image.adapters.ImagesAdapter
 import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
+import com.example.kinodata.adapters.video.VideoListAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentMovieDetailsBinding
 import com.example.kinodata.fragments.movies.adapters.MoviesHorizontalAdapter
@@ -74,6 +75,7 @@ class MovieDetailsFragment : Fragment() {
             viewModel.getMovieAccountStates(args.movieId)
             viewModel.getMovieImages(args.movieId)
             viewModel.getMovieRecommendations(args.movieId)
+            viewModel.getVideos(args.movieId)
             viewModel.setMovieId(args.movieId)
         }
 
@@ -86,6 +88,7 @@ class MovieDetailsFragment : Fragment() {
         observeIsFavorite()
         observeIsInWatchlist()
         observeRatingByUser()
+        observeVideos()
 
         addToFavorite()
         addToWatchlist()
@@ -93,6 +96,52 @@ class MovieDetailsFragment : Fragment() {
         collectRateResult()
         collectDeleteRatingResult()
 
+    }
+
+    private fun observeVideos() {
+        viewModel.videos.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    if (it.data.results.isNotEmpty()) {
+                        val data = it.data.results.filter {
+                            (it.type == MyConstants.VIDEO_TYPE_TEASER
+                                    || it.type == MyConstants.VIDEO_TYPE_TRAILER)
+                                    && it.site == MyConstants.VIDEO_SITE_YOUTUBE
+                        }.sortedBy { it.published_at }
+
+                        if (data.isEmpty()) {
+                            binding.layoutMovieDetailsVideos.visibility = View.GONE
+                            return@observe
+                        }
+                        val mAdapter = VideoListAdapter(data)
+                        binding.rvMovieDetailsVideos.apply {
+                            adapter = mAdapter
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                RecyclerView.HORIZONTAL,
+                                false
+                            )
+                            isSaveEnabled = true
+                            isNestedScrollingEnabled = true
+                        }
+                        mAdapter.onItemClick = {
+                            it?.key?.let { url ->
+                                val action = MovieDetailsFragmentDirections
+                                    .actionMovieDetailsFragmentToVideoFragment(url)
+                                findNavController().navigate(action)
+                            }
+                        }
+
+                        binding.layoutMovieDetailsVideos.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutMovieDetailsVideos.visibility = View.GONE
+                    }
+                }
+                else -> {
+                    binding.layoutMovieDetailsVideos.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun observeRecommendations() {
@@ -268,8 +317,8 @@ class MovieDetailsFragment : Fragment() {
         viewModel.ratingByUser.observe(viewLifecycleOwner) { rating ->
             if (rating > 0) {
                 showRatingByUserUi()
-                val colorId = MyUtils.getRatingColorId(rating, requireView())
                 binding.apply {
+                    val colorId = MyUtils.getRatingColorId(rating, requireView())
                     // rating by user on top. Next to voteCount.
                     cardRatingByUser.setCardBackgroundColor(colorId)
                     txtRatingByUser.text = rating.toString()

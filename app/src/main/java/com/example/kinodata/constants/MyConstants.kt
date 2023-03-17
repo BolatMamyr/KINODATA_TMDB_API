@@ -5,6 +5,7 @@ object MyConstants {
     const val FIRST_PAGE = 1
 
     const val API_KEY = "f2d6d5225e43110cc809522d5ae31922"
+    const val YOUTUBE_API_KEY = "AIzaSyC5qfmDhPMZello7BoxGfz-UqoL8KjJpBc"
 
     const val BASE_URL = "https://api.themoviedb.org/3/"
 
@@ -25,6 +26,9 @@ object MyConstants {
     const val URL_RATING = "/rating"
     const val URL_IMAGES = "/images"
     const val URL_RECOMMENDATIONS = "/recommendations"
+    const val URL_VIDEOS = "/videos"
+
+    const val URL_YOUTUBE_VIDEO = "https://www.youtube.com/watch?v="
 
     const val URL_FAVORITE = "/favorite"
     const val URL_FAVORITE_MOVIES = "/favorite/movies"
@@ -48,6 +52,7 @@ object MyConstants {
     const val URL_TV_POPULAR = "tv/popular"
     const val URL_TV_TOP_RATED = "tv/top_rated"
     const val URL_TV_AIRING = "tv/on_the_air"
+    const val URL_SEASON = "/season/"
 
     const val URL_CREDITS = "/credits"
     const val URL_REVIEWS = "/reviews"
@@ -90,4 +95,7 @@ object MyConstants {
     const val IS_SIGNED_IN_PREFERENCE = "isSignedIn"
     const val ACCOUNT_ID_PREFERENCE = "accountId"
 
+    const val VIDEO_TYPE_TEASER = "Teaser"
+    const val VIDEO_TYPE_TRAILER = "Trailer"
+    const val VIDEO_SITE_YOUTUBE = "YouTube"
 }

@@ -48,7 +48,7 @@ class MoviesHorizontalAdapter : RecyclerView.Adapter<MoviesHorizontalAdapter.MyV
         val title = movies[position].title
         movieId = movies[position].id
 
-        holder.title.text = MyUtils.getShortenedString(title)
+        holder.title.text = MyUtils.getShortenedString19(title)
         // Date
         val date = movies[position].release_date
         holder.date.text = MyUtils.getFormattedDate(date, holder.itemView)

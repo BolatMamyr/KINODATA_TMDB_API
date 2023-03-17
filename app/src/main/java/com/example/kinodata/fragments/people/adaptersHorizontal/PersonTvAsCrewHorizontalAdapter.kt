@@ -54,7 +54,7 @@ class PersonTvAsCrewHorizontalAdapter
         var title = tvSeries[position].name
         tvSeriesId = tvSeries[position].id
 
-        holder.title.text = MyUtils.getShortenedString(title)
+        holder.title.text = MyUtils.getShortenedString19(title)
         holder.date.text = MyUtils.getFormattedDate(tvSeries[position].first_air_date, holder.itemView)
         holder.job.text = tvSeries[position].job
 

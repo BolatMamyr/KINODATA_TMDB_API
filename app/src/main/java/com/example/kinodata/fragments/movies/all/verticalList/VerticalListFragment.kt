@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.movies.all.verticalList
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinodata.fragments.movies.adapters.MoviesVerticalAdapter
 import com.example.kinodata.databinding.FragmentVerticalListBinding
@@ -17,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "VerticalListFragment"
 @AndroidEntryPoint
 class VerticalListFragment : Fragment() {
 
@@ -52,6 +55,7 @@ class VerticalListFragment : Fragment() {
         binding.rvVerticalList.apply {
             layoutManager = LinearLayoutManager(context)
             this.adapter = adapter
+            isSaveEnabled = true
         }
         lifecycleScope.launch {
             viewModel.movies.collect {

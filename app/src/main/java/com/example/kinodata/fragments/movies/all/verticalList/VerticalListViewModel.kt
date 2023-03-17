@@ -17,13 +17,10 @@ class VerticalListViewModel @Inject constructor(
     private val repository: Repository
     ) : ViewModel() {
 
-    // TODO: PlaceHolder Not Showing
-    // TODO: Stars: if empty shows and others, Countries: If only one country puts comma (France,) ex: Wakanda (2018)
-
     private val category = state.get<String>("category") ?: "null"
 
     val movies = Pager(PagingConfig(pageSize = 20)) {
-        MoviesPagingSource(category)
+        MoviesPagingSource(category, repository)
     }.flow.cachedIn(viewModelScope)
 
 }

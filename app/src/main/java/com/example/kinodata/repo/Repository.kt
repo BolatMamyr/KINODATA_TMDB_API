@@ -25,14 +25,19 @@ import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTv
+import com.example.kinodata.model.tv.season.SeasonDetails
 import com.example.kinodata.model.tv.tvDetails.TvDetails
+import com.example.kinodata.model.videos.VideoResult
 import retrofit2.Response
+import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
 
 
 class Repository @Inject constructor(private val api: MovieDataApi) {
+
+    // *****************************MOVIES*******************************************
 
     suspend fun getPopularMovies(language: String, page: Int): Response<ResultForMovies> {
         return api.getPopularMovies(language = language, page = page)
@@ -81,6 +86,11 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
         return api.getMovieRecommendations(movieId = movieId)
     }
 
+    suspend fun getMovieVideos(movieId: Int): Response<VideoResult> {
+        return api.getMovieVideos(movieId = movieId)
+    }
+
+    // **************************TV***************************************************
     suspend fun getPopularTv(language: String, page: Int): Response<ResultForTv> {
         return api.getPopularTv(language = language, page = page)
     }
@@ -153,6 +163,14 @@ class Repository @Inject constructor(private val api: MovieDataApi) {
 
     suspend fun getTvRecommendations(tvId: Int): Response<ResultForTv> {
         return api.getTvRecommendations(tvId = tvId)
+    }
+
+    suspend fun getSeasonDetails(tvId: Int, seasonNumber: Int): Response<SeasonDetails> {
+        return api.getSeasonDetails(tvId = tvId, seasonNumber = seasonNumber)
+    }
+
+    suspend fun getTvVideos(tvId: Int): Response<VideoResult> {
+        return api.getTvVideos(tvId = tvId)
     }
 
     suspend fun getCollection(collectionId: Int): Response<CollectionResult> {

@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.image
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,13 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.kinodata.databinding.FragmentTvFullImageBinding
 import com.example.kinodata.fragments.image.adapters.FullImageAdapter
 import com.example.kinodata.fragments.tvSeries.tvDetails.TvDetailsViewModel
 import com.example.kinodata.utils.NetworkResult
 
+private const val TAG = "TvFullImageFragment"
 class TvFullImageFragment : Fragment() {
 
 
@@ -44,11 +47,14 @@ class TvFullImageFragment : Fragment() {
                     val mAdapter = FullImageAdapter(data)
                     binding.viewpagerTvImg.apply {
                         adapter = mAdapter
-                        // On predraw so it can change currentItemTime before drawing the view
+                        // On preDraw so it can change currentItemTime before drawing the view
                         doOnPreDraw {
                             setCurrentItem(args.imageNumber, false)
                         }
                     }
+                }
+                is NetworkResult.Loading -> {
+
                 }
                 else -> {}
             }
@@ -57,4 +63,6 @@ class TvFullImageFragment : Fragment() {
 
 
     }
+
+
 }

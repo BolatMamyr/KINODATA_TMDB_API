@@ -21,6 +21,7 @@ import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.fragments.image.adapters.ImagesAdapter
 import com.example.kinodata.fragments.tvSeries.adapters.TvHorizontalAdapter
+import com.example.kinodata.fragments.tvSeries.adapters.TvSeasonsAdapter
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.toast
@@ -477,11 +478,31 @@ class TvDetailsFragment : Fragment() {
                             .load(MyConstants.IMG_BASE_URL + tvDetails.poster_path)
                             .into(binding.imgTvDetailsPoster)
 
+                        // Seasons
+                        val seasonsList = tvDetails.seasons
+                        val mAdapter = TvSeasonsAdapter(seasonsList)
+                        rvTxtTvDetailsSeasons.apply {
+                            adapter = mAdapter
+                            layoutManager = LinearLayoutManager(requireContext(),
+                                RecyclerView.HORIZONTAL,
+                                false
+                                )
+                            isSaveEnabled = true
+                            isNestedScrollingEnabled = true
+                        }
+                        mAdapter.onItemClick = {
+                            if (it != null) {
+                                val action = TvDetailsFragmentDirections
+                                    .actionTvDetailsFragmentToSeasonDetailsFragment(
+                                        tvDetails.name, args.tvSeriesId, it.name, it.season_number
+                                    )
+                                findNavController().navigate(action)
+                            }
+
+                        }
+
                         showUi()
                     }
-
-
-
                 }
                 is NetworkResult.Error -> {
                     hideUi()
@@ -505,7 +526,6 @@ class TvDetailsFragment : Fragment() {
             layoutManager = manager
             isSaveEnabled = true
         }
-
         viewModel.reviews.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
@@ -515,7 +535,6 @@ class TvDetailsFragment : Fragment() {
             }
 
         }
-
         reviewHorizontalAdapter.onItemClick = {
             it?.let { review ->
                 val action = TvDetailsFragmentDirections
@@ -523,7 +542,6 @@ class TvDetailsFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-
         binding.btnTvDetailsSeeAllReviews.setOnClickListener {
             val action = TvDetailsFragmentDirections.actionTvDetailsFragmentToAllReviewsFragment(
                 movieId = args.tvSeriesId.toString(),

@@ -24,7 +24,9 @@ import com.example.kinodata.model.multiSearch.MultiSearch
 import com.example.kinodata.model.persons.popular.ResultForPopularPersons
 import com.example.kinodata.model.review.ReviewResult
 import com.example.kinodata.model.tv.ResultForTv
+import com.example.kinodata.model.tv.season.SeasonDetails
 import com.example.kinodata.model.tv.tvDetails.TvDetails
+import com.example.kinodata.model.videos.VideoResult
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -122,6 +124,12 @@ interface MovieDataApi {
         @Query("api_key") api_key: String = MyConstants.API_KEY
     ): Response<ResultForMovies>
 
+    @GET(MyConstants.URL_MOVIE + "{movieId}" + MyConstants.URL_VIDEOS)
+    suspend fun getMovieVideos(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<VideoResult>
+
     // *******************************TV Series**************************************
     @GET(MyConstants.URL_TV_POPULAR)
     suspend fun getPopularTv(
@@ -199,6 +207,19 @@ interface MovieDataApi {
         @Path("tvId") tvId: Int,
         @Query("api_key") api_key: String = MyConstants.API_KEY
     ): Response<ResultForTv>
+
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_SEASON + "{seasonNumber}")
+    suspend fun getSeasonDetails(
+        @Path("tvId") tvId: Int,
+        @Path("seasonNumber") seasonNumber: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<SeasonDetails>
+
+    @GET(MyConstants.URL_TV + "{tvId}" + MyConstants.URL_VIDEOS)
+    suspend fun getTvVideos(
+        @Path("tvId") tvId: Int,
+        @Query("api_key") api_key: String = MyConstants.API_KEY
+    ): Response<VideoResult>
 
     // ******************************Other****************************************
 

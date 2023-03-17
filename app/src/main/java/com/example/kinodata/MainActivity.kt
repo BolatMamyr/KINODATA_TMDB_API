@@ -5,18 +5,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.bumptech.glide.Glide
 import com.example.kinodata.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    // TODO: Sometimes not loadin PersonInfo in PersonFragment
-    // TODO: Change height of images in AllImages frags
-    // TODO: SearchFrag navigate to another frag when clicking on EditText !!!!!!!!!!!!
-    // TODO: photos(clickable) and videos. Photos of persons !!!!!!!!!!!
-    // TODO: SearchFragment: Recommended to watch: change photos and add more data(trending?) !!!!!!!!!!!
+    // TODO: Change Search to RecyclerView with search history using Room/DataStore?
+    // TODO: add pb to FullImg, also add drag down to close
+    // TODO: Sometimes not loading PersonInfo in PersonFragment
+    // TODO: SearchFragment: Recommended to watch: change photos and add more data(trending?)
 
-    // TODO: when showing keyboard bottomNav going up in SearchFrag
+    // TODO: when showing keyboard it is going above bottomNav in SearchFrag
     // TODO: toolbars with animation
     // TODO: implement Retrofit with Flow to get data after re-connecting to Internet
     // TODO: RemoteMediator for offline access of already loaded data
@@ -47,11 +47,15 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.movieFullImageFragment, R.id.tvFullImageFragment, R.id.personFullImageFragment -> {
+                R.id.movieFullImageFragment, R.id.tvFullImageFragment, R.id.personFullImageFragment,
+                R.id.videoFragment -> {
                     hideBottomNav()
-                    //TODO: change System color (on top) to dark
+                    window.statusBarColor = getColor(R.color.super_light_black)
                 }
-                else -> showBottomNav()
+                else -> {
+                    showBottomNav()
+                    window.statusBarColor = getColor(R.color.light_gray)
+                }
             }
 
         }
@@ -66,6 +70,14 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.VISIBLE
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Thread {
+            Glide.get(this).clearDiskCache()
+        }
+        Glide.get(this).clearMemory()
+    }
 }
 
 

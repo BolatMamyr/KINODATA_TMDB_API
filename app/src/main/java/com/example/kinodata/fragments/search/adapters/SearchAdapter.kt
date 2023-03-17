@@ -65,13 +65,13 @@ class SearchAdapter(
 
             val date: String?
             if (item?.media_type == MyConstants.MEDIA_TYPE_MOVIE) {
-                holder.txt_title.text = MyUtils.getShortenedString(item.title)
+                holder.txt_title.text = MyUtils.getShortenedString19(item.title)
                 holder.txt_mediaType.text = view.resources.getString(R.string.movie)
                 date = item.release_date
             } else {
                 // else TV
                 holder.txt_mediaType.text = view.resources.getString(R.string.tv)
-                holder.txt_title.text = item?.name?.let { MyUtils.getShortenedString(it) }
+                holder.txt_title.text = item?.name?.let { MyUtils.getShortenedString19(it) }
                 date = item?.first_air_date
             }
 

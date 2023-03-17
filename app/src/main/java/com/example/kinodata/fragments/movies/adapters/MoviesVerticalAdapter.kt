@@ -1,5 +1,6 @@
 package com.example.kinodata.fragments.movies.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class MoviesVerticalAdapter : PagingDataAdapter<RMovie, MoviesVerticalAdapter.My
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        Log.d("VerticalList", "onBindViewHolder: ${getItem(position)?.title}")
         holder.title.text = getItem(position)?.title
 
         // Date

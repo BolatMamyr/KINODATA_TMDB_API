@@ -15,6 +15,7 @@ import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.movie.movieDetails.MovieDetails
 import com.example.kinodata.model.review.Review
+import com.example.kinodata.model.videos.VideoResult
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.NetworkResult
@@ -80,6 +81,9 @@ class MovieDetailsViewModel @Inject constructor(
     private val _ratingByUser = MutableLiveData(.0)
     val ratingByUser: LiveData<Double> = _ratingByUser
 
+    private val _videos = MutableLiveData<NetworkResult<VideoResult>>(NetworkResult.Loading)
+    val videos: LiveData<NetworkResult<VideoResult>> = _videos
+
     // ***********************************Actions***************************************
 
     // to show toast msg
@@ -119,7 +123,6 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
-
 
     fun getMovieCredits(id: Int) {
         _credits.value = NetworkResult.Loading
@@ -276,7 +279,29 @@ class MovieDetailsViewModel @Inject constructor(
 
     }
 
-
+    fun getVideos(id: Int) {
+        _videos.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getMovieVideos(id)
+                val data = response.body()
+                Log.d(TAG, "getVideos: ${response.code()} - ${response.message()}")
+                Log.d(TAG, "getVideos: listSize = ${data?.results?.size}")
+                if (response.isSuccessful && data != null) {
+                    Log.d(TAG, "getVideos: listSize = ${data.results.size}")
+                    _videos.value = NetworkResult.Success(data)
+                } else {
+                    Log.d(TAG, "getVideos: null")
+                    _videos.value = throwError(
+                        mContext.getString(R.string.errorGettingMovieVideos)
+                    )
+                }
+            } catch (e: Exception) {
+                _videos.value = NetworkResult.Error(e)
+                Log.d(TAG, "getVideos: ${e.message}")
+            }
+        }
+    }
     fun addToFavorite(id: Int) {
         viewModelScope.launch {
             try {

@@ -15,6 +15,7 @@ import com.example.kinodata.model.movie.ResultForMovies
 import com.example.kinodata.model.persons.media_credits.Credits
 import com.example.kinodata.model.review.Review
 import com.example.kinodata.model.tv.ResultForTv
+import com.example.kinodata.model.tv.season.SeasonDetails
 import com.example.kinodata.model.tv.tvDetails.TvDetails
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
@@ -23,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -31,7 +33,6 @@ private const val TAG = "TvDetailsViewModel"
 @HiltViewModel
 class TvDetailsViewModel @Inject constructor(
     @ApplicationContext private val mContext: Context,
-    state: SavedStateHandle,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {

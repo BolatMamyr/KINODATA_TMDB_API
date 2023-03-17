@@ -7,16 +7,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.kinodata.R
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MyUtils {
 
@@ -34,9 +31,15 @@ class MyUtils {
             }
         }
 
-        fun getShortenedString(string: String): String {
+        fun getShortenedString19(string: String): String {
             return if (string.length > 19) {
                 string.substring(0, 19) + "..."
+            } else string
+        }
+
+        fun getShortenedString25(string: String): String {
+            return if (string.length > 25) {
+                string.substring(0, 25) + "..."
             } else string
         }
 

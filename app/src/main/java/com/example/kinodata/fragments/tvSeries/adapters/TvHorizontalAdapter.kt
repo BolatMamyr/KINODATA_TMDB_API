@@ -49,7 +49,7 @@ class TvHorizontalAdapter : RecyclerView.Adapter<TvHorizontalAdapter.MyViewHolde
         val title = tvSeries[position].name
         tvSeriesId = tvSeries[position].id
 
-        holder.title.text = MyUtils.getShortenedString(title)
+        holder.title.text = MyUtils.getShortenedString19(title)
         // Date
         val date = tvSeries[position].first_air_date
         holder.date.text = MyUtils.getFormattedDate(date, holder.itemView)

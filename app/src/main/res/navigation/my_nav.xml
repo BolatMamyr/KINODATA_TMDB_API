@@ -89,6 +89,9 @@
         <action
             android:id="@+id/action_movieDetailsFragment_self"
             app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
 
     </fragment>
     <fragment
@@ -228,6 +231,12 @@
         <action
             android:id="@+id/action_tvDetailsFragment_self"
             app:destination="@id/tvDetailsFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_seasonDetailsFragment"
+            app:destination="@id/seasonDetailsFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"
@@ -436,5 +445,32 @@
         <action
             android:id="@+id/action_allPersonImagesFragment_to_personFullImageFragment"
             app:destination="@id/personFullImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/seasonDetailsFragment"
+        android:name="com.example.kinodata.fragments.tvSeries.tvDetails.seasonDetails.SeasonDetailsFragment"
+        android:label="fragment_season_details"
+        tools:layout="@layout/fragment_season_details" >
+        <argument
+            android:name="tvName"
+            app:argType="string" />
+        <argument
+            android:name="tvId"
+            app:argType="integer" />
+        <argument
+            android:name="seasonName"
+            app:argType="string" />
+        <argument
+            android:name="seasonNumber"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.kinodata.fragments.video.VideoFragment"
+        android:label="fragment_video"
+        tools:layout="@layout/fragment_video" >
+        <argument
+            android:name="videoUrl"
+            app:argType="string" />
     </fragment>
 </navigation>
