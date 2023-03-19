@@ -133,4 +133,7 @@
     <string name="air_date">Air date:</string>
     <string name="no_episodes_yet">No episodes yet</string>
     <string name="videos">Videos</string>
+    <string name="error_loading_video">Error loading video</string>
+    <string name="errorGettingSearchResults">Error getting search results</string>
+    <string name="no_results_found">No results found</string>
 </resources>

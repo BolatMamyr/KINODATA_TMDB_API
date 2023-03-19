@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,9 +18,11 @@ import com.example.kinodata.R
 import com.example.kinodata.adapters.credits.CastHorizontalAdapter
 import com.example.kinodata.adapters.credits.CrewHorizontalAdapter
 import com.example.kinodata.adapters.reviews.ReviewHorizontalAdapter
+import com.example.kinodata.adapters.video.VideoListAdapter
 import com.example.kinodata.constants.MyConstants
 import com.example.kinodata.databinding.FragmentTvDetailsBinding
 import com.example.kinodata.fragments.image.adapters.ImagesAdapter
+import com.example.kinodata.fragments.movies.movieDetails.MovieDetailsFragmentDirections
 import com.example.kinodata.fragments.tvSeries.adapters.TvHorizontalAdapter
 import com.example.kinodata.fragments.tvSeries.adapters.TvSeasonsAdapter
 import com.example.kinodata.repo.DataStoreRepository
@@ -66,6 +69,7 @@ class TvDetailsFragment : Fragment() {
             viewModel.getTvImages(args.tvSeriesId)
             viewModel.getTvAccountStates(args.tvSeriesId)
             viewModel.getTvRecommendations(args.tvSeriesId)
+            viewModel.getVideos(args.tvSeriesId)
             viewModel.setTvId(args.tvSeriesId)
         }
 
@@ -78,13 +82,60 @@ class TvDetailsFragment : Fragment() {
         observeIsFavorite()
         observeIsInWatchlist()
         observeRatingByUser()
+        observeVideos()
 
         rateTv()
         addToFavorite()
         addToWatchlist()
         collectRateResult()
         collectDeleteRatingResult()
+    }
 
+    private fun observeVideos() {
+        viewModel.videos.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    if (it.data.results.isNotEmpty()) {
+                        Log.d(TAG, "observeVideos: ${it.data.results}")
+                        val data = it.data.results.filter {
+                            (it.type == MyConstants.VIDEO_TYPE_TEASER
+                                    || it.type == MyConstants.VIDEO_TYPE_TRAILER)
+                                    && it.site == MyConstants.VIDEO_SITE_YOUTUBE
+                        }.sortedBy { it.published_at }
+
+                        if (data.isEmpty()) {
+                            binding.layoutTvDetailsVideos.visibility = View.GONE
+                            return@observe
+                        }
+                        val mAdapter = VideoListAdapter(data)
+                        binding.rvTvDetailsVideos.apply {
+                            adapter = mAdapter
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                RecyclerView.HORIZONTAL,
+                                false
+                            )
+                            isSaveEnabled = true
+                            isNestedScrollingEnabled = true
+                        }
+                        mAdapter.onItemClick = {
+                            it?.key?.let { url ->
+                                val action = TvDetailsFragmentDirections
+                                    .actionTvDetailsFragmentToVideoFragment(url)
+                                findNavController().navigate(action)
+                            }
+                        }
+
+                        binding.layoutTvDetailsVideos.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutTvDetailsVideos.visibility = View.GONE
+                    }
+                }
+                else -> {
+                    binding.layoutTvDetailsVideos.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun observeRecommendations() {
@@ -367,23 +418,34 @@ class TvDetailsFragment : Fragment() {
             when (it) {
                 is NetworkResult.Success -> {
                     val credits = it.data
-                    val firstFour = credits.getFirstFourActors()
+                    val cast = credits.cast
+                    val crew = credits.crew
 
-                    if (credits.cast.isNotEmpty()) {
-                        binding.txtTvDetailsStars.text = if (credits.cast.size < 4) {
+                    if (cast.isEmpty()) {
+                        binding.layoutCast.visibility = View.GONE
+                    } else {
+                        binding.layoutCast.visibility = View.VISIBLE
+
+                        val firstFour = credits.getFirstFourActors()
+                        binding.txtTvDetailsStars.text = if (cast.size < 4) {
                             "${resources.getString(R.string.stars)} $firstFour"
                         } else {
                             "${resources.getString(R.string.stars)} $firstFour ${
-                                resources.getString(R.string.and_others)
+                                resources.getString(
+                                    R.string.and_others
+                                )
                             }"
                         }
+                        castHorizontalAdapter.updateData(cast.take(12))
                     }
 
-                    castHorizontalAdapter.updateData(credits.cast.take(12))
-
-                    // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
-                    val sortedList = credits.crew.sortedByDescending { it.popularity }
-                    crewHorizontalAdapter.updateData(sortedList.take(7))
+                    if (crew.isEmpty()) {
+                        binding.layoutCrew.visibility = View.GONE
+                    } else {
+                        binding.layoutCast.visibility = View.VISIBLE
+                        val sortedList = crew.sortedByDescending { it.popularity }
+                        crewHorizontalAdapter.updateData(sortedList.take(7))
+                    }
                 }
                 else -> {}
             }
@@ -529,11 +591,15 @@ class TvDetailsFragment : Fragment() {
         viewModel.reviews.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
-                    reviewHorizontalAdapter.updateData(it.data)
+                    if (it.data.isEmpty()) {
+                        binding.layoutReviews.visibility = View.GONE
+                    } else {
+                        binding.layoutReviews.visibility = View.VISIBLE
+                        reviewHorizontalAdapter.updateData(it.data)
+                    }
                 }
                 else -> {}
             }
-
         }
         reviewHorizontalAdapter.onItemClick = {
             it?.let { review ->

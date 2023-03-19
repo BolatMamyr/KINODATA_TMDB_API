@@ -2,7 +2,6 @@ package com.example.kinodata.fragments.video
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -84,6 +83,5 @@ class VideoFragment : Fragment() {
             })
         }
     }
-
 
 }

@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.video.VideoFragment"
-    android:background="@color/black">
+    android:background="@color/black"
+    tools:context=".fragments.video.VideoFragment">
 
 
-
-        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-            android:id="@+id/playerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

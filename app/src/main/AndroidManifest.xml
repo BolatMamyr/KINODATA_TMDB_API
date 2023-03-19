@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.kinodata">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>
     <application
         android:name=".MyApp"
         android:allowBackup="true"

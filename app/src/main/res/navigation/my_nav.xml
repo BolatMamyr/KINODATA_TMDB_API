@@ -237,6 +237,9 @@
         <action
             android:id="@+id/action_tvDetailsFragment_to_videoFragment"
             app:destination="@id/videoFragment" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_videoFragment2"
+            app:destination="@id/videoFragment" />
     </fragment>
     <fragment
         android:id="@+id/allTvCastFragment"

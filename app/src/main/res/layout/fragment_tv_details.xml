@@ -144,9 +144,8 @@
 
                 <TextView
                     android:id="@+id/txt_tvDetails_detailsOnTop"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:textAlignment="center"
                     android:textColor="@color/light_gray2"
                     tools:text="2021, Animation, Sci-Fi and Fantasy, Action and Adventure, Drama, France, United States of America, Kazakhstan,  2 seasons, 40 min" />
@@ -348,10 +347,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_txt_tvDetails_seasons"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txt_tvDetails_seasons" />
 
@@ -397,106 +397,146 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- *****************************Cast********************************-->
+            <!--**********************Videos*****************************-->
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_tvDetails_videos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp">
 
                 <TextView
+                    android:id="@+id/txt_tvDetails_videos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="16dp"
-                    android:text="@string/cast"
+                    android:text="@string/videos"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tvDetails_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_tvDetails_videos" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- *****************************Cast********************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
 
                 <Button
                     android:id="@+id/btn_tvDetails_seeAllCast"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:text="@string/see_all"
                     android:textColor="@color/orange"
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
-            </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_tvDetails_cast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-            <!-- *****************************Crew********************************-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tvDetails_cast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/btn_tvDetails_seeAllCast"
+                    android:layout_marginTop="4dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/rv_tvDetails_cast"
                     android:layout_marginStart="16dp"
-                    android:text="@string/crew"
+                    android:text="@string/cast"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- *****************************Crew********************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_crew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
 
                 <Button
                     android:id="@+id/btn_tvDetails_seeAllCrew"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:text="@string/see_all"
                     android:textColor="@color/orange"
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
-            </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_tvDetails_crew"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal" />
-
-
-            <!-- *****************************Reviews********************************-->
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tvDetails_crew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/btn_tvDetails_seeAllCrew"
+                    android:layout_marginTop="4dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/rv_tvDetails_crew"
                     android:layout_marginStart="16dp"
-                    android:text="@string/reviews"
+                    android:text="@string/crew"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- *****************************Reviews********************************-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp">
 
                 <Button
                     android:id="@+id/btn_tvDetails_seeAllReviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:text="@string/see_all"
                     android:textColor="@color/orange"
                     android:theme="@style/ThemeOverlay.Material3.Button.TextButton" />
-            </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_tvDetails_reviews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_tvDetails_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/btn_tvDetails_seeAllReviews"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/rv_tvDetails_reviews"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/reviews"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--**********************Recommendations*****************************-->
 

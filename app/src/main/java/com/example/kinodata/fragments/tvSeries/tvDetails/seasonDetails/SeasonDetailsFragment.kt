@@ -1,6 +1,7 @@
 package com.example.kinodata.fragments.tvSeries.tvDetails.seasonDetails
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ import com.example.kinodata.utils.MyUtils
 import com.example.kinodata.utils.MyUtils.Companion.toast
 import com.example.kinodata.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "SeasonDetailsFragment"
 
 @AndroidEntryPoint
 class SeasonDetailsFragment : Fragment() {
@@ -55,7 +58,10 @@ class SeasonDetailsFragment : Fragment() {
                         val data = it.data
                         txtSeasonName.text = data.name
                         txtSeasonEpisodeCount.text = data.episodes.size.toString()
-                        txtSeasonAirDate.text = MyUtils.getFormattedDate(data.air_date, view)
+                        val date = data.air_date?.let {
+                                it1 -> MyUtils.getFormattedDate(it1, view)
+                        } ?: ""
+                        txtSeasonAirDate.text = date
 
                         Glide.with(requireContext())
                             .load(MyConstants.IMG_BASE_URL + data.poster_path)
@@ -81,7 +87,6 @@ class SeasonDetailsFragment : Fragment() {
                                 isNestedScrollingEnabled = true
                             }
                         }
-
                         pbSeasonDetails.visibility = View.GONE
                     }
                     is NetworkResult.Error -> {

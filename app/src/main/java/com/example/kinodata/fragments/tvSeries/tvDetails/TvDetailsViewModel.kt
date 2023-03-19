@@ -17,6 +17,7 @@ import com.example.kinodata.model.review.Review
 import com.example.kinodata.model.tv.ResultForTv
 import com.example.kinodata.model.tv.season.SeasonDetails
 import com.example.kinodata.model.tv.tvDetails.TvDetails
+import com.example.kinodata.model.videos.VideoResult
 import com.example.kinodata.repo.DataStoreRepository
 import com.example.kinodata.repo.Repository
 import com.example.kinodata.utils.NetworkResult
@@ -74,6 +75,9 @@ class TvDetailsViewModel @Inject constructor(
     // current rating by user. If 0 then not rated by user
     private val _ratingByUser = MutableLiveData(.0)
     val ratingByUser:LiveData<Double> = _ratingByUser
+
+    private val _videos = MutableLiveData<NetworkResult<VideoResult>>(NetworkResult.Loading)
+    val videos: LiveData<NetworkResult<VideoResult>> = _videos
 
     // ***********************************Actions***************************************
 
@@ -134,6 +138,25 @@ class TvDetailsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _tvDetails.value = NetworkResult.Error(e)
+            }
+        }
+    }
+
+    fun getVideos(id: Int) {
+        _videos.value = NetworkResult.Loading
+        viewModelScope.launch {
+            try {
+                val response = repository.getTvVideos(id)
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    _videos.value = NetworkResult.Success(data)
+                } else {
+                    _videos.value = throwError(
+                        mContext.getString(R.string.errorGettingTvVideos)
+                    )
+                }
+            } catch (e: Exception) {
+                _videos.value = NetworkResult.Error(e)
             }
         }
     }

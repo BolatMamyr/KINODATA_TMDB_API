@@ -302,6 +302,7 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
+
     fun addToFavorite(id: Int) {
         viewModelScope.launch {
             try {

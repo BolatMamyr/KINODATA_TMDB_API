@@ -45,11 +45,6 @@ class MovieDetailsFragment : Fragment() {
     private val viewModel: MovieDetailsViewModel by activityViewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
-    // argument of RateFragment to rate movie
-    private var posterPath = ""
-
-    private var title = ""
-
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
 
@@ -464,11 +459,14 @@ class MovieDetailsFragment : Fragment() {
         viewModel.reviews.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
-                    reviewHorizontalAdapter.updateData(it.data)
+                    if (it.data.isEmpty()) {
+                        binding.layoutReviews.visibility = View.GONE
+                    } else {
+                        binding.layoutReviews.visibility = View.VISIBLE
+                        reviewHorizontalAdapter.updateData(it.data)
+                    }
                 }
-                else -> {
-
-                }
+                else -> {}
             }
         }
 
@@ -508,10 +506,13 @@ class MovieDetailsFragment : Fragment() {
                     val cast = credits.cast
                     val crew = credits.crew
 
-                    val firstFour = credits.getFirstFourActors()
+                    if (cast.isEmpty()) {
+                        binding.layoutCast.visibility = View.GONE
+                    } else {
+                        binding.layoutCast.visibility = View.VISIBLE
 
-                    if (credits.cast.isNotEmpty()) {
-                        binding.txtDetailsStars.text = if (credits.cast.size < 4) {
+                        val firstFour = credits.getFirstFourActors()
+                        binding.txtDetailsStars.text = if (cast.size < 4) {
                             "${resources.getString(R.string.stars)} $firstFour"
                         } else {
                             "${resources.getString(R.string.stars)} $firstFour ${
@@ -520,13 +521,16 @@ class MovieDetailsFragment : Fragment() {
                                 )
                             }"
                         }
+                        castHorizontalAdapter.updateData(cast.take(12))
                     }
 
-                    castHorizontalAdapter.updateData(cast.take(12))
-
-                    // TODO: if crew member is more popular than director it still should be after director. PUT DIRECTOR FIRST SOMEHOW OR SEPARATE FIELD FOR HIM
-                    val sortedList = crew.sortedByDescending { it.popularity }
-                    crewHorizontalAdapter.updateData(sortedList.take(7))
+                    if (crew.isEmpty()) {
+                        binding.layoutCrew.visibility = View.GONE
+                    } else {
+                        binding.layoutCast.visibility = View.VISIBLE
+                        val sortedList = crew.sortedByDescending { it.popularity }
+                        crewHorizontalAdapter.updateData(sortedList.take(7))
+                    }
                 }
                 else -> {}
             }
@@ -583,9 +587,6 @@ class MovieDetailsFragment : Fragment() {
                         } else {
                             viewModel.setCollectionToNull()
                         }
-
-                        posterPath = movie.poster_path
-                        title = movie.title
 
                         tbMovieDetails.title = movie.title
                         txtDetailsTitle.text = movie.title

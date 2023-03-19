@@ -35,4 +35,23 @@ data class SearchResult(
             name
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other?.javaClass != this.javaClass) {
+            return false
+        }
+        other as SearchResult
+        if (id != other.id || media_type != other.media_type) {
+            return false
+        }
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + media_type.hashCode()
+        return result
+    }
+
+
 }

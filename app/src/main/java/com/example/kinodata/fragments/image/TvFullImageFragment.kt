@@ -19,7 +19,6 @@ import com.example.kinodata.utils.NetworkResult
 private const val TAG = "TvFullImageFragment"
 class TvFullImageFragment : Fragment() {
 
-
     private val args by navArgs<TvFullImageFragmentArgs>()
 
     private var _binding: FragmentTvFullImageBinding? = null

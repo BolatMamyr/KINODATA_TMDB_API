@@ -32,7 +32,6 @@ class SeasonDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getSeasonDetails(id, seasonNumber)
-                Log.d(TAG, "getSeasonDetails: response = ${response.code()}")
                 val data = response.body()
                 if (response.isSuccessful && data != null) {
                     _seasonDetails.value = NetworkResult.Success(data)
